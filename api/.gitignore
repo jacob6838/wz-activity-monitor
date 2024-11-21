@@ -1,0 +1,8 @@
+
+*.pyc
+.env
+
+// add elements for python venv
+Include
+Scripts
+pyvenv.cfg

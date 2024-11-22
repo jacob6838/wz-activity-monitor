@@ -1,15 +1,15 @@
 CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE SEQUENCE IF NOT EXISTS public.project_id_seq
+CREATE SEQUENCE IF NOT EXISTS public.projects_id_seq
    INCREMENT 1
    START 1
    MINVALUE 1
    MAXVALUE 2147483647
    CACHE 1;
 
-CREATE TABLE IF NOT EXISTS public.project (
-    id integer NOT NULL DEFAULT nextval('project_id_seq'::regclass),
+CREATE TABLE IF NOT EXISTS public.projects (
+    id integer NOT NULL DEFAULT nextval('projects_id_seq'::regclass),
     name VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     tmc_notes TEXT,
@@ -24,18 +24,18 @@ CREATE TABLE IF NOT EXISTS public.project (
     emergency_contact VARCHAR(255),
     contractor VARCHAR(255),
     selected_towns TEXT[],
-    CONSTRAINT project_pkey PRIMARY KEY (id),
+    CONSTRAINT project_pkey PRIMARY KEY (id)
 );
 
-CREATE SEQUENCE IF NOT EXISTS public.road_section_id_seq
+CREATE SEQUENCE IF NOT EXISTS public.road_sections_id_seq
    INCREMENT 1
    START 1
    MINVALUE 1
    MAXVALUE 2147483647
    CACHE 1;
 
-CREATE TABLE IF NOT EXISTS public.road_section (
-    id integer NOT NULL DEFAULT nextval('road_section_id_seq'::regclass),
+CREATE TABLE IF NOT EXISTS public.road_sections (
+    id integer NOT NULL DEFAULT nextval('road_sections_id_seq'::regclass),
     project_id INT NOT NULL,
     segment_id INT NOT NULL,
     segment_name VARCHAR(255),
@@ -50,20 +50,19 @@ CREATE TABLE IF NOT EXISTS public.road_section (
     geometry GEOMETRY(LineString, 4326) NOT NULL, -- Storing as LineString
     bbox FLOAT8[][],
     CONSTRAINT road_section_pkey PRIMARY KEY (id),
-    CONSTRAINT road_section_project_segment UNIQUE (project_id, segment_id)
+    CONSTRAINT road_section_project_segment UNIQUE (project_id, id)
 );
 
-CREATE SEQUENCE IF NOT EXISTS public.activity_area_id_seq
+CREATE SEQUENCE IF NOT EXISTS public.activity_areas_id_seq
    INCREMENT 1
    START 1
    MINVALUE 1
    MAXVALUE 2147483647
    CACHE 1;
 
-CREATE TABLE IF NOT EXISTS public.activity_area (
-    id integer NOT NULL DEFAULT nextval('activity_area_id_seq'::regclass),
+CREATE TABLE IF NOT EXISTS public.activity_areas (
+    id integer NOT NULL DEFAULT nextval('activity_areas_id_seq'::regclass),
     segment_id INT NOT NULL,
-    area_id INT NOT NULL,
     area_name VARCHAR(255) NOT NULL,
     description TEXT,
     creation_date INT NOT NULL,
@@ -88,22 +87,21 @@ CREATE TABLE IF NOT EXISTS public.activity_area (
     geometry GEOMETRY(LineString, 4326) NOT NULL, -- Storing as LineString
     bbox FLOAT8[][],
     CONSTRAINT activity_area_pkey PRIMARY KEY (id),
-    CONSTRAINT activity_area_segment_area UNIQUE (segment_id, area_id)
+    CONSTRAINT activity_area_segment_area UNIQUE (segment_id, id)
 );
 
-CREATE SEQUENCE IF NOT EXISTS public.report_id_seq
+CREATE SEQUENCE IF NOT EXISTS public.reports_id_seq
    INCREMENT 1
    START 1
    MINVALUE 1
    MAXVALUE 2147483647
    CACHE 1;
 
-CREATE TABLE IF NOT EXISTS public.report (
-    id INTEGER NOT NULL DEFAULT nextval('report_id_seq'::regclass),
+CREATE TABLE IF NOT EXISTS public.reports (
+    id INTEGER NOT NULL DEFAULT nextval('reports_id_seq'::regclass),
     project_id INT,
     segment_id INT,
     area_id INT,
-    report_id INT PRIMARY KEY,
     report_name VARCHAR(255) NOT NULL,
     types_of_work JSONB NOT NULL, -- Storing as JSONB
     workers_present BOOLEAN NOT NULL,
@@ -113,22 +111,22 @@ CREATE TABLE IF NOT EXISTS public.report (
     area_type VARCHAR(255) NOT NULL, -- Assuming WorkZoneType is a VARCHAR
     mobility_speed_mph FLOAT,
     geometry_type VARCHAR(50) NOT NULL, -- Storing GeometryType as a string
-    point GEOMETRY(Point, 4326) -- Storing as Point
+    point GEOMETRY(Point, 4326), -- Storing as Point
+    CONSTRAINT reports_pkey PRIMARY KEY (id)
 );
 
-CREATE SEQUENCE IF NOT EXISTS public.recording_id_seq
+CREATE SEQUENCE IF NOT EXISTS public.recordings_id_seq
    INCREMENT 1
    START 1
    MINVALUE 1
    MAXVALUE 2147483647
    CACHE 1;
 
-CREATE TABLE IF NOT EXISTS public.recording (
-    id INTEGER NOT NULL DEFAULT nextval('recording_id_seq'::regclass),
+CREATE TABLE IF NOT EXISTS public.recordings (
+    id INTEGER NOT NULL DEFAULT nextval('recordings_id_seq'::regclass),
     project_id INT,
     segment_id INT,
     area_id INT,
-    recording_id INT PRIMARY KEY,
     recording_name VARCHAR(255) NOT NULL,
     types_of_work JSONB NOT NULL, -- Storing as JSONB
     start_date INT,
@@ -136,5 +134,6 @@ CREATE TABLE IF NOT EXISTS public.recording (
     recording_date INT NOT NULL,
     area_type VARCHAR(255) NOT NULL,
     mobility_speed_mph FLOAT,
-    points JSONB -- Storing as JSONB
+    points JSONB, -- Storing as JSONB
+    CONSTRAINT recordings_pkey PRIMARY KEY (id)
 );

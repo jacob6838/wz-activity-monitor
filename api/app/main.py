@@ -1,9 +1,8 @@
-from http.client import HTTPException
 import datetime
 
 import wzdx_models
 from postgres_adapter import DatabaseAdapter
-from fastapi import Depends, FastAPI, status
+from fastapi import Depends, FastAPI, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
@@ -34,7 +33,9 @@ logger.add(
     format="<green>{time:HH:mm:ss}</green> | {level} | <level>{message}</level>",
 )
 
-app = FastAPI(summary="WZ Activity Monitor API", description="API for WZ Activity Monitor")
+app = FastAPI(
+    summary="WZ Activity Monitor API", description="API for WZ Activity Monitor"
+)
 keycloakClient = KeycloakProvider(
     KEYCLOAK_ENDPOINT,
     KEYCLOAK_REALM,
@@ -42,7 +43,9 @@ keycloakClient = KeycloakProvider(
     KEYCLOAK_CLIENT_SECRET,
 )
 
-db_adapter = DatabaseAdapter(dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT)
+db_adapter = DatabaseAdapter(
+    dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT
+)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token/form")
 
@@ -92,7 +95,9 @@ async def auth_get_access_token_form(form_data: OAuth2PasswordRequestForm = Depe
     logger.debug(
         f"Received request to /auth/token at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
     )
-    access_token = keycloakClient.get_access_token(form_data.username, form_data.password)
+    access_token = keycloakClient.get_access_token(
+        form_data.username, form_data.password
+    )
     if not access_token:
         logger.debug(
             f"Rejected Request for access token from {form_data.username}. Incorrect Username {form_data.username} or Password {form_data.password} {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
@@ -141,8 +146,12 @@ async def auth_get_access_token(request: models.AuthTokenRequest) -> models.Auth
     return json.loads(models.AuthToken(**access_token).model_dump_json(by_alias=True))
 
 
-@app.post("/auth/refresh-token", description="Keycloak refresh token generation endpoint")
-async def auth_refresh_token(request: models.AuthRefreshTokenRequest) -> models.AuthToken:
+@app.post(
+    "/auth/refresh-token", description="Keycloak refresh token generation endpoint"
+)
+async def auth_refresh_token(
+    request: models.AuthRefreshTokenRequest,
+) -> models.AuthToken:
     logger.debug(
         f"Received request to /auth/token-refresh at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
     )
@@ -187,68 +196,91 @@ async def auth_get_well_known():
     return keycloakClient.get_well_known()
 
 
-@app.post("/projects/{project_id}", description="Create a new project")
-# , token_valid: bool = Depends(verify_access_token)
-async def create_project(project_id: int) -> models.Project:
+@app.get("/reports", description="Get all reports")
+async def get_reports(
+    report_id: int = Query(None, description="Report ID to filter for"),
+) -> models.ReportWithId | list[models.ReportWithId]:
     logger.debug(
-        f"Received request to /projects at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+        f"Received GET request to /reports at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
     )
 
-    # Insert example
-    project_data = models.Project(
-        id=project_id,
-        name="Project 1",
-        description="Description 1",
-        tmc_notes="Notes 1",
-        active_status="active",
-        hyperlink="http://example.com",
-        start_date=20220101,
-        end_date=20221231,
-        districts=["District 1"],
-        wydot_contact="Contact 1",
-        project_update_contact="Contact 2",
-        traffic_control_contact="Contact 3",
-        emergency_contact="Contact 4",
-        contractor="Contractor 1",
-        selected_towns=["Town 1"]
-    )
-    db_adapter.insert_project(project_data)
+    if report_id is not None:
+        report = db_adapter.get_report(report_id)
+        if not report:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Report with ID {report_id} not found",
+            )
+        return report.model_dump()
+    else:
+        return [o.model_dump() for o in db_adapter.get_reports()]
 
-    # Insert ActivityArea example
-    activity_area_data = models.ActivityArea(
-        segment_id=1,
-        area_id=1,
-        area_name="Area 1",
-        description="Description 1",
-        creation_date=20220101,
-        update_date=20220102,
-        start_date=20220103,
-        end_date=20220104,
-        start_date_verified=True,
-        end_date_verified=True,
-        area_type=wzdx_models.WorkZoneType.static,
-        location_method=wzdx_models.LocationMethod.channel_device_method,
-        vehicle_impact=wzdx_models.VehicleImpact.all_lanes_closed,
-        impacted_cds_curb_zones=["Zone 1"],
-        lanes=[wzdx_models.Lane(lane_order=1, type=wzdx_models.LaneType.exit_lane, status=wzdx_models.LaneStatus.open, restrictions=[])],
-        beginning_cross_street="Street 1",
-        ending_cross_street="Street 2",
-        beginning_milepost="1.0",
-        ending_milepost="2.0",
-        types_of_work=[wzdx_models.TypeOfWork(type_name=wzdx_models.WorkTypeName.maintenance, is_architectural_change=False)],
-        worker_resence=wzdx_models.WorkerPresence(
-            are_workers_present=True,
-            definition=wzdx_models.WorkerPresenceDefinition.workers_in_work_zone_working,
-            method=wzdx_models.WorkerPresenceMethod.camera_monitoring,
-            worker_presence_last_confirmed_date=20220101,
-            confidence=wzdx_models.WorkerPresenceConfidence.high
-        ),
-        reduced_speed_limit_kph=60.0,
-        restrictions=[],
-        geometry=[[0.0, 0.0], [1.0, 1.0]],
-        bbox=[[0.0, 0.0], [1.0, 1.0]]
-    )
-    db_adapter.insert_activity_area(activity_area_data)
 
-    db_adapter.close()
-    return project_data
+@app.post("/reports", description="Create a new report")
+async def create_report(report: models.Report) -> models.ReportWithId:
+    logger.debug(
+        f"Received POST request to /reports at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    # Insert the report into the database
+    report_id = db_adapter.insert_report(report)
+    # db_adapter.close()
+
+    # Retrieve the inserted report to return it
+    inserted_report = db_adapter.get_report(report_id)
+    return inserted_report.model_dump()
+
+
+@app.delete("/reports/{report_id}", description="Delete a report")
+async def remove_report(report_id: int) -> None:
+    logger.debug(
+        f"Received DELETE request to /reports at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    db_adapter.remove_report(report_id)
+    # db_adapter.close()
+
+
+@app.get("/recordings", description="Get all recordings")
+async def get_recordings(
+    recording_id: int = Query(None, description="Recording ID to filter for"),
+) -> models.RecordingWithId | list[models.RecordingWithId]:
+    logger.debug(
+        f"Received GET request to /recordings at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    if recording_id is not None:
+        recording = db_adapter.get_recording(recording_id)
+        if not recording:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Recording with ID {recording_id} not found",
+            )
+        return recording.model_dump()
+    else:
+        return [o.model_dump() for o in db_adapter.get_recordings()]
+
+
+@app.post("/recordings", description="Create a new recording")
+async def create_recording(recording: models.Recording) -> models.RecordingWithId:
+    logger.debug(
+        f"Received POST request to /recordings at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    # Insert the recording into the database
+    recording_id = db_adapter.insert_recording(recording)
+    # db_adapter.close()
+
+    # Retrieve the inserted recording to return it
+    inserted_recording = db_adapter.get_recording(recording_id)
+    return inserted_recording.model_dump()
+
+
+@app.delete("/recordings/{recording_id}", description="Delete a recording")
+async def remove_recording(recording_id: int) -> None:
+    logger.debug(
+        f"Received DELETE request to /recordings at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    db_adapter.remove_recording(recording_id)
+    # db_adapter.close()

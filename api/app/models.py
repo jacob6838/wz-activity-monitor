@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 from pydantic import BaseModel, Field
 import wzdx_models
 
@@ -9,7 +10,6 @@ class ProjectStatus(str, Enum):
 
 
 class Project(BaseModel):
-    id: int
     name: str
     description: str
     tmc_notes: str
@@ -24,6 +24,10 @@ class Project(BaseModel):
     emergency_contact: str
     contractor: str
     selected_towns: list[str]
+
+
+class ProjectWithId(Project):
+    id: int
 
 
 class RoadSectionType(str, Enum):
@@ -54,47 +58,53 @@ class RoadSegmentArmedStatus(str, Enum):
 
 class RoadSection(BaseModel):
     project_id: int
-    segment_id: int
-    segment_name: str | None
+    segment_name: Optional[str] = None
     reference_type: RoadSectionType
     start_mm: str
     end_mm: str
     direction: RoadSegmentDirection
     surface_type: RoadSegmentSurfaceType
-    start_date: int | None
-    end_date: int | None
+    start_date: Optional[int] = None
+    end_date: Optional[int] = None
     armed_status: RoadSegmentArmedStatus
     geometry: list[list[float]]
-    bbox: list[list[float]] | None
+    bbox: Optional[list[list[float]]] = None
+
+
+class RoadSectionWithId(RoadSection):
+    id: int
 
 
 # Built off of https://github.com/usdot-jpo-ode/wzdx/blob/main/spec-content/objects/WorkZoneRoadEvent.md
 class ActivityArea(BaseModel):
     segment_id: int
-    area_id: int
     area_name: str
-    description: str | None
+    description: Optional[str] = None
     creation_date: int
     update_date: int
     start_date: int
     end_date: int
-    start_date_verified: bool | None
-    end_date_verified: bool | None
+    start_date_verified: Optional[bool] = None
+    end_date_verified: Optional[bool] = None
     area_type: wzdx_models.WorkZoneType
     location_method: wzdx_models.LocationMethod
     vehicle_impact: wzdx_models.VehicleImpact
-    impacted_cds_curb_zones: list[str] | None
-    lanes: list[wzdx_models.Lane] | None
-    beginning_cross_street: str | None
-    ending_cross_street: str | None
-    beginning_milepost: str | None
-    ending_milepost: str | None
+    impacted_cds_curb_zones: Optional[list[str]] = None
+    lanes: Optional[list[wzdx_models.Lane]] = None
+    beginning_cross_street: Optional[str] = None
+    ending_cross_street: Optional[str] = None
+    beginning_milepost: Optional[str] = None
+    ending_milepost: Optional[str] = None
     types_of_work: list[wzdx_models.TypeOfWork]
-    worker_presence: wzdx_models.WorkerPresence | None
-    reduced_speed_limit_kph: float | None
-    restrictions: list[wzdx_models.Restriction] | None
+    worker_presence: Optional[wzdx_models.WorkerPresence] = None
+    reduced_speed_limit_kph: Optional[float] = None
+    restrictions: Optional[list[wzdx_models.Restriction]] = None
     geometry: list[list[float]]
-    bbox: list[list[float]] | None
+    bbox: Optional[list[list[float]]] = None
+
+
+class ActivityAreaWithId(ActivityArea):
+    id: int
 
 
 class GeometryType(str, Enum):
@@ -109,27 +119,30 @@ class MobilityType(str, Enum):
 
 
 class Report(BaseModel):
-    project_id: int | None
-    segment_id: int | None
-    area_id: int | None
-    report_id: int
+    project_id: Optional[int] = None
+    segment_id: Optional[int] = None
+    area_id: Optional[int] = None
     report_name: str
     types_of_work: list[wzdx_models.TypeOfWork]
     workers_present: bool
-    start_date: int | None
-    end_date: int | None
+    start_date: Optional[int] = None
+    end_date: Optional[int] = None
     report_date: int
     area_type: wzdx_models.WorkZoneType
-    mobility_speed_mph: float | None
+    mobility_speed_mph: Optional[float] = None
     geometry_type: GeometryType
     point: list[float]
 
 
+class ReportWithId(Report):
+    id: int
+
+
 class RecordingMarking(BaseModel):
-    ref_pt: bool | None
-    lane_closed: int | None
-    lane_opened: int | None
-    workers_present: bool | None
+    ref_pt: Optional[bool] = None
+    lane_closed: Optional[int] = None
+    lane_opened: Optional[int] = None
+    workers_present: Optional[bool] = None
 
 
 class RecordingPoint(BaseModel):
@@ -141,22 +154,26 @@ class RecordingPoint(BaseModel):
     altitude: float
     speed: float
     heading: float
-    markings: list[RecordingMarking] | None
+    markings: Optional[list[RecordingMarking]] = None
 
 
 class Recording(BaseModel):
-    project_id: int | None
-    segment_id: int | None
-    area_id: int | None
-    recording_id: int
+    id: Optional[int] = None
+    project_id: Optional[int] = None
+    segment_id: Optional[int] = None
+    area_id: Optional[int] = None
     recording_name: str
     types_of_work: list[wzdx_models.TypeOfWork]
-    start_date: int | None
-    end_date: int | None
+    start_date: Optional[int] = None
+    end_date: Optional[int] = None
     recording_date: int
     area_type: wzdx_models.WorkZoneType
-    mobility_speed_mph: float | None
+    mobility_speed_mph: Optional[float] = None
     points: list[RecordingPoint]
+
+
+class RecordingWithId(Recording):
+    id: int
 
 
 # ################################ Keycloak Models ################################

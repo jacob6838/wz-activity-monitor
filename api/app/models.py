@@ -122,7 +122,7 @@ class Report(BaseModel):
     area_type: wzdx_models.WorkZoneType
     mobility_speed_mph: float | None
     geometry_type: GeometryType
-    coordinates: list[list[float]] | None
+    point: list[float]
 
 
 class RecordingMarking(BaseModel):

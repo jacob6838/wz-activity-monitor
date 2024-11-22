@@ -158,3 +158,52 @@ CREATE TABLE IF NOT EXISTS public.activity_area (
     CONSTRAINT activity_area_pkey PRIMARY KEY (id),
     CONSTRAINT activity_area_segment_area UNIQUE (segment_id, area_id)
 );
+
+CREATE SEQUENCE IF NOT EXISTS public.report_id_seq
+   INCREMENT 1
+   START 1
+   MINVALUE 1
+   MAXVALUE 2147483647
+   CACHE 1;
+
+CREATE TABLE IF NOT EXISTS public.report (
+    id INTEGER NOT NULL DEFAULT nextval('report_id_seq'::regclass),
+    project_id INT,
+    segment_id INT,
+    area_id INT,
+    report_id INT PRIMARY KEY,
+    report_name VARCHAR(255) NOT NULL,
+    types_of_work INT[] NOT NULL, -- Assuming a list of TypeOfWork IDs
+    workers_present BOOLEAN NOT NULL,
+    start_date INT,
+    end_date INT,
+    report_date INT NOT NULL,
+    area_type VARCHAR(255) NOT NULL, -- Assuming WorkZoneType is a VARCHAR
+    mobility_speed_mph FLOAT,
+    geometry_type VARCHAR(50) NOT NULL, -- Storing GeometryType as a string
+    coordinates FLOAT8[][] -- Assuming coordinates are a 2D array of floats
+);
+
+CREATE SEQUENCE IF NOT EXISTS public.recording_id_seq
+   INCREMENT 1
+   START 1
+   MINVALUE 1
+   MAXVALUE 2147483647
+   CACHE 1;
+
+CREATE TABLE IF NOT EXISTS public.recording (
+    id INTEGER NOT NULL DEFAULT nextval('recording_id_seq'::regclass),
+    project_id INT,
+    segment_id INT,
+    area_id INT,
+    recording_id INT PRIMARY KEY,
+    recording_name VARCHAR(255) NOT NULL,
+    types_of_work INT[] NOT NULL, -- Assuming a list of TypeOfWork IDs
+    start_date INT,
+    end_date INT,
+    recording_date INT NOT NULL,
+    area_type VARCHAR(255) NOT NULL, -- Assuming WorkZoneType is a VARCHAR
+    mobility_speed_mph FLOAT,
+    points BYTEA, -- Storing recording points as a blob
+    PRIMARY KEY (id)
+);

@@ -7,6 +7,7 @@ class ProjectStatus(str, Enum):
     active = "active"
     suspended = "suspended"
 
+
 class Project(BaseModel):
     id: int
     name: str
@@ -23,45 +24,48 @@ class Project(BaseModel):
     emergency_contact: str
     contractor: str
     selected_towns: list[str]
-    
-    
+
+
 class RoadSectionType(str, Enum):
     highway = "highway"
     county_road = "county_road"
     lrs = "lrs"
-    
+
+
 class RoadSegmentDirection(str, Enum):
     both = "both"
     northbound = "northbound"
     southbound = "southbound"
     eastbound = "eastbound"
     westbound = "westbound"
-    
+
+
 class RoadSegmentSurfaceType(str, Enum):
     paved = "paved"
     gravel = "gravel"
     dirt = "dirt"
     grooved = "grooved"
-    
+
+
 class RoadSegmentArmedStatus(str, Enum):
     armed = "armed"
     disarmed = "disarmed"
-    
-    
+
+
 class RoadSection(BaseModel):
     project_id: int
     segment_id: int
-    segment_name: str
+    segment_name: str | None
     reference_type: RoadSectionType
     start_mm: str
     end_mm: str
     direction: RoadSegmentDirection
     surface_type: RoadSegmentSurfaceType
-    start_date: int
-    end_date: int
+    start_date: int | None
+    end_date: int | None
     armed_status: RoadSegmentArmedStatus
     geometry: list[list[float]]
-    bbox: list[list[float]]
+    bbox: list[list[float]] | None
 
 
 # Built off of https://github.com/usdot-jpo-ode/wzdx/blob/main/spec-content/objects/WorkZoneRoadEvent.md
@@ -69,30 +73,92 @@ class ActivityArea(BaseModel):
     segment_id: int
     area_id: int
     area_name: str
-    description: str
+    description: str | None
     creation_date: int
     update_date: int
     start_date: int
     end_date: int
-    start_date_verified: bool
-    end_date_verified: bool
+    start_date_verified: bool | None
+    end_date_verified: bool | None
     area_type: wzdx_models.WorkZoneType
     location_method: wzdx_models.LocationMethod
     vehicle_impact: wzdx_models.VehicleImpact
-    impacted_cds_curb_zones: list[str]
-    lanes: list[wzdx_models.Lane]
-    beginning_cross_street: str
-    ending_cross_street: str
-    beginning_milepost: str
-    ending_milepost: str
+    impacted_cds_curb_zones: list[str] | None
+    lanes: list[wzdx_models.Lane] | None
+    beginning_cross_street: str | None
+    ending_cross_street: str | None
+    beginning_milepost: str | None
+    ending_milepost: str | None
     types_of_work: list[wzdx_models.TypeOfWork]
-    worker_resence: wzdx_models.WorkerPresence
-    reduced_speed_limit_kph: float
-    restrictions: list[wzdx_models.Restriction]
+    worker_presence: wzdx_models.WorkerPresence | None
+    reduced_speed_limit_kph: float | None
+    restrictions: list[wzdx_models.Restriction] | None
     geometry: list[list[float]]
-    bbox: list[list[float]]
-    
-    
+    bbox: list[list[float]] | None
+
+
+class GeometryType(str, Enum):
+    multipoint = "multipoint"
+    linestring = "linestring"
+    polygon = "polygon"
+
+
+class MobilityType(str, Enum):
+    static = "static"
+    mobile = "mobile"
+
+
+class Report(BaseModel):
+    project_id: int | None
+    segment_id: int | None
+    area_id: int | None
+    report_id: int
+    report_name: str
+    types_of_work: list[wzdx_models.TypeOfWork]
+    workers_present: bool
+    start_date: int | None
+    end_date: int | None
+    report_date: int
+    area_type: wzdx_models.WorkZoneType
+    mobility_speed_mph: float | None
+    geometry_type: GeometryType
+    coordinates: list[list[float]] | None
+
+
+class RecordingMarking(BaseModel):
+    ref_pt: bool | None
+    lane_closed: int | None
+    lane_opened: int | None
+    workers_present: bool | None
+
+
+class RecordingPoint(BaseModel):
+    date: int
+    num_satellites: int
+    accuracy: float
+    latitude: float
+    longitude: float
+    altitude: float
+    speed: float
+    heading: float
+    markings: list[RecordingMarking] | None
+
+
+class Recording(BaseModel):
+    project_id: int | None
+    segment_id: int | None
+    area_id: int | None
+    recording_id: int
+    recording_name: str
+    types_of_work: list[wzdx_models.TypeOfWork]
+    start_date: int | None
+    end_date: int | None
+    recording_date: int
+    area_type: wzdx_models.WorkZoneType
+    mobility_speed_mph: float | None
+    points: list[RecordingPoint]
+
+
 # ################################ Keycloak Models ################################
 class AuthTokenRequest(BaseModel):
     username: str
@@ -123,6 +189,7 @@ class AuthUserInfo(BaseModel):
     given_name: str
     family_name: str
     email: str
+
 
 class AuthWellKnown(BaseModel):
     issuer: str

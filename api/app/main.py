@@ -195,7 +195,7 @@ async def create_project(project_id: int) -> models.Project:
     )
 
     # Insert example
-    project_data = [models.Project(
+    project_data = models.Project(
         id=project_id,
         name="Project 1",
         description="Description 1",
@@ -211,8 +211,8 @@ async def create_project(project_id: int) -> models.Project:
         emergency_contact="Contact 4",
         contractor="Contractor 1",
         selected_towns=["Town 1"]
-    )]
-    db_adapter.insert("project", project_data)
+    )
+    db_adapter.insert_project(project_data)
 
     # Insert ActivityArea example
     activity_area_data = models.ActivityArea(
@@ -251,4 +251,4 @@ async def create_project(project_id: int) -> models.Project:
     db_adapter.insert_activity_area(activity_area_data)
 
     db_adapter.close()
-    return project_data[0]
+    return project_data

@@ -5,7 +5,6 @@ from typing import List
 import json
 import models
 import wzdx_models
-import logging
 
 
 class DatabaseAdapter:
@@ -72,6 +71,11 @@ class DatabaseAdapter:
             )
         return None
 
+    def remove_project(self, project_id: int) -> None:
+        query = "DELETE FROM project WHERE id = %s"
+        self.cursor.execute(query, (project_id,))
+        self.connection.commit()
+
     def insert_road_section(self, road_section: models.RoadSection) -> int:
         query = """
         INSERT INTO road_section (
@@ -129,6 +133,11 @@ class DatabaseAdapter:
                 bbox=json.loads(row[13]) if row[13] else None,
             )
         return None
+
+    def remove_road_section(self, road_section_id: int) -> None:
+        query = "DELETE FROM road_section WHERE id = %s"
+        self.cursor.execute(query, (road_section_id,))
+        self.connection.commit()
 
     def insert_activity_area(self, activity_area: models.ActivityArea) -> int:
         query = """
@@ -190,7 +199,6 @@ class DatabaseAdapter:
         self.cursor.execute(query, (activity_area_id,))
         row = self.cursor.fetchone()
         if row:
-            logging.warning(str(row))
             return models.ActivityArea(
                 id=row[0],
                 segment_id=row[1],
@@ -236,6 +244,11 @@ class DatabaseAdapter:
                 bbox=json.loads(row[25]) if row[25] else None,
             )
         return None
+
+    def remove_activity_area(self, activity_area_id: int) -> None:
+        query = "DELETE FROM activity_area WHERE id = %s"
+        self.cursor.execute(query, (activity_area_id,))
+        self.connection.commit()
 
     def insert_report(self, report: models.Report) -> int:
         query = """
@@ -298,6 +311,11 @@ class DatabaseAdapter:
             )
         return None
 
+    def remove_report(self, report_id: int) -> None:
+        query = "DELETE FROM report WHERE id = %s"
+        self.cursor.execute(query, (report_id,))
+        self.connection.commit()
+
     def insert_recording(self, recording: models.Recording) -> int:
         query = """
         INSERT INTO recording (
@@ -352,3 +370,8 @@ class DatabaseAdapter:
                 ],
             )
         return None
+
+    def remove_recording(self, recording_id: int) -> None:
+        query = "DELETE FROM recording WHERE id = %s"
+        self.cursor.execute(query, (recording_id,))
+        self.connection.commit()

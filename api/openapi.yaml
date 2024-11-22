@@ -1,0 +1,804 @@
+openapi: 3.1.0
+info:
+  title: FastAPI
+  summary: WZ Activity Monitor API
+  description: API for WZ Activity Monitor
+  version: 0.1.0
+paths:
+  /:
+    get:
+      summary: Read Root
+      operationId: read_root__get
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /auth/token/form:
+    post:
+      summary: Auth Get Access Token Form
+      description: FastAPI Documentation Token Request for OAuth2PasswordRequestForm
+      operationId: auth_get_access_token_form_auth_token_form_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Body_auth_get_access_token_form_auth_token_form_post"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /auth/token:
+    post:
+      summary: Auth Get Access Token
+      description: Keycloak token generation endpoint
+      operationId: auth_get_access_token_auth_token_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthTokenRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthToken"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /auth/refresh-token:
+    post:
+      summary: Auth Refresh Token
+      description: Keycloak refresh token generation endpoint
+      operationId: auth_refresh_token_auth_refresh_token_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthRefreshTokenRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthToken"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /auth/user-info:
+    get:
+      summary: Auth Get User Info
+      operationId: auth_get_user_info_auth_user_info_get
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUserInfo"
+      security:
+        - OAuth2PasswordBearer: []
+  /auth/well-known:
+    get:
+      summary: Auth Get Well Known
+      operationId: auth_get_well_known_auth_well_known_get
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /reports:
+    get:
+      summary: Get Reports
+      description: Get all reports
+      operationId: get_reports_reports_get
+      parameters:
+        - name: report_id
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Report ID to filter for
+            title: Report Id
+          description: Report ID to filter for
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: "#/components/schemas/ReportWithId"
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/ReportWithId"
+                title: Response Get Reports Reports Get
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    post:
+      summary: Create Report
+      description: Create a new report
+      operationId: create_report_reports_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Report"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportWithId"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /reports/{report_id}:
+    delete:
+      summary: Remove Report
+      description: Delete a report
+      operationId: remove_report_reports__report_id__delete
+      parameters:
+        - name: report_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: Report Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /recordings:
+    get:
+      summary: Get Recordings
+      description: Get all recordings
+      operationId: get_recordings_recordings_get
+      parameters:
+        - name: recording_id
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Recording ID to filter for
+            title: Recording Id
+          description: Recording ID to filter for
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: "#/components/schemas/RecordingWithId"
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/RecordingWithId"
+                title: Response Get Recordings Recordings Get
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    post:
+      summary: Create Recording
+      description: Create a new recording
+      operationId: create_recording_recordings_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Recording"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecordingWithId"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /recordings/{recording_id}:
+    delete:
+      summary: Remove Recording
+      description: Delete a recording
+      operationId: remove_recording_recordings__recording_id__delete
+      parameters:
+        - name: recording_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            title: Recording Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    AuthRefreshTokenRequest:
+      properties:
+        refresh_token:
+          type: string
+          title: Refresh Token
+      type: object
+      required:
+        - refresh_token
+      title: AuthRefreshTokenRequest
+    AuthToken:
+      properties:
+        access_token:
+          type: string
+          title: Access Token
+        expires_in:
+          type: integer
+          title: Expires In
+        refresh_expires_in:
+          type: integer
+          title: Refresh Expires In
+        refresh_token:
+          type: string
+          title: Refresh Token
+        token_type:
+          type: string
+          title: Token Type
+        id_token:
+          type: string
+          title: Id Token
+        not-before-policy:
+          type: integer
+          title: Not-Before-Policy
+        session_state:
+          type: string
+          title: Session State
+        scope:
+          type: string
+          title: Scope
+      type: object
+      required:
+        - access_token
+        - expires_in
+        - refresh_expires_in
+        - refresh_token
+        - token_type
+        - id_token
+        - not-before-policy
+        - session_state
+        - scope
+      title: AuthToken
+    AuthTokenRequest:
+      properties:
+        username:
+          type: string
+          title: Username
+        password:
+          type: string
+          title: Password
+      type: object
+      required:
+        - username
+        - password
+      title: AuthTokenRequest
+    AuthUserInfo:
+      properties:
+        sub:
+          type: string
+          title: Sub
+        email_verified:
+          type: boolean
+          title: Email Verified
+        name:
+          type: string
+          title: Name
+        preferred_username:
+          type: string
+          title: Preferred Username
+        given_name:
+          type: string
+          title: Given Name
+        family_name:
+          type: string
+          title: Family Name
+        email:
+          type: string
+          title: Email
+      type: object
+      required:
+        - sub
+        - email_verified
+        - name
+        - preferred_username
+        - given_name
+        - family_name
+        - email
+      title: AuthUserInfo
+    Body_auth_get_access_token_form_auth_token_form_post:
+      properties:
+        grant_type:
+          anyOf:
+            - type: string
+              pattern: password
+            - type: "null"
+          title: Grant Type
+        username:
+          type: string
+          title: Username
+        password:
+          type: string
+          title: Password
+        scope:
+          type: string
+          title: Scope
+          default: ""
+        client_id:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Client Id
+        client_secret:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Client Secret
+      type: object
+      required:
+        - username
+        - password
+      title: Body_auth_get_access_token_form_auth_token_form_post
+    GeometryType:
+      type: string
+      enum:
+        - multipoint
+        - linestring
+        - polygon
+      title: GeometryType
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Recording:
+      properties:
+        id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Id
+        project_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Project Id
+        segment_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Segment Id
+        area_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Area Id
+        recording_name:
+          type: string
+          title: Recording Name
+        types_of_work:
+          items:
+            $ref: "#/components/schemas/TypeOfWork"
+          type: array
+          title: Types Of Work
+        start_date:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Start Date
+        end_date:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: End Date
+        recording_date:
+          type: integer
+          title: Recording Date
+        area_type:
+          $ref: "#/components/schemas/WorkZoneType"
+        mobility_speed_mph:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Mobility Speed Mph
+        points:
+          items:
+            $ref: "#/components/schemas/RecordingPoint"
+          type: array
+          title: Points
+      type: object
+      required:
+        - recording_name
+        - types_of_work
+        - recording_date
+        - area_type
+        - points
+      title: Recording
+    RecordingMarking:
+      properties:
+        ref_pt:
+          anyOf:
+            - type: boolean
+            - type: "null"
+          title: Ref Pt
+        lane_closed:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Lane Closed
+        lane_opened:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Lane Opened
+        workers_present:
+          anyOf:
+            - type: boolean
+            - type: "null"
+          title: Workers Present
+      type: object
+      title: RecordingMarking
+    RecordingPoint:
+      properties:
+        date:
+          type: integer
+          title: Date
+        num_satellites:
+          type: integer
+          title: Num Satellites
+        accuracy:
+          type: number
+          title: Accuracy
+        latitude:
+          type: number
+          title: Latitude
+        longitude:
+          type: number
+          title: Longitude
+        altitude:
+          type: number
+          title: Altitude
+        speed:
+          type: number
+          title: Speed
+        heading:
+          type: number
+          title: Heading
+        markings:
+          anyOf:
+            - items:
+                $ref: "#/components/schemas/RecordingMarking"
+              type: array
+            - type: "null"
+          title: Markings
+      type: object
+      required:
+        - date
+        - num_satellites
+        - accuracy
+        - latitude
+        - longitude
+        - altitude
+        - speed
+        - heading
+      title: RecordingPoint
+    RecordingWithId:
+      properties:
+        id:
+          type: integer
+          title: Id
+        project_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Project Id
+        segment_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Segment Id
+        area_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Area Id
+        recording_name:
+          type: string
+          title: Recording Name
+        types_of_work:
+          items:
+            $ref: "#/components/schemas/TypeOfWork"
+          type: array
+          title: Types Of Work
+        start_date:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Start Date
+        end_date:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: End Date
+        recording_date:
+          type: integer
+          title: Recording Date
+        area_type:
+          $ref: "#/components/schemas/WorkZoneType"
+        mobility_speed_mph:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Mobility Speed Mph
+        points:
+          items:
+            $ref: "#/components/schemas/RecordingPoint"
+          type: array
+          title: Points
+      type: object
+      required:
+        - id
+        - recording_name
+        - types_of_work
+        - recording_date
+        - area_type
+        - points
+      title: RecordingWithId
+    Report:
+      properties:
+        project_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Project Id
+        segment_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Segment Id
+        area_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Area Id
+        report_name:
+          type: string
+          title: Report Name
+        types_of_work:
+          items:
+            $ref: "#/components/schemas/TypeOfWork"
+          type: array
+          title: Types Of Work
+        workers_present:
+          type: boolean
+          title: Workers Present
+        start_date:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Start Date
+        end_date:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: End Date
+        report_date:
+          type: integer
+          title: Report Date
+        area_type:
+          $ref: "#/components/schemas/WorkZoneType"
+        mobility_speed_mph:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Mobility Speed Mph
+        geometry_type:
+          $ref: "#/components/schemas/GeometryType"
+        point:
+          items:
+            type: number
+          type: array
+          title: Point
+      type: object
+      required:
+        - report_name
+        - types_of_work
+        - workers_present
+        - report_date
+        - area_type
+        - geometry_type
+        - point
+      title: Report
+    ReportWithId:
+      properties:
+        project_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Project Id
+        segment_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Segment Id
+        area_id:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Area Id
+        report_name:
+          type: string
+          title: Report Name
+        types_of_work:
+          items:
+            $ref: "#/components/schemas/TypeOfWork"
+          type: array
+          title: Types Of Work
+        workers_present:
+          type: boolean
+          title: Workers Present
+        start_date:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: Start Date
+        end_date:
+          anyOf:
+            - type: integer
+            - type: "null"
+          title: End Date
+        report_date:
+          type: integer
+          title: Report Date
+        area_type:
+          $ref: "#/components/schemas/WorkZoneType"
+        mobility_speed_mph:
+          anyOf:
+            - type: number
+            - type: "null"
+          title: Mobility Speed Mph
+        geometry_type:
+          $ref: "#/components/schemas/GeometryType"
+        point:
+          items:
+            type: number
+          type: array
+          title: Point
+        id:
+          type: integer
+          title: Id
+      type: object
+      required:
+        - report_name
+        - types_of_work
+        - workers_present
+        - report_date
+        - area_type
+        - geometry_type
+        - point
+        - id
+      title: ReportWithId
+    TypeOfWork:
+      properties:
+        type_name:
+          $ref: "#/components/schemas/WorkTypeName"
+        is_architectural_change:
+          type: boolean
+          title: Is Architectural Change
+      type: object
+      required:
+        - type_name
+        - is_architectural_change
+      title: TypeOfWork
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+    WorkTypeName:
+      type: string
+      enum:
+        - maintenance
+        - minor-road-defect-repair
+        - roadside-work
+        - overhead-work
+        - below-road-work
+        - barrier-work
+        - surface-work
+        - painting
+        - roadway-relocation
+        - roadway-creation
+      title: WorkTypeName
+    WorkZoneType:
+      type: string
+      enum:
+        - static
+        - moving
+        - planned_moving_area
+      title: WorkZoneType
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: auth/token/form

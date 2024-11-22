@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS public.project (
     contractor VARCHAR(255),
     selected_towns TEXT[],
     CONSTRAINT project_pkey PRIMARY KEY (id),
-    CONSTRAINT project_name UNIQUE (name)
 );
 
 CREATE SEQUENCE IF NOT EXISTS public.road_section_id_seq

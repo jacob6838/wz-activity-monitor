@@ -5,6 +5,7 @@ from typing import List
 import json
 import models
 import wzdx_models
+import logging
 
 
 class DatabaseAdapter:
@@ -155,22 +156,25 @@ class DatabaseAdapter:
             activity_area.location_method.value,
             activity_area.vehicle_impact.value,
             json.dumps(activity_area.impacted_cds_curb_zones),
-            json.dumps([lane.dict() for lane in activity_area.lanes]),
+            json.dumps([lane.model_dump() for lane in activity_area.lanes]),
             activity_area.beginning_cross_street,
             activity_area.ending_cross_street,
             activity_area.beginning_milepost,
             activity_area.ending_milepost,
             json.dumps(
-                [type_of_work.dict() for type_of_work in activity_area.types_of_work]
+                [
+                    type_of_work.model_dump()
+                    for type_of_work in activity_area.types_of_work
+                ]
             ),
             (
-                json.dumps(activity_area.worker_presence.dict())
+                json.dumps(activity_area.worker_presence.model_dump())
                 if activity_area.worker_presence
                 else None
             ),
             activity_area.reduced_speed_limit_kph,
             json.dumps(
-                [restriction.dict() for restriction in activity_area.restrictions]
+                [restriction.model_dump() for restriction in activity_area.restrictions]
             ),
             "LINESTRING("
             + ", ".join(f"{coord[0]} {coord[1]}" for coord in activity_area.geometry)
@@ -186,6 +190,7 @@ class DatabaseAdapter:
         self.cursor.execute(query, (activity_area_id,))
         row = self.cursor.fetchone()
         if row:
+            logging.warning(str(row))
             return models.ActivityArea(
                 id=row[0],
                 segment_id=row[1],
@@ -247,7 +252,9 @@ class DatabaseAdapter:
             report.area_id,
             report.report_id,
             report.report_name,
-            json.dumps([type_of_work.dict() for type_of_work in report.types_of_work]),
+            json.dumps(
+                [type_of_work.model_dump() for type_of_work in report.types_of_work]
+            ),
             report.workers_present,
             report.start_date,
             report.end_date,
@@ -306,14 +313,14 @@ class DatabaseAdapter:
             recording.recording_id,
             recording.recording_name,
             json.dumps(
-                [type_of_work.dict() for type_of_work in recording.types_of_work]
+                [type_of_work.model_dump() for type_of_work in recording.types_of_work]
             ),
             recording.start_date,
             recording.end_date,
             recording.recording_date,
             recording.area_type.value,
             recording.mobility_speed_mph,
-            json.dumps([point.dict() for point in recording.points]),
+            json.dumps([point.model_dump() for point in recording.points]),
         )
         self.cursor.execute(query, values)
         self.connection.commit()

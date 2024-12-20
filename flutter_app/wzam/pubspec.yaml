@@ -1,0 +1,39 @@
+name: wzam
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_dotenv: ^5.2.1
+  flutter_map: ^7.0.2
+  flutter_secure_storage: ^9.2.2
+  geolocator: ^13.0.2
+  get: ^4.6.6
+  http: ^1.2.2
+  intl: ^0.20.1
+  json_annotation: ^4.9.0
+  latlong2: ^0.9.1
+  logger: ^2.5.0
+  path_provider: ^2.1.5
+  quiver: ^3.2.2
+  shared_preferences: ^2.3.3
+  url_launcher: ^6.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  build_runner: ^2.0.0
+  json_serializable: ^6.8.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/wzam_abr.png
+    - assets/images/load_screen.png
+    - .env

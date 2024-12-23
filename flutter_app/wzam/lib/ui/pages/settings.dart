@@ -10,6 +10,8 @@ import 'package:wzam/ui/styles/widgets/wzam_text.dart';
 class SettingsPage extends StatelessWidget {
   late final SettingsController controller;
   late final LoginController loginController;
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final TextEditingController keycloakController = TextEditingController();
   final TextEditingController realmController = TextEditingController();
   final TextEditingController clientController = TextEditingController();
@@ -23,6 +25,8 @@ class SettingsPage extends StatelessWidget {
     return FutureBuilder(
         future: controller.initialize(),
         builder: (BuildContext context, AsyncSnapshot snapshot) { 
+          usernameController.text = controller.username.value;
+          passwordController.text = controller.password.value;
           keycloakController.text = controller.keycloakEndpoint.value;
           realmController.text = controller.keycloakRealm.value;
           clientController.text = controller.keycloakClient.value;
@@ -56,6 +60,7 @@ class SettingsPage extends StatelessWidget {
         _headerElement("Account", Icons.person),
         TextField(
           decoration: const InputDecoration(labelText: 'Username'),
+          controller: usernameController,
           readOnly: true,
           onChanged: (value) async {
             if (value != controller.username.value) {
@@ -67,6 +72,7 @@ class SettingsPage extends StatelessWidget {
         TextField(
           decoration: const InputDecoration(labelText: 'Password'),
           obscureText: true,
+          controller: passwordController,
           readOnly: true,
           onChanged: (value) async {
             if (value != controller.password.value) {

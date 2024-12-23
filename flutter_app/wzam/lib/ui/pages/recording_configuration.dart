@@ -98,6 +98,14 @@ class RecordingConfiguration extends StatelessWidget {
         );
         if (pickedDate != null) {
           controller.text = "${pickedDate.toLocal()}".split(' ')[0];
+          TimeOfDay? pickedTime = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.now(),
+          );
+          if (pickedTime != null) {
+            DateTime finalDateTime = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
+            controller.text = finalDateTime.toString();
+          }
         }
       } : null,
       onChanged: (value) async {

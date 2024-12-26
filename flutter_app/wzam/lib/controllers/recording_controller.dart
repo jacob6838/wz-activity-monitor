@@ -29,7 +29,10 @@ class RecordingController extends GetxController {
   RxList<Marker> recordingMarkers = <Marker>[].obs;
   Rx<PolylineLayer> polylineLayer = const PolylineLayer(polylines: <Polyline>[]).obs;
   RxBool recording = false.obs;
+  bool recordingNeedToMark = false;
   RxBool workersPresent = false.obs;
+  bool workersPresentNeedToMark = false;
+  bool recordingLocation = true;
   List<RecordingPoint> points = [];
   List<LatLng> pointsLatLng = [];
 
@@ -39,16 +42,23 @@ class RecordingController extends GetxController {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     _updateMarkerLayer();
+    
   }
 
   void startListeningToLocation() {
     locationService.locationStream.listen((Position position) {
       if (mapController != null) {
-        if (recording.value) {
+        if (recordingLocation) {
           List<RecordingMarking> markings = [];
-          if (workersPresent.value) {
-            RecordingMarking marking = RecordingMarking(workersPresent: true,);
+          if (workersPresentNeedToMark) {
+            RecordingMarking marking = RecordingMarking(workersPresent: workersPresent.value);
             markings.add(marking);
+            workersPresentNeedToMark = false;
+          }
+          if(recordingNeedToMark) {
+            RecordingMarking marking = RecordingMarking(refPt: recording.value);
+            markings.add(marking);
+            recordingNeedToMark = false;
           }
           RecordingPoint recordingPoint = RecordingPoint(
             date: 0,
@@ -59,7 +69,7 @@ class RecordingController extends GetxController {
             altitude: position.altitude,
             speed: position.speed,
             heading: position.heading,
-            markings: markings,
+            markings: markings.isEmpty ? null : markings,
           );
           points.add(recordingPoint);
           pointsLatLng.add(LatLng(position.latitude, position.longitude));
@@ -111,29 +121,60 @@ class RecordingController extends GetxController {
 
   void startWorkZoneRecording() {
     recording.value = true;
+    recordingNeedToMark = true;
   }
 
   void stopWorkZoneRecording() {
+    recordingNeedToMark = true;
     recording.value = false;
+    recordingLocation = false;
+    addStopWorkZoneToRecording();
     _saveRecording();
     Get.dialog(_createRecordingDialog());
   }
 
   void toggleWorkersPresent() {
+    workersPresentNeedToMark = true;
     if (!workersPresent.value) {
       Marker marker = Marker(
         point: LatLng(currentPosition.value!.latitude, currentPosition.value!.longitude),
         child: const Icon(Icons.location_on, color: Colors.blue, size: 25.0),
+        rotate: true,
       );
       _addMarker(marker);
     } else {
       Marker marker = Marker(
         point: LatLng(currentPosition.value!.latitude, currentPosition.value!.longitude),
         child: const Icon(Icons.location_off, color: Color.fromARGB(255, 7, 72, 125), size: 25.0),
+        rotate: true,
       );
       _addMarker(marker);
     }
     workersPresent.value = !workersPresent.value;
+  }
+
+  void addStopWorkZoneToRecording() {
+    late RecordingMarking marking;
+    recordingNeedToMark = false;
+    if (workersPresent.value == true) {
+      marking = RecordingMarking(refPt: recordingNeedToMark, workersPresent: false);
+    }else {
+      marking = RecordingMarking(refPt: recordingNeedToMark);
+    }
+    RecordingPoint lastpoint = points.last;
+    RecordingPoint newLastPoint = RecordingPoint(
+      date: 0,
+      numSatellites: 0,
+      accuracy: lastpoint.accuracy,
+      latitude: lastpoint.latitude,
+      longitude: lastpoint.longitude,
+      altitude: lastpoint.altitude,
+      speed: lastpoint.speed,
+      heading: lastpoint.heading,
+      markings: <RecordingMarking>[marking],
+    );
+    points.removeLast();
+    points.add(newLastPoint);
   }
 
   void _saveRecording() {

@@ -62,13 +62,13 @@ class WorkZoneRecording extends StatelessWidget {
                     onPressed: () {
                       controller.recording.value ? controller.stopWorkZoneRecording() : controller.startWorkZoneRecording();
                     },
-                    child: controller.recording.value ? const Text('Stop Work Zone Recording') : const Text('Start Work Zone Recording'),
+                    child: controller.recording.value ? const Text('End of Work Zone') : const Text('Start Work Zone'),
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: controller.recording.value ? () {
                       controller.toggleWorkersPresent();
-                    },
-                    child: controller.workersPresent.value ? const Text('Workers are not present') : const Text('Workers are Present'),
+                    } : null,
+                    child: controller.workersPresent.value ? const Text('Workers are no longer present') : const Text('Workers are Present'),
                   ),
                 ],
               )),

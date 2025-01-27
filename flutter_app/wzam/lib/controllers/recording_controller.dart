@@ -9,6 +9,7 @@ import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/location_service.dart';
 import 'package:wzam/ui/pages/home.dart';
 
+//This controller is used to manage the recording map and recording variables needed to create the recording file
 class RecordingController extends GetxController {
   late MapController? mapController;
   LocationService locationService = Get.find<LocationService>(); 
@@ -32,6 +33,8 @@ class RecordingController extends GetxController {
   bool recordingNeedToMark = false;
   RxBool workersPresent = false.obs;
   bool workersPresentNeedToMark = false;
+  RxList<bool> lanesOpened = <bool>[].obs;
+  int laneChangeNeedToMark = 0;
   bool recordingLocation = true;
   List<RecordingPoint> points = [];
   List<LatLng> pointsLatLng = [];
@@ -50,6 +53,7 @@ class RecordingController extends GetxController {
       if (mapController != null) {
         if (recordingLocation) {
           List<RecordingMarking> markings = [];
+          //TODO: I'm not sure this is correct. 
           if (workersPresentNeedToMark) {
             RecordingMarking marking = RecordingMarking(workersPresent: workersPresent.value);
             markings.add(marking);
@@ -59,6 +63,18 @@ class RecordingController extends GetxController {
             RecordingMarking marking = RecordingMarking(refPt: recording.value);
             markings.add(marking);
             recordingNeedToMark = false;
+          }
+          if (laneChangeNeedToMark != 0) {
+            if (lanesOpened[laneChangeNeedToMark - 1]) {
+              print("went open");
+              RecordingMarking marking = RecordingMarking(laneOpened: laneChangeNeedToMark);
+              markings.add(marking);
+            } else {
+              print("went closed");
+              RecordingMarking marking = RecordingMarking(laneClosed: laneChangeNeedToMark);
+              markings.add(marking);
+            }
+            laneChangeNeedToMark = 0;
           }
           RecordingPoint recordingPoint = RecordingPoint(
             date: 0,
@@ -112,6 +128,13 @@ class RecordingController extends GetxController {
       color: Colors.red,
     );
     polylineLayer.value = PolylineLayer(polylines: <Polyline>[polyline]);
+  }
+
+  void setLanesOpened(int maxLanes) {
+    lanesOpened.clear();
+    for (int i = 0; i < maxLanes; i++) {
+      lanesOpened.add(true);
+    }
   }
 
   void _addMarker(Marker marker) {
@@ -179,14 +202,14 @@ class RecordingController extends GetxController {
 
   void _saveRecording() {
     Recording recording = Recording(
-      id: iD!,
-      projectId: projectId!,
-      segmentId: segmentId!,
-      areaId: areaId!,
+      id: iD,
+      projectId: projectId,
+      segmentId: segmentId,
+      areaId: areaId,
       recordingName: recordingName,
       typesOfWork: typesOfWork,
-      startDate: startDate!,
-      endDate: endDate!,
+      startDate: startDate,
+      endDate: endDate,
       recordingDate: recordingDate,
       areaType: areaType,
       mobilitySpeedMPH: mobilitySpeedMPH,
@@ -208,5 +231,10 @@ class RecordingController extends GetxController {
         ),
       ],
     );
+  }
+
+  void lanesChanging(int location) {
+    laneChangeNeedToMark = location + 1;
+    lanesOpened[location] = !lanesOpened[location];
   }
 }

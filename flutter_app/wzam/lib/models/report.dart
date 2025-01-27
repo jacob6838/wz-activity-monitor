@@ -20,17 +20,17 @@ class Report{
   final List<double> point;
   
   Report(
-      {required this.projectId,
-      required this.segmentId,
-      required this.areaId,
+      {this.projectId,
+      this.segmentId,
+      this.areaId,
       required this.reportName,
       required this.typesOfWork,
       required this.workersPresent,
-      required this.startDate,
-      required this.endDate,
+      this.startDate,
+      this.endDate,
       required this.reportDate,
       required this.areaType,
-      required this.mobilitySpeedMPH,
+      this.mobilitySpeedMPH,
       required this.geometryType,
       required this.point});
 
@@ -45,34 +45,20 @@ class ReportWithId extends Report {
 
   ReportWithId({
     required this.id,
-    required int? projectId,
-    required int? segmentId,
-    required int? areaId,
-    required String reportName,
-    required List<TypeOfWork> typesOfWork,
-    required bool workersPresent,
-    required int? startDate,
-    required int? endDate,
-    required int reportDate,
-    required WorkZoneType areaType,
-    required double? mobilitySpeedMPH,
-    required GeometryType geometryType,
-    required List<double> point,
-  }) : super(
-          projectId: projectId,
-          segmentId: segmentId,
-          areaId: areaId,
-          reportName: reportName,
-          typesOfWork: typesOfWork,
-          workersPresent: workersPresent,
-          startDate: startDate,
-          endDate: endDate,
-          reportDate: reportDate,
-          areaType: areaType,
-          mobilitySpeedMPH: mobilitySpeedMPH,
-          geometryType: geometryType,
-          point: point,
-        );
+    super.projectId,
+    super.segmentId,
+    super.areaId,
+    required super.reportName,
+    required super.typesOfWork,
+    required super.workersPresent,
+    super.startDate,
+    super.endDate,
+    required super.reportDate,
+    required super.areaType,
+    super.mobilitySpeedMPH,
+    required super.geometryType,
+    required super.point,
+  });
 
   factory ReportWithId.fromJson(Map<String, dynamic> json) => _$ReportWithIdFromJson(json);
 

@@ -8,6 +8,7 @@ import 'package:wzam/ui/pages/settings.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
 
+//This is the main map page that is used while doing a recording
 class WorkZoneRecording extends StatelessWidget {
   const WorkZoneRecording({super.key});
 
@@ -15,7 +16,16 @@ class WorkZoneRecording extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<RecordingController>(tag: 'thisone');
     final mapController = MapController();
-
+    RxList<Widget> laneButtons = <Widget>[].obs;
+    for (int i = 0; i < controller.lanesOpened.length; i++) {
+      laneButtons.add(ElevatedButton(
+        onPressed: () {
+          controller.lanesOpened[i] = !controller.lanesOpened[i];
+          print(controller.lanesOpened);
+        },
+        child: controller.lanesOpened[i] ? Text('Lane ${i+1} Open') : Text('Lane ${i+1} Closed'),
+      ));
+    }
     return FutureBuilder(
       future: controller.initialize(),
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
@@ -34,7 +44,6 @@ class WorkZoneRecording extends StatelessWidget {
             ),
             body: const Stack(
               children: [
-                //map(context, controller, mapController, MediaQuery.of(context).orientation),
                 Center(child: CircularProgressIndicator()),
               ],
             ),
@@ -62,13 +71,30 @@ class WorkZoneRecording extends StatelessWidget {
                     onPressed: () {
                       controller.recording.value ? controller.stopWorkZoneRecording() : controller.startWorkZoneRecording();
                     },
-                    child: controller.recording.value ? const Text('End of Work Zone') : const Text('Start Work Zone'),
+                    child: controller.recording.value ? const Text('End Work Zone') : const Text('Start Work Zone'),
                   ),
                   ElevatedButton(
                     onPressed: controller.recording.value ? () {
                       controller.toggleWorkersPresent();
                     } : null,
                     child: controller.workersPresent.value ? const Text('Workers are no longer present') : const Text('Workers are Present'),
+                  ),
+                  verticalSpaceMedium,
+                  /*Row(
+                    children: [
+                      controller.lanesOpened.isNotEmpty ? ElevatedButton(
+                        onPressed: () {
+                          controller.lanesOpened[0] = !controller.lanesOpened[0];
+                          print(controller.lanesOpened);
+                        },
+                        child: controller.lanesOpened[0] == true ? Text('Lane 1 Open') : Text('Lane 1 Closed'),
+                      ) : Container(),
+                    ],
+                  ),*/
+                  Row(
+                    children: [
+                      ...createLaneButtons(controller)
+                    ],
                   ),
                 ],
               )),
@@ -108,5 +134,19 @@ class WorkZoneRecording extends StatelessWidget {
               controller.markerLayer.value,
             ]),
     ));
+  }
+
+  List<Widget> createLaneButtons(RecordingController controller) {
+    List<Widget> laneButtons = [];
+    for (int i = 0; i < controller.lanesOpened.length; i++) {
+      laneButtons.add(ElevatedButton(
+        onPressed: controller.recording.value ? () {
+          controller.lanesChanging(i);
+          print(controller.lanesOpened);
+        }: null,
+        child: controller.lanesOpened[i] ? Text('Lane ${i+1} Open') : Text('Lane ${i+1} Closed'),
+      ));
+    }
+    return laneButtons;
   }
 }

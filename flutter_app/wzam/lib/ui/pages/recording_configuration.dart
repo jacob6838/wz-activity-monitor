@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:wzam/controllers/notification_controller.dart';
 import 'package:wzam/controllers/recording_controller.dart';
 import 'package:wzam/models/wzdx_models.dart';
 import 'package:wzam/services/file_storage.dart';
@@ -9,7 +10,7 @@ import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
 import 'package:wzam/ui/styles/widgets/wzam_app_bar.dart';
 
-
+//This is the first page that the user is taken to when creating a recording. It allows the user to input the necessary information to start a recording.
 class RecordingConfiguration extends StatelessWidget {
   
   RecordingConfiguration({super.key});
@@ -26,6 +27,7 @@ class RecordingConfiguration extends StatelessWidget {
   final TextEditingController recordingDateController = TextEditingController();
   String areaType = "";
   final TextEditingController mobilitySpeedController = TextEditingController();
+  final TextEditingController numberOfLanesController = TextEditingController();
   
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class RecordingConfiguration extends StatelessWidget {
     RxList<Widget> workTypeSegments = <Widget>[
       ..._workTypeSegment(context, workTypeNames, 0),
     ].obs;
-
+    recordingDateController.text = DateTime.now().toString();
     return Scaffold(
       appBar: WZAMAppBar(
         title: "Recording Configuration",
@@ -51,7 +53,7 @@ class RecordingConfiguration extends StatelessWidget {
           verticalSpaceMedium,
           _inputField("Area ID", areaIdController, isNumeric: true),
           verticalSpaceMedium,
-          _inputField("Recording Name", recordingNameController),
+          _inputField("Recording Name", recordingNameController, isRequired: true),
           verticalSpaceMedium,
           ...workTypeSegments,
           ElevatedButton(
@@ -66,21 +68,22 @@ class RecordingConfiguration extends StatelessWidget {
           verticalSpaceMedium,
           _inputField("End Date", endDateController, isDate: true, context: context),
           verticalSpaceMedium,
-          _inputField("Recording Date", recordingDateController, isDate: true, context: context),
+          _inputField("Recording Date", recordingDateController, isDate: true, isRequired: true, context: context),
           verticalSpaceMedium,
           _dropdownField("Area Type", areaTypes, context, isAreaWorkType: true),
           verticalSpaceMedium,
           _inputField("Mobility Speed (MPH)", mobilitySpeedController, isDouble: true),
           verticalSpaceMedium,
+          _inputField("Number of Lanes", numberOfLanesController, isDouble: true, isRequired: true),
           _startRecordingButton(),
         ])),
       ));
   }
 
   
-   Widget _inputField(String labelText, TextEditingController controller, {bool isNumeric = false, bool isDate = false, bool isDouble = false, BuildContext? context}) {
+   Widget _inputField(String labelText, TextEditingController controller, {bool isNumeric = false, bool isDate = false, bool isDouble = false, bool isRequired = false, BuildContext? context}) {
     return TextField(
-      decoration: InputDecoration(labelText: labelText),
+      decoration: InputDecoration(labelText: isRequired ? labelText : "$labelText (optional)"),
       controller: controller,
       keyboardType: isNumeric || isDouble ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
       inputFormatters: isNumeric ? <TextInputFormatter>[
@@ -163,22 +166,51 @@ class RecordingConfiguration extends StatelessWidget {
   ElevatedButton _startRecordingButton() {
     return ElevatedButton(
       onPressed: () {
+        if (!_fieldsValid()) {
+          return;
+        }
         RecordingController recordingController = Get.put(RecordingController(), tag: 'thisone');
-        recordingController.iD = int.parse(recordingIdController.text);
-        recordingController.projectId = int.parse(projectIdController.text);
-        recordingController.segmentId = int.parse(segmentIdController.text);
-        recordingController.areaId = int.parse(areaIdController.text);
+        recordingController.iD = recordingIdController.text != "" ? int.parse(recordingIdController.text) : null; //optional
+        recordingController.projectId = projectIdController.text != "" ? int.parse(projectIdController.text) : null; //optional
+        recordingController.segmentId = segmentIdController.text != "" ? int.parse(segmentIdController.text) : null; //optional
+        recordingController.areaId = areaIdController.text != "" ? int.parse(areaIdController.text) : null; //optional
         recordingController.recordingName = recordingNameController.text;
         recordingController.typesOfWork = _getTypesOfWork();
-        recordingController.startDate = _parseDate(startDateController.text);
-        recordingController.endDate = _parseDate(endDateController.text);
-        recordingController.recordingDate = _parseDate(recordingDateController.text);
+        recordingController.startDate = _parseDate(startDateController.text); //optional
+        recordingController.endDate = _parseDate(endDateController.text); //optional
+        recordingController.recordingDate = _parseDate(recordingDateController.text) ?? DateTime.now().millisecondsSinceEpoch; //TODO change to launch an error
         recordingController.areaType = _stringToWorkZoneType(areaType);
-        recordingController.mobilitySpeedMPH = double.parse(mobilitySpeedController.text);
+        recordingController.mobilitySpeedMPH =  mobilitySpeedController.text != "" ? double.parse(mobilitySpeedController.text) : null; //optional
+        int maxLanes = int.parse(numberOfLanesController.text);
+        recordingController.setLanesOpened(maxLanes);
         Get.to(() => const WorkZoneRecording());
       },
       child: const Text("Start Recording"),
     );
+  }
+
+  bool _fieldsValid() {
+    if (recordingNameController.text == "") {
+      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      return false;
+    }
+    if (workTypeNameList[0][0] == "") {
+      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      return false;
+    }
+    if (recordingDateController.text != "" && _parseDate(recordingDateController.text) == null) {
+      NotificationController().queueNotification('Invalid Report', 'Invalid date format');
+      return false;
+    }
+    if (areaType == "") {
+      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      return false;
+    }
+    if (numberOfLanesController.text == "") {
+      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      return false;
+    }
+    return true;
   }
 
   List<String> _getAreaTypes() {
@@ -271,7 +303,10 @@ class RecordingConfiguration extends StatelessWidget {
     }
   }
 
-  int _parseDate(String date) {
+  int? _parseDate(String? date) {
+    if (date == "" || date == null) {
+      return null;
+    }
     DateTime dateTime = DateTime.parse(date);
     return dateTime.millisecondsSinceEpoch;
   }

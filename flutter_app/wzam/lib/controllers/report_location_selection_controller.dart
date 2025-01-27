@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:wzam/services/location_service.dart';
 import 'package:wzam/ui/pages/report_generator.dart';
 
+//This controller is used to manage the report location selection map and the report location point
 class ReportLocationSelectionController extends GetxController {
   late MapController? mapController;
   ReportPageController reportPageController = Get.find<ReportPageController>();

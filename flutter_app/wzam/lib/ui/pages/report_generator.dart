@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:wzam/controllers/notification_controller.dart';
 import 'package:wzam/models/report.dart';
 import 'package:wzam/models/wzdx_models.dart';
 import 'package:wzam/services/file_storage.dart';
@@ -15,6 +16,7 @@ class ReportPageController extends GetxController {
   String geometryType = "";
 }
 
+//This is the report page where the user can generate a report
 class ReportPage extends StatelessWidget {
 
   final FileStorageService fileStorageService = Get.find<FileStorageService>();
@@ -49,13 +51,13 @@ class ReportPage extends StatelessWidget {
         padding: const EdgeInsets.all(30.0),
         child: Obx(() => ListView(children: [
           verticalSpaceMedium,
-          _inputField("Project ID", projectIdController, isNumeric: true),
+          _inputField("Project ID", projectIdController, isNumeric: true), //optional
           verticalSpaceMedium,
-          _inputField("Segment ID", segmentIdController, isNumeric: true),
+          _inputField("Segment ID", segmentIdController, isNumeric: true), //optional
           verticalSpaceMedium,
-          _inputField("Area ID", areaIdController, isNumeric: true),
+          _inputField("Area ID", areaIdController, isNumeric: true), //optional
           verticalSpaceMedium,
-          _inputField("Report Name", reportNameController),
+          _inputField("Report Name", reportNameController, isRequired: true),
           Obx(() => Row(
             children: [
               const Text("Are Workers Present?"),
@@ -77,15 +79,15 @@ class ReportPage extends StatelessWidget {
             child: const Text("Add Another Type of Work"),
           ),
           verticalSpaceMedium,
-          _inputField("Start Date", startDateController, isDate: true, context: context), 
+          _inputField("Start Date", startDateController, isDate: true, context: context), //optional
           verticalSpaceMedium,
-          _inputField("End Date", endDateController, isDate: true, context: context), 
+          _inputField("End Date", endDateController, isDate: true, context: context), //optional
           verticalSpaceMedium,
-          _inputField("Report Date", reportDateController, isDate: true, context: context), 
+          _inputField("Report Date", reportDateController, isDate: true, isRequired: true, context: context), 
           verticalSpaceMedium,
           _dropdownField("Area Type", areaTypes, context, isAreaWorkType: true),
           verticalSpaceMedium,
-          _inputField("Mobility Speed (MPH)", mobilitySpeedController, isDouble: true),
+          _inputField("Mobility Speed (MPH)", mobilitySpeedController, isDouble: true), //optional
           verticalSpaceMedium,
           _dropdownField("Geometry Type", geometryTypes, context, isGeometryType: true),
           verticalSpaceMedium,
@@ -100,9 +102,11 @@ class ReportPage extends StatelessWidget {
       ));
   }
 
-  Widget _inputField(String labelText, TextEditingController controller, {bool isNumeric = false, bool isDate = false, bool isDouble = false, BuildContext? context}) {
+  Widget _inputField(String labelText, TextEditingController controller, {bool isNumeric = false, bool isDate = false, bool isRequired = false, bool isDouble = false, BuildContext? context}) {
     return TextField(
-      decoration: InputDecoration(labelText: labelText),
+      decoration: InputDecoration(
+        labelText: isRequired ? labelText : "$labelText (optional)",
+      ),
       controller: controller,
       keyboardType: isNumeric || isDouble ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
       inputFormatters: isNumeric ? <TextInputFormatter>[
@@ -114,7 +118,7 @@ class ReportPage extends StatelessWidget {
       onTap: isDate ? () async {
         DateTime? pickedDate = await showDatePicker(
           context: context!,
-          initialDate: DateTime.now(),
+          initialDate: DateTime.now(), 
           firstDate: DateTime(2000),
           lastDate: DateTime(2101),
         );
@@ -122,7 +126,7 @@ class ReportPage extends StatelessWidget {
           controller.text = "${pickedDate.toLocal()}".split(' ')[0];
           TimeOfDay? pickedTime = await showTimePicker(
             context: context,
-            initialTime: TimeOfDay.now(),
+            initialTime: TimeOfDay.now(), //TODO: Change this to be the expected time that would be inputted
           );
           if (pickedTime != null) {
             DateTime finalDateTime = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
@@ -187,10 +191,41 @@ class ReportPage extends StatelessWidget {
   ElevatedButton _submitButton() {
     return ElevatedButton(
       onPressed: () async {
+        if (!_fieldsValid()) {
+          return;
+        }
         _saveReport();
       },
       child: const Text("Submit Report"),
     );
+  }
+
+  bool _fieldsValid() {
+    if (reportNameController.text == "") {
+      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      return false;
+    }
+    if (workTypeNameList[0][0] == "") {
+      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      return false;
+    }
+    if (reportDateController.text == "") {
+      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      return false;
+    }
+    if (controller.areaType == "") {
+      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      return false;
+    }
+    if (controller.geometryType == "") {
+      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      return false;
+    }
+    if (controller.point.isEmpty) {
+      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      return false;
+    }
+    return true;
   }
 
   List<String> _getAreaTypes() {
@@ -279,7 +314,7 @@ class ReportPage extends StatelessWidget {
       case 'roadway creation':
         return WorkTypeName.roadwayCreation;
       default:
-        throw ArgumentError('Invalid WorkTypeName: $type');
+        throw ArgumentError('Invalid WorkTypeName: $type'); //TODO change this
     }
   }
 
@@ -314,7 +349,10 @@ class ReportPage extends StatelessWidget {
     }
   }
 
-  int _parseDate(String date) {
+  int? _parseDate(String? date) {
+    if (date == "" || date == null) {
+      return null;
+    }
     DateTime dateTime = DateTime.parse(date);
     return dateTime.millisecondsSinceEpoch;
   }
@@ -322,6 +360,9 @@ class ReportPage extends StatelessWidget {
   List<TypeOfWork> _getTypesOfWork() {
     List<TypeOfWork> typesOfWork = [];
     for (List workType in workTypeNameList) {
+      if (workType[0] == "") {
+        continue;
+      }
       typesOfWork.add(TypeOfWork(
         typeName: _stringToWorkTypeName(workType[0]),
         isArchitecturalChange: workType[1]
@@ -332,18 +373,19 @@ class ReportPage extends StatelessWidget {
 
   void _saveReport() {
     List<TypeOfWork> typesOfWork = _getTypesOfWork();
+
     Report report = Report(
-      projectId: int.parse(projectIdController.text),
-      segmentId: int.parse(segmentIdController.text),
-      areaId: int.parse(areaIdController.text),
+      projectId: projectIdController.text != "" ? int.parse(projectIdController.text) : null, //optional field
+      segmentId: segmentIdController.text != "" ? int.parse(segmentIdController.text) : null, //optional field
+      areaId: areaIdController.text != "" ? int.parse(areaIdController.text) : null, //optional field
       reportName: reportNameController.text,
       typesOfWork: typesOfWork,
       workersPresent: areWorkersPresent.value,
-      startDate: _parseDate(startDateController.text),
-      endDate: _parseDate(endDateController.text),
-      reportDate: _parseDate(reportDateController.text),
+      startDate: _parseDate(startDateController.text), //optional field
+      endDate: _parseDate(endDateController.text), //optional field
+      reportDate: _parseDate(reportDateController.text) ?? DateTime.now().millisecondsSinceEpoch, //TODO change to launch an error
       areaType: _stringToWorkZoneType(controller.areaType),
-      mobilitySpeedMPH: double.parse(mobilitySpeedController.text),
+      mobilitySpeedMPH: mobilitySpeedController.text != "" ? double.parse(mobilitySpeedController.text) : null, //optional field
       geometryType: _stringToGeometryType(controller.geometryType),
       point: controller.point
     );

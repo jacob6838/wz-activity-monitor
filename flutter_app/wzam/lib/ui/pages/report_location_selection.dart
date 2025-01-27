@@ -7,6 +7,7 @@ import 'package:wzam/controllers/report_location_selection_controller.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
 
+//This is the map that pops up while making a report to place the workers location
 class ReportLocationSelection extends StatelessWidget {
   const ReportLocationSelection({super.key});
 

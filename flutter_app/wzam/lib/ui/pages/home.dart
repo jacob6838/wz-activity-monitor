@@ -30,6 +30,7 @@ class Home extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [ 
+            //Create a report button
             _button( 
               onPressed: () {
                 Get.to(() => ReportPage());
@@ -38,6 +39,7 @@ class Home extends StatelessWidget {
               context: context
             ),
             verticalSpaceMedium,
+            //Create a recording button
             _button(
               onPressed: () {
                 Get.to(() => RecordingConfiguration());
@@ -46,6 +48,7 @@ class Home extends StatelessWidget {
               context: context
             ),
             verticalSpaceMedium,
+            //View the reports map button
             _button(
               onPressed: () {
                 Get.to(() => const ViewReports());

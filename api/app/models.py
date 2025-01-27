@@ -143,6 +143,7 @@ class RecordingMarking(BaseModel):
     lane_closed: Optional[int] = None
     lane_opened: Optional[int] = None
     workers_present: Optional[bool] = None
+    speed_limit_mph: Optional[float] = None
 
 
 class RecordingPoint(BaseModel):
@@ -154,11 +155,11 @@ class RecordingPoint(BaseModel):
     altitude: float
     speed: float
     heading: float
+    num_lanes: int
     markings: Optional[list[RecordingMarking]] = None
 
 
 class Recording(BaseModel):
-    id: Optional[int] = None
     project_id: Optional[int] = None
     segment_id: Optional[int] = None
     area_id: Optional[int] = None
@@ -173,6 +174,22 @@ class Recording(BaseModel):
 
 
 class RecordingWithId(Recording):
+    id: int
+
+
+class WzdxRecording(BaseModel):
+    project_id: Optional[int] = None
+    segment_id: Optional[int] = None
+    area_id: Optional[int] = None
+    features: list[dict]
+    types_of_work: list[wzdx_models.TypeOfWork]
+    start_date: Optional[int] = None
+    end_date: Optional[int] = None
+    creation_date: int
+    area_type: wzdx_models.WorkZoneType
+
+
+class WzdxRecordingWithId(WzdxRecording):
     id: int
 
 

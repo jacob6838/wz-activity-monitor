@@ -137,3 +137,24 @@ CREATE TABLE IF NOT EXISTS public.recordings (
     points JSONB, -- Storing as JSONB
     CONSTRAINT recordings_pkey PRIMARY KEY (id)
 );
+
+CREATE SEQUENCE IF NOT EXISTS public.wzdx_recordings_id_seq
+   INCREMENT 1
+   START 1
+   MINVALUE 1
+   MAXVALUE 2147483647
+   CACHE 1;
+
+CREATE TABLE IF NOT EXISTS public.wzdx_recordings (
+    id INTEGER NOT NULL DEFAULT nextval('wzdx_recordings_id_seq'::regclass),
+    project_id INT,
+    segment_id INT,
+    area_id INT,
+    features JSONB NOT NULL, -- Storing features array as JSONB
+    types_of_work JSONB NOT NULL, -- Storing as JSONB
+    start_date INT,
+    end_date INT,
+    creation_date INT NOT NULL,
+    area_type VARCHAR(255) NOT NULL,
+    CONSTRAINT wzdx_recordings_pkey PRIMARY KEY (id)
+);

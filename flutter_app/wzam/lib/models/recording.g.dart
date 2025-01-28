@@ -7,7 +7,6 @@ part of 'recording.dart';
 // **************************************************************************
 
 Recording _$RecordingFromJson(Map<String, dynamic> json) => Recording(
-      id: (json['id'] as num?)?.toInt(),
       projectId: (json['projectId'] as num?)?.toInt(),
       segmentId: (json['segmentId'] as num?)?.toInt(),
       areaId: (json['areaId'] as num?)?.toInt(),
@@ -26,7 +25,6 @@ Recording _$RecordingFromJson(Map<String, dynamic> json) => Recording(
     );
 
 Map<String, dynamic> _$RecordingToJson(Recording instance) => <String, dynamic>{
-      'id': instance.id,
       'projectId': instance.projectId,
       'segmentId': instance.segmentId,
       'areaId': instance.areaId,
@@ -52,6 +50,7 @@ RecordingMarking _$RecordingMarkingFromJson(Map<String, dynamic> json) =>
       laneClosed: (json['laneClosed'] as num?)?.toInt(),
       laneOpened: (json['laneOpened'] as num?)?.toInt(),
       workersPresent: json['workersPresent'] as bool?,
+      speedLimitMPH: (json['speedLimitMPH'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$RecordingMarkingToJson(RecordingMarking instance) =>
@@ -60,6 +59,7 @@ Map<String, dynamic> _$RecordingMarkingToJson(RecordingMarking instance) =>
       'laneClosed': instance.laneClosed,
       'laneOpened': instance.laneOpened,
       'workersPresent': instance.workersPresent,
+      'speedLimitMPH': instance.speedLimitMPH,
     };
 
 RecordingPoint _$RecordingPointFromJson(Map<String, dynamic> json) =>
@@ -72,6 +72,7 @@ RecordingPoint _$RecordingPointFromJson(Map<String, dynamic> json) =>
       altitude: (json['altitude'] as num).toDouble(),
       speed: (json['speed'] as num).toDouble(),
       heading: (json['heading'] as num).toDouble(),
+      numLanes: (json['numLanes'] as num).toInt(),
       markings: (json['markings'] as List<dynamic>?)
           ?.map((e) => RecordingMarking.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -87,5 +88,6 @@ Map<String, dynamic> _$RecordingPointToJson(RecordingPoint instance) =>
       'altitude': instance.altitude,
       'speed': instance.speed,
       'heading': instance.heading,
+      'numLanes': instance.numLanes,
       'markings': instance.markings,
     };

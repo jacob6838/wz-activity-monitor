@@ -5,7 +5,6 @@ part 'recording.g.dart';
 
 @JsonSerializable()
 class Recording{
-  final int? id;
   final int? projectId;
   final int? segmentId;
   final int? areaId;
@@ -19,8 +18,7 @@ class Recording{
   final List<RecordingPoint> points;
   
   Recording(
-      {required this.id, 
-      required this.projectId,
+      {required this.projectId,
       required this.segmentId,
       required this.areaId,
       required this.recordingName,
@@ -42,12 +40,14 @@ class RecordingMarking{
   final int? laneClosed;
   final int? laneOpened;
   final bool? workersPresent;
+  final double? speedLimitMPH;
   
   RecordingMarking(
       {this.refPt, 
       this.laneClosed,
       this.laneOpened,
-      this.workersPresent});
+      this.workersPresent,
+      this.speedLimitMPH});
 
   factory RecordingMarking.fromJson(Map<String, dynamic> json) => _$RecordingMarkingFromJson(json);
   Map<String, dynamic> toJson() => _$RecordingMarkingToJson(this);
@@ -63,6 +63,7 @@ class RecordingPoint{
   final double altitude;
   final double speed;
   final double heading;
+  final int numLanes; 
   final List<RecordingMarking>? markings;
   
   RecordingPoint(
@@ -74,6 +75,7 @@ class RecordingPoint{
       required this.altitude,
       required this.speed,
       required this.heading,
+      required this.numLanes,
       required this.markings});
 
   factory RecordingPoint.fromJson(Map<String, dynamic> json) => _$RecordingPointFromJson(json);

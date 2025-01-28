@@ -45,8 +45,6 @@ class RecordingConfiguration extends StatelessWidget {
         padding: const EdgeInsets.all(30.0),
         child: Obx(() => ListView(children: [
           verticalSpaceMedium,
-          _inputField("Recording ID", recordingIdController, isNumeric: true),
-          verticalSpaceMedium,
           _inputField("Project ID", projectIdController, isNumeric: true),
           verticalSpaceMedium,
           _inputField("Segment ID", segmentIdController, isNumeric: true),
@@ -169,8 +167,7 @@ class RecordingConfiguration extends StatelessWidget {
         if (!_fieldsValid()) {
           return;
         }
-        RecordingController recordingController = Get.put(RecordingController(), tag: 'thisone');
-        recordingController.iD = recordingIdController.text != "" ? int.parse(recordingIdController.text) : null; //optional
+        RecordingController recordingController = Get.put(RecordingController(), tag: 'thisone'); //TODO: chang tag
         recordingController.projectId = projectIdController.text != "" ? int.parse(projectIdController.text) : null; //optional
         recordingController.segmentId = segmentIdController.text != "" ? int.parse(segmentIdController.text) : null; //optional
         recordingController.areaId = areaIdController.text != "" ? int.parse(areaIdController.text) : null; //optional

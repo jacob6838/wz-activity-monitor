@@ -9,6 +9,7 @@ import 'package:wzam/ui/pages/report_location_selection.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
 import 'package:wzam/ui/styles/widgets/wzam_app_bar.dart';
+import 'package:http/http.dart' as http;
 
 class ReportPageController extends GetxController {
   RxList<double> point = <double>[].obs;
@@ -50,6 +51,12 @@ class ReportPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: Obx(() => ListView(children: [
+          /*ElevatedButton(
+            child: Text("test"),
+            onPressed: () {
+              postReport(null);
+            },
+          ),*/
           verticalSpaceMedium,
           _inputField("Project ID", projectIdController, isNumeric: true), //optional
           verticalSpaceMedium,
@@ -390,6 +397,40 @@ class ReportPage extends StatelessWidget {
       point: controller.point
     );
     fileStorageService.saveReport(report);
+    postReport(report);
     Get.back();
+  }
+
+  void postReport(Report? report) async {
+    /*final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    try {
+      final response = await http.post(url, 
+        headers: headers, 
+        body: {
+          "project_id": "0",
+          "segment_id": "0",
+          "area_id": "0",
+          "report_name": "string",
+          "types_of_work": "[{\"type_name\":\"maintenance\",\"is_architectural_change\":false}]",
+          "workers_present": "false",
+          "start_date": "0",
+          "end_date": "0",
+          "report_date": "0",
+          "area_type": "static",
+          "mobility_speed_mph": "25",
+          "geometry_type": "multipoint",
+          "point": "[0]"
+        }
+      );
+      if (response.statusCode == 200) {
+        print('Report posted successfully');
+      } else {
+        print('Failed to post report: ${response.statusCode}');
+        print(response.body);
+      }
+    } catch (e) {
+      print('Error posting report: $e');
+    }*/
   }
 }

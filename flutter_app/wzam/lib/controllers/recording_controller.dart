@@ -9,13 +9,14 @@ import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/location_service.dart';
 import 'package:wzam/ui/pages/home.dart';
 
+import '../ui/styles/app_colors.dart';
+
 //This controller is used to manage the recording map and recording variables needed to create the recording file
 class RecordingController extends GetxController {
   late MapController? mapController;
   LocationService locationService = Get.find<LocationService>(); 
   FileStorageService fileStorageService = Get.find<FileStorageService>();
   late Rx<Position?> currentPosition;
-  int? iD = 0;
   int? projectId = 0;
   int? segmentId = 0;
   int? areaId = 0;
@@ -37,7 +38,11 @@ class RecordingController extends GetxController {
   int laneChangeNeedToMark = 0;
   bool recordingLocation = true;
   List<RecordingPoint> points = [];
+  List<LatLng> nonWorkZonePointsLatLng = [];
   List<LatLng> pointsLatLng = [];
+  RxInt currentSpeedLimit = 0.obs;
+  int speedLimitChangeNeedToMark = 0;
+  RxDouble mapZoom = 17.0.obs;
 
   Future<void> initialize() async {
     currentPosition = locationService.currentPosition;
@@ -76,6 +81,11 @@ class RecordingController extends GetxController {
             }
             laneChangeNeedToMark = 0;
           }
+          if (speedLimitChangeNeedToMark != 0) {
+            RecordingMarking marking = RecordingMarking(speedLimitMPH: currentSpeedLimit.value.toDouble());
+            markings.add(marking);
+            speedLimitChangeNeedToMark = 0;
+          }
           RecordingPoint recordingPoint = RecordingPoint(
             date: 0,
             numSatellites: 0,
@@ -85,21 +95,22 @@ class RecordingController extends GetxController {
             altitude: position.altitude,
             speed: position.speed,
             heading: position.heading,
+            numLanes: lanesOpened.length,
             markings: markings.isEmpty ? null : markings,
           );
           points.add(recordingPoint);
-          pointsLatLng.add(LatLng(position.latitude, position.longitude));
+          //pointsLatLng.add(LatLng(position.latitude, position.longitude));       
           _addPointToPolyline(position.latitude, position.longitude);
         }
         _updateMarkerLayer();
-        _updateMap();
+        updateMap();
       }
     });
   }
 
-  void _updateMap() {
+  void updateMap() {
     if (mapController != null) {
-      mapController!.move(LatLng(currentPosition.value!.latitude, currentPosition.value!.longitude), 17);
+      mapController!.move(LatLng(currentPosition.value!.latitude, currentPosition.value!.longitude), mapZoom.value);
     }
   }
   
@@ -107,27 +118,39 @@ class RecordingController extends GetxController {
     return Marker(
         point: LatLng(lat, long),
         child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white,
+              color: Colors.white.withOpacity(0.7),
             ),
-            child: const Icon(Icons.directions_car, color: Color.fromARGB(255, 3, 134, 25), size: 25.0)),
+            child: Icon(Icons.directions_car, color: Colors.black, size: 25.0)),
         rotate: true
     );
   }
 
   void _updateMarkerLayer() {
-    markerLayer.value = MarkerLayer(markers: <Marker>[_userLocationMarker(currentPosition.value!.latitude, currentPosition.value!.longitude),...recordingMarkers]);
+    markerLayer.value = MarkerLayer(markers: <Marker>[...recordingMarkers, _userLocationMarker(currentPosition.value!.latitude, currentPosition.value!.longitude)]);
   }
 
   void _addPointToPolyline(double lat, double long) {
-    pointsLatLng.add(LatLng(lat, long));
-    Polyline polyline = Polyline(
+    if (!recording.value) {
+      nonWorkZonePointsLatLng.add(LatLng(lat, long));
+    } else {
+      if (pointsLatLng.isEmpty) {
+        pointsLatLng.add(nonWorkZonePointsLatLng.last);
+      }
+      pointsLatLng.add(LatLng(lat, long));
+    }
+    Polyline nonWorkZonePolyline = Polyline(
+      points: nonWorkZonePointsLatLng,
+      strokeWidth: 3.0,
+      color: darkGrey,
+    );
+    Polyline workZonePolyline = Polyline(
       points: pointsLatLng,
       strokeWidth: 5.0,
-      color: Colors.red,
+      color: primaryColor,
     );
-    polylineLayer.value = PolylineLayer(polylines: <Polyline>[polyline]);
+    polylineLayer.value = PolylineLayer(polylines: <Polyline>[nonWorkZonePolyline, workZonePolyline]);
   }
 
   void setLanesOpened(int maxLanes) {
@@ -143,6 +166,7 @@ class RecordingController extends GetxController {
   }
 
   void startWorkZoneRecording() {
+    currentSpeedLimit.value = mobilitySpeedMPH!.toInt(); //TODO: Figure Out what this mobility speed thing is
     recording.value = true;
     recordingNeedToMark = true;
   }
@@ -161,14 +185,30 @@ class RecordingController extends GetxController {
     if (!workersPresent.value) {
       Marker marker = Marker(
         point: LatLng(currentPosition.value!.latitude, currentPosition.value!.longitude),
-        child: const Icon(Icons.location_on, color: Colors.blue, size: 25.0),
+        child: Container( 
+          width: 20,
+          height: 30,
+          decoration: BoxDecoration(
+            color: lightGrey,
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: Image.asset('assets/images/workers_present.png'),
+        ),
         rotate: true,
       );
       _addMarker(marker);
     } else {
       Marker marker = Marker(
         point: LatLng(currentPosition.value!.latitude, currentPosition.value!.longitude),
-        child: const Icon(Icons.location_off, color: Color.fromARGB(255, 7, 72, 125), size: 25.0),
+        child: Container( 
+          width: 20,
+          height: 30,
+          decoration: BoxDecoration(
+            color: lightGrey,
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: Image.asset('assets/images/workers_not_present.png'),
+        ),
         rotate: true,
       );
       _addMarker(marker);
@@ -194,6 +234,7 @@ class RecordingController extends GetxController {
       altitude: lastpoint.altitude,
       speed: lastpoint.speed,
       heading: lastpoint.heading,
+      numLanes: lastpoint.numLanes,
       markings: <RecordingMarking>[marking],
     );
     points.removeLast();
@@ -202,7 +243,6 @@ class RecordingController extends GetxController {
 
   void _saveRecording() {
     Recording recording = Recording(
-      id: iD,
       projectId: projectId,
       segmentId: segmentId,
       areaId: areaId,
@@ -235,6 +275,39 @@ class RecordingController extends GetxController {
 
   void lanesChanging(int location) {
     laneChangeNeedToMark = location + 1;
+    //lanesOpened[location] = !lanesOpened[location];
+    Marker marker = Marker(
+      point: LatLng(currentPosition.value!.latitude, currentPosition.value!.longitude),
+      child: Container( 
+        width: 20,
+        height: 30,
+        decoration: BoxDecoration(
+          color: lightGrey,
+          shape: BoxShape.circle,
+        ),
+        child: lanesOpened[location] ? Image.asset('assets/images/closed_lane.png') : Image.asset('assets/images/lane.png'),
+      ),
+    );
+    _addMarker(marker);
     lanesOpened[location] = !lanesOpened[location];
+  }
+
+  void speedLimitChanging(int speedLimitAdjustment) {
+    speedLimitChangeNeedToMark += speedLimitAdjustment;
+    currentSpeedLimit.value += speedLimitAdjustment;
+    Marker marker = Marker(
+      point: LatLng(currentPosition.value!.latitude, currentPosition.value!.longitude),
+      child: Container( 
+        width: 20,
+        height: 30,
+        decoration: BoxDecoration(
+          color: lightGrey,
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: Image.asset('assets/images/speed_change.png'),
+      ),
+      rotate: true,
+    );
+    _addMarker(marker);
   }
 }

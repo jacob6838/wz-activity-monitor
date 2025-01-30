@@ -9,9 +9,7 @@ import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
 import 'package:wzam/ui/styles/widgets/wzam_app_bar.dart';
 
-
 class RecordingConfiguration extends StatelessWidget {
-  
   RecordingConfiguration({super.key});
 
   final FileStorageService fileStorageService = Get.find<FileStorageService>();
@@ -20,13 +18,15 @@ class RecordingConfiguration extends StatelessWidget {
   final TextEditingController segmentIdController = TextEditingController();
   final TextEditingController areaIdController = TextEditingController();
   final TextEditingController recordingNameController = TextEditingController();
-  final List workTypeNameList = [["",false]];
+  final List workTypeNameList = [
+    ["", false]
+  ];
   final TextEditingController startDateController = TextEditingController();
   final TextEditingController endDateController = TextEditingController();
   final TextEditingController recordingDateController = TextEditingController();
   String areaType = "";
   final TextEditingController mobilitySpeedController = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     List<String> areaTypes = _getAreaTypes();
@@ -36,126 +36,148 @@ class RecordingConfiguration extends StatelessWidget {
     ].obs;
 
     return Scaffold(
-      appBar: WZAMAppBar(
-        title: "Recording Configuration",
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(30.0),
-        child: Obx(() => ListView(children: [
-          verticalSpaceMedium,
-          _inputField("Recording ID", recordingIdController, isNumeric: true),
-          verticalSpaceMedium,
-          _inputField("Project ID", projectIdController, isNumeric: true),
-          verticalSpaceMedium,
-          _inputField("Segment ID", segmentIdController, isNumeric: true),
-          verticalSpaceMedium,
-          _inputField("Area ID", areaIdController, isNumeric: true),
-          verticalSpaceMedium,
-          _inputField("Recording Name", recordingNameController),
-          verticalSpaceMedium,
-          ...workTypeSegments,
-          ElevatedButton(
-            onPressed: () {
-              workTypeNameList.add(["",false]);
-              workTypeSegments = workTypeSegments + _workTypeSegment(context, workTypeNames, workTypeNameList.length - 1);
-            },
-            child: const Text("Add Another Type of Work"),
-          ),
-          verticalSpaceMedium,
-          _inputField("Start Date", startDateController, isDate: true, context: context),
-          verticalSpaceMedium,
-          _inputField("End Date", endDateController, isDate: true, context: context),
-          verticalSpaceMedium,
-          _inputField("Recording Date", recordingDateController, isDate: true, context: context),
-          verticalSpaceMedium,
-          _dropdownField("Area Type", areaTypes, context, isAreaWorkType: true),
-          verticalSpaceMedium,
-          _inputField("Mobility Speed (MPH)", mobilitySpeedController, isDouble: true),
-          verticalSpaceMedium,
-          _startRecordingButton(),
-        ])),
-      ));
+        appBar: WZAMAppBar(
+          title: "Recording Configuration",
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Obx(() => ListView(children: [
+                verticalSpaceMedium,
+                _inputField("Recording ID", recordingIdController,
+                    isNumeric: true),
+                verticalSpaceMedium,
+                _inputField("Project ID", projectIdController, isNumeric: true),
+                verticalSpaceMedium,
+                _inputField("Segment ID", segmentIdController, isNumeric: true),
+                verticalSpaceMedium,
+                _inputField("Area ID", areaIdController, isNumeric: true),
+                verticalSpaceMedium,
+                _inputField("Recording Name", recordingNameController),
+                verticalSpaceMedium,
+                ...workTypeSegments,
+                ElevatedButton(
+                  onPressed: () {
+                    workTypeNameList.add(["", false]);
+                    workTypeSegments = workTypeSegments +
+                        _workTypeSegment(context, workTypeNames,
+                            workTypeNameList.length - 1);
+                  },
+                  child: const Text("Add Another Type of Work"),
+                ),
+                verticalSpaceMedium,
+                _inputField("Start Date", startDateController,
+                    isDate: true, context: context),
+                verticalSpaceMedium,
+                _inputField("End Date", endDateController,
+                    isDate: true, context: context),
+                verticalSpaceMedium,
+                _inputField("Recording Date", recordingDateController,
+                    isDate: true, context: context),
+                verticalSpaceMedium,
+                _dropdownField("Area Type", areaTypes, context,
+                    isAreaWorkType: true),
+                verticalSpaceMedium,
+                _inputField("Mobility Speed (MPH)", mobilitySpeedController,
+                    isDouble: true),
+                verticalSpaceMedium,
+                _startRecordingButton(),
+              ])),
+        ));
   }
 
-  
-   Widget _inputField(String labelText, TextEditingController controller, {bool isNumeric = false, bool isDate = false, bool isDouble = false, BuildContext? context}) {
+  Widget _inputField(String labelText, TextEditingController controller,
+      {bool isNumeric = false,
+      bool isDate = false,
+      bool isDouble = false,
+      BuildContext? context}) {
     return TextField(
       decoration: InputDecoration(labelText: labelText),
       controller: controller,
-      keyboardType: isNumeric || isDouble ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-      inputFormatters: isNumeric ? <TextInputFormatter>[
-        FilteringTextInputFormatter.digitsOnly
-      ] : isDouble ? <TextInputFormatter>[
-        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
-      ] : null,
+      keyboardType: isNumeric || isDouble
+          ? const TextInputType.numberWithOptions(decimal: true)
+          : TextInputType.text,
+      inputFormatters: isNumeric
+          ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
+          : isDouble
+              ? <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                ]
+              : null,
       readOnly: isDate,
-      onTap: isDate ? () async {
-        DateTime? pickedDate = await showDatePicker(
-          context: context!,
-          initialDate: DateTime.now(),
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2101),
-        );
-        if (pickedDate != null) {
-          controller.text = "${pickedDate.toLocal()}".split(' ')[0];
-        }
-      } : null,
+      onTap: isDate
+          ? () async {
+              DateTime? pickedDate = await showDatePicker(
+                context: context!,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2101),
+              );
+              if (pickedDate != null) {
+                controller.text = "${pickedDate.toLocal()}".split(' ')[0];
+              }
+            }
+          : null,
       onChanged: (value) async {
         // Handle changes if needed
       },
     );
   }
 
-  Widget _dropdownField(String labelText, List<String> optionsList, BuildContext context, {int? index, bool isAreaWorkType = false}) {
+  Widget _dropdownField(
+      String labelText, List<String> optionsList, BuildContext context,
+      {int? index, bool isAreaWorkType = false}) {
     return DropdownButtonFormField(
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          filled: true,
+          fillColor: Theme.of(context).scaffoldBackgroundColor,
         ),
-        filled: true,
-        fillColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
-      isExpanded: true,
-      menuMaxHeight: screenHeightPercentage(context, percentage: 0.5),
-      dropdownColor: Theme.of(context).dialogBackgroundColor,
-      items: optionsList.map((e) => DropdownMenuItem(
-        value: e,
-        child: Text(e),
-      )).toList(),
-      onChanged: (value) async {
-        if (isAreaWorkType) {
-          areaType = value.toString();
-        } else {
-          workTypeNameList[index!][0] = value.toString();
-        }
-      }
-    );
+        isExpanded: true,
+        menuMaxHeight: screenHeightPercentage(context, percentage: 0.5),
+        dropdownColor: Theme.of(context).dialogBackgroundColor,
+        items: optionsList
+            .map((e) => DropdownMenuItem(
+                  value: e,
+                  child: Text(e),
+                ))
+            .toList(),
+        onChanged: (value) async {
+          if (isAreaWorkType) {
+            areaType = value.toString();
+          } else {
+            workTypeNameList[index!][0] = value.toString();
+          }
+        });
   }
 
-  List<Widget> _workTypeSegment(BuildContext context, List<String> workTypeNames, int index) {
+  List<Widget> _workTypeSegment(
+      BuildContext context, List<String> workTypeNames, int index) {
     RxBool isArchitecturalChange = false.obs;
     return [
       _dropdownField("Type of Work", workTypeNames, context, index: index),
       Obx(() => Row(
-        children: [
-          const Text("Is there an Architectural Change?"),
-          Checkbox(
-            value: isArchitecturalChange.value,
-            onChanged: (value) {
-              isArchitecturalChange.value = value!;
-              workTypeNameList[index][1] = value;
-            },
-          ),
-        ],
-      )),
+            children: [
+              const Text("Is there an Architectural Change?"),
+              Checkbox(
+                value: isArchitecturalChange.value,
+                onChanged: (value) {
+                  isArchitecturalChange.value = value!;
+                  workTypeNameList[index][1] = value;
+                },
+              ),
+            ],
+          )),
     ];
   }
 
   ElevatedButton _startRecordingButton() {
     return ElevatedButton(
       onPressed: () {
-        RecordingController recordingController = Get.put(RecordingController(), tag: 'thisone');
+        RecordingController recordingController =
+            Get.put(RecordingController(), tag: 'thisone');
         recordingController.iD = int.parse(recordingIdController.text);
         recordingController.projectId = int.parse(projectIdController.text);
         recordingController.segmentId = int.parse(segmentIdController.text);
@@ -164,9 +186,11 @@ class RecordingConfiguration extends StatelessWidget {
         recordingController.typesOfWork = _getTypesOfWork();
         recordingController.startDate = _parseDate(startDateController.text);
         recordingController.endDate = _parseDate(endDateController.text);
-        recordingController.recordingDate = _parseDate(recordingDateController.text);
+        recordingController.recordingDate =
+            _parseDate(recordingDateController.text);
         recordingController.areaType = _stringToWorkZoneType(areaType);
-        recordingController.mobilitySpeedMPH = double.parse(mobilitySpeedController.text);
+        recordingController.mobilitySpeedMPH =
+            double.parse(mobilitySpeedController.text);
         Get.to(() => const WorkZoneRecording());
       },
       child: const Text("Start Recording"),
@@ -272,11 +296,9 @@ class RecordingConfiguration extends StatelessWidget {
     List<TypeOfWork> typesOfWork = [];
     for (List workType in workTypeNameList) {
       typesOfWork.add(TypeOfWork(
-        typeName: _stringToWorkTypeName(workType[0]),
-        isArchitecturalChange: workType[1]
-      ));
+          typeName: _stringToWorkTypeName(workType[0]),
+          isArchitecturalChange: workType[1]));
     }
     return typesOfWork;
   }
-
 }

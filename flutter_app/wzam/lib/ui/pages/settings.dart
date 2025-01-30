@@ -6,46 +6,52 @@ import 'package:wzam/ui/styles/spacing.dart';
 import 'package:wzam/ui/styles/widgets/wzam_app_bar.dart';
 import 'package:wzam/ui/styles/widgets/wzam_text.dart';
 
-
 class SettingsPage extends StatelessWidget {
   late final SettingsController controller;
   late final LoginController loginController;
   final TextEditingController keycloakController = TextEditingController();
   final TextEditingController realmController = TextEditingController();
   final TextEditingController clientController = TextEditingController();
-  final TextEditingController clientSecretController = TextEditingController(); 
-  
+  final TextEditingController clientSecretController = TextEditingController();
+
   SettingsPage({super.key});
   @override
   Widget build(BuildContext context) {
-    controller = Get.find<SettingsController>(); 
+    controller = Get.find<SettingsController>();
     loginController = Get.find<LoginController>();
     return FutureBuilder(
         future: controller.initialize(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) { 
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           keycloakController.text = controller.keycloakEndpoint.value;
           realmController.text = controller.keycloakRealm.value;
           clientController.text = controller.keycloakClient.value;
           clientSecretController.text = controller.keycloakClientSecret.value;
           return Scaffold(
-            appBar: WZAMAppBar(
-              title: "Settings Page",
-              settings: true,
-            ),
-            body: Obx(() => Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: ListView(children: [
-                loginController.loggedIn.value ? _accountSection() : Container(),
-                loginController.loggedIn.value ? verticalSpaceMedium : Container(),
-                _keycloakSection(),
-                verticalSpaceMedium,
-                _appearanceSection(),
-                verticalSpaceMedium,
-                loginController.loggedIn.value ? _logoutButton() : Container(),
-              ]),
-            ),
-            )
-          );
+              appBar: WZAMAppBar(
+                title: "Settings Page",
+                settings: true,
+              ),
+              body: Obx(
+                () => Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: ListView(children: [
+                    loginController.loggedIn.value
+                        ? _accountSection()
+                        : Container(),
+                    loginController.loggedIn.value
+                        ? verticalSpaceMedium
+                        : Container(),
+                    _keycloakSection(),
+                    verticalSpaceMedium,
+                    _appearanceSection(),
+                    _listeningOption(),
+                    verticalSpaceMedium,
+                    loginController.loggedIn.value
+                        ? _logoutButton()
+                        : Container(),
+                  ]),
+                ),
+              ));
         });
   }
 
@@ -115,7 +121,8 @@ class SettingsPage extends StatelessWidget {
         ),
         verticalSpaceMedium,
         TextField(
-          decoration: const InputDecoration(labelText: 'Keycloak Client Secret'),
+          decoration:
+              const InputDecoration(labelText: 'Keycloak Client Secret'),
           controller: clientSecretController,
           onChanged: (value) async {
             if (value != controller.keycloakClientSecret.value) {
@@ -133,7 +140,9 @@ class SettingsPage extends StatelessWidget {
                         Get.snackbar('Error', 'One or more fields are empty');
                         return;
                       } else {
-                        loginController.loggedIn.value ? saveLoggedIn() : saveNewKeycloak();
+                        loginController.loggedIn.value
+                            ? saveLoggedIn()
+                            : saveNewKeycloak();
                       }
                     }
                   : null,
@@ -143,10 +152,12 @@ class SettingsPage extends StatelessWidget {
             ElevatedButton(
               onPressed: controller.settingsChanged.value
                   ? () async {
-                      keycloakController.text = controller.keycloakEndpoint.value;
+                      keycloakController.text =
+                          controller.keycloakEndpoint.value;
                       realmController.text = controller.keycloakRealm.value;
                       clientController.text = controller.keycloakClient.value;
-                      clientSecretController.text = controller.keycloakClientSecret.value;
+                      clientSecretController.text =
+                          controller.keycloakClientSecret.value;
                       controller.settingsChanged.value = false;
                     }
                   : null,
@@ -169,17 +180,33 @@ class SettingsPage extends StatelessWidget {
 
   Widget _appearanceSettings() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        children: [
-          SwitchListTile(
-              title: const Text("Dark Mode"),
-              value: controller.darkModeState.value,
-              onChanged: (value) {
-                controller.switchModeState();
-              }),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          children: [
+            SwitchListTile(
+                title: const Text("Dark Mode"),
+                value: controller.darkModeState.value,
+                onChanged: (value) {
+                  controller.switchModeState();
+                }),
           ],
-        )
+        ));
+  }
+
+  Widget _listeningOption() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _headerElement("Voice Commands", Icons.mic),
+        SwitchListTile(
+          title: const Text("Enable Voice Commands"),
+          value: controller
+              .listeningEnabled.value, // Controlled by SettingsController
+          onChanged: (value) {
+            controller.listeningEnabled.value = value;
+          },
+        ),
+      ],
     );
   }
 
@@ -228,8 +255,7 @@ class SettingsPage extends StatelessWidget {
 
   Future saveNewKeycloak() async {
     controller.keycloakEndpoint.value = keycloakController.text;
-    await controller.secureStorage
-      .setKeycloakEndpoint(keycloakController.text);
+    await controller.secureStorage.setKeycloakEndpoint(keycloakController.text);
     controller.keycloakRealm.value = realmController.text;
     await controller.secureStorage.setRealm(realmController.text);
     controller.keycloakClient.value = clientController.text;
@@ -241,7 +267,8 @@ class SettingsPage extends StatelessWidget {
 
   AlertDialog logoutAlert() {
     return AlertDialog(
-      content: const Text('Changing keycloak settings will log you out. Are you sure you want to continue?'),
+      content: const Text(
+          'Changing keycloak settings will log you out. Are you sure you want to continue?'),
       actions: <Widget>[
         ClickableText(
           text: 'Cancel',
@@ -265,4 +292,3 @@ class SettingsPage extends StatelessWidget {
     );
   }
 }
-

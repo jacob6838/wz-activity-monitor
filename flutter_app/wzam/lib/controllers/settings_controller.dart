@@ -11,6 +11,7 @@ class SettingsController extends GetxController {
   SharedPrefs sharedPrefs = SharedPrefs();
   SecureStorage secureStorage = SecureStorage();
   LoginController loginController = Get.find<LoginController>();
+  var listeningEnabled = false.obs;
 
   Rx<bool> darkModeState = Get.isDarkMode.obs;
 
@@ -21,6 +22,9 @@ class SettingsController extends GetxController {
   RxString keycloakClient = ''.obs;
   RxString keycloakClientSecret = ''.obs;
   RxBool settingsChanged = false.obs;
+  void toggleListening(bool value) {
+    listeningEnabled.value = value;
+  }
 
   initialize() async {
     username.value = await secureStorage.getUsername();
@@ -75,4 +79,3 @@ class SettingsController extends GetxController {
     }
   }
 }
-

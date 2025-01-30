@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wzam/ui/pages/load_screen.dart';
 import 'package:wzam/ui/styles/theme_setting.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MainApp());

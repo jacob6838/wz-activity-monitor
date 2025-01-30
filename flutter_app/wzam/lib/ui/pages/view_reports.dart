@@ -17,7 +17,7 @@ class ViewReports extends StatelessWidget {
     final mapController = MapController();
 
     return FutureBuilder(
-      future: controller.initialize(),
+      future: controller.initialize(context),
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
@@ -54,6 +54,17 @@ class ViewReports extends StatelessWidget {
           body: Stack(
             children: [
               _map(context, controller, mapController, MediaQuery.of(context).orientation),
+              /*Positioned(  
+                bottom: 40,
+                left: 20,
+                right: 20,
+                child: ElevatedButton(  
+                  onPressed: () {
+                    controller.downloadReportsFromServer();
+                  },
+                  child: const Text('Load Reports'),
+                )
+              )*/
             ],
           ),
         );

@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wzam/controllers/recording_controller.dart';
+import 'package:wzam/ui/pages/home.dart';
 import 'package:wzam/ui/pages/settings.dart';
 import 'package:wzam/ui/styles/app_colors.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
@@ -44,6 +45,12 @@ class WorkZoneRecording extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Work Zone Recording'),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Get.offAll(() => Home());
+              }
+            ),
             actions: [
               IconButton(
                 icon: const Icon(Icons.settings),
@@ -57,7 +64,7 @@ class WorkZoneRecording extends StatelessWidget {
             children: [
               _map(context, controller, mapController, MediaQuery.of(context).orientation),
               ...mapButtons(context, controller),
-              ...controller.recording.value ? inWorkZoneScreen(context, controller) : outOfWorkZoneScreen(context, controller),
+              ...controller.inWorkZone.value ? inWorkZoneScreen(context, controller) : outOfWorkZoneScreen(context, controller),
             ],
           ),
         ));
@@ -203,13 +210,13 @@ class WorkZoneRecording extends StatelessWidget {
         width: screenWidth(context) * .35,
         child: Container(  
           height: 100,
-          color: primaryColor,
+          color: controller.updatingMap ? primaryColor : mediumGrey,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, elevation: 0),
-            onPressed: () {
-              controller.recording.value ? controller.stopWorkZoneRecording() : controller.startWorkZoneRecording();
-            },
-            child: Text('Start Work Zone', style: style_three.copyWith(fontWeight: FontWeight.w600, fontSize: 19), textAlign: TextAlign.center), 
+            onPressed: controller.updatingMap ? () {
+              controller.inWorkZone.value ? controller.stopWorkZoneRecording() : controller.startWorkZoneRecording();
+            } : null,
+            child: Text(controller.updatingMap ? 'Start Work Zone' : 'Recording Completed', style: style_three.copyWith(fontWeight: FontWeight.w600, fontSize: 19), textAlign: TextAlign.center) , 
           ),
         )
       ),
@@ -266,7 +273,7 @@ class WorkZoneRecording extends StatelessWidget {
           color: lightGrey,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, elevation: 0, padding: EdgeInsets.zero),
-            onPressed: controller.recording.value ? () {
+            onPressed: controller.inWorkZone.value ? () {
               controller.toggleWorkersPresent();
             } : null,
             child: controller.workersPresent.value ? Image.asset('assets/images/workers_present.png', height: 90) : Image.asset('assets/images/workers_not_present.png', height: 90),
@@ -327,7 +334,7 @@ class WorkZoneRecording extends StatelessWidget {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, elevation: 0),
             onPressed: () {
-              controller.recording.value ? controller.stopWorkZoneRecording() : controller.startWorkZoneRecording();
+              controller.inWorkZone.value ? controller.stopWorkZoneRecording() : controller.startWorkZoneRecording();
             },
             child: Text('End Work Zone', style: style_three.copyWith(fontWeight: FontWeight.w600), textAlign: TextAlign.center), 
           ),
@@ -377,9 +384,8 @@ class WorkZoneRecording extends StatelessWidget {
     List<Widget> laneButtons = [];
     for (int i = 0; i < controller.lanesOpened.length; i++) {
       laneButtons.add(ElevatedButton(
-        onPressed: controller.recording.value ? () {
+        onPressed: controller.inWorkZone.value ? () {
           controller.lanesChanging(i);
-          print(controller.lanesOpened);
         }: null,
         //child: controller.lanesOpened[i] ? Text('Lane ${i+1} Open') : Text('Lane ${i+1} Closed'),
         style: ElevatedButton.styleFrom(backgroundColor: controller.lanesOpened[i] ? Colors.green : Colors.red, padding: EdgeInsets.zero, shape: CircleBorder()),

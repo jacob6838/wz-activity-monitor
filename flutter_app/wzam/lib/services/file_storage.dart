@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:wzam/models/archive_directory.dart';
 import 'package:wzam/models/recording.dart';
 import 'package:wzam/models/report.dart';
+import 'package:http/http.dart' as http;
 
 class FileStorageService extends GetxService {
 
@@ -100,6 +101,7 @@ class FileStorageService extends GetxService {
     return dir.list().where((v) => v is File).map((v) => v.path.split('/').last).toList();
   }
 
+  //TODO: make asynchronous and and await to writeToFile
   void saveReport(Report report) {
     final String reportJson = jsonEncode(report);
     final String fileName = 'report_${DateTime.now().toUtc().toIso8601String()}.json';
@@ -128,6 +130,18 @@ class FileStorageService extends GetxService {
     return reports;
   }
 
+  Future<List<Recording>> getRecordingFiles(String subdirectory) async {
+    final String directoryPath = await _getDownloadsDirectory(subdirectory: subdirectory) ?? "";
+    final dir = Directory(directoryPath);
+    if (!await dir.exists()) {
+      throw Exception("Directory does not exist");
+    }
+    final List<FileSystemEntity> entities = await dir.list().toList();
+    final List<File> files = entities.whereType<File>().toList();
+    List<Recording> recordings = convertFilesToRecordings(files);
+    return recordings;
+  }
+
   List<Report> convertFilesToReports(List<File> files) {
     List<Report> reports = [];
     for (File file in files) {
@@ -137,6 +151,77 @@ class FileStorageService extends GetxService {
       reports.add(report);
     }
     return reports;
+  }
+
+  Future<void> downloadReportsFromServer() async {
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
+    final headers = {'Content-Type': 'application/json'};
+    try {
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        print('Report gathered successfully');
+        //print(response.body);
+        await saveReports(response.body);
+      } else {
+        print('Failed to post report: ${response.statusCode}');
+        print(response.body);
+      }
+    } catch (e) {
+      print('Error posting report: $e');
+    }
+  }
+
+  Future saveReports(String responseBody) async{
+    List<dynamic> reportsJson = jsonDecode(responseBody);
+    print(reportsJson[0].toString());
+    List<ReportWithId> reports = reportsJson.map((report) => ReportWithId.fromJson(report)).toList();
+    //print(reports[0].toJson().toString());
+    List<Report> reportsWithoutId = reports.map((report) => Report(
+      project_id: report.project_id,
+      segment_id: report.segment_id,
+      area_id: report.area_id,
+      report_name: report.report_name,
+      types_of_work: report.types_of_work,
+      workers_present: report.workers_present,
+      start_date: report.start_date,
+      end_date: report.end_date,
+      report_date: report.report_date,
+      area_type: report.area_type,
+      mobility_speed_mph: report.mobility_speed_mph,
+      geometry_type: report.geometry_type,
+      point: report.point
+    )).toList();
+    await deleteAllReports();
+    for (Report report in reportsWithoutId) {
+      saveReport(report);
+    }
+  }
+
+  Future deleteAllReports() async {
+    String directoryPath = 'reports';
+    String path = await _getDownloadsDirectory(subdirectory: directoryPath) ?? "";
+    final dir = Directory(path);
+    if (!dir.existsSync()) {
+      return;
+    }
+    dir.listSync().forEach((file) {
+      if (file is File) {
+        file.deleteSync();
+      } else if (file is Directory) {
+        file.deleteSync(recursive: true);
+      }
+    });
+  }
+
+  List<Recording> convertFilesToRecordings(List<File> files) {
+    List<Recording> recordings = [];
+    for (File file in files) {
+      String recordingJson = file.readAsStringSync();
+      Map<String, dynamic> reportMap = jsonDecode(recordingJson);
+      Recording report = Recording.fromJson(reportMap);
+      recordings.add(report);
+    }
+    return recordings;
   }
 
 }

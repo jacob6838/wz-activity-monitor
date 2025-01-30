@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -8,6 +9,7 @@ import 'package:wzam/models/wzdx_models.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/location_service.dart';
 import 'package:wzam/ui/pages/home.dart';
+import 'package:wzam/ui/styles/screen_size.dart';
 
 import '../ui/styles/app_colors.dart';
 
@@ -30,8 +32,8 @@ class RecordingController extends GetxController {
   Rx<MarkerLayer> markerLayer = const MarkerLayer(markers: <Marker>[]).obs;
   RxList<Marker> recordingMarkers = <Marker>[].obs;
   Rx<PolylineLayer> polylineLayer = const PolylineLayer(polylines: <Polyline>[]).obs;
-  RxBool recording = false.obs;
-  bool recordingNeedToMark = false;
+  RxBool inWorkZone = false.obs;
+  bool refPtNeedToMark = false;
   RxBool workersPresent = false.obs;
   bool workersPresentNeedToMark = false;
   RxList<bool> lanesOpened = <bool>[].obs;
@@ -43,6 +45,8 @@ class RecordingController extends GetxController {
   RxInt currentSpeedLimit = 0.obs;
   int speedLimitChangeNeedToMark = 0;
   RxDouble mapZoom = 17.0.obs;
+  bool updatingMap = true;
+  
 
   Future<void> initialize() async {
     currentPosition = locationService.currentPosition;
@@ -64,10 +68,10 @@ class RecordingController extends GetxController {
             markings.add(marking);
             workersPresentNeedToMark = false;
           }
-          if(recordingNeedToMark) {
-            RecordingMarking marking = RecordingMarking(refPt: recording.value);
+          if(refPtNeedToMark) {
+            RecordingMarking marking = RecordingMarking(refPt: inWorkZone.value);
             markings.add(marking);
-            recordingNeedToMark = false;
+            refPtNeedToMark = false;
           }
           if (laneChangeNeedToMark != 0) {
             if (lanesOpened[laneChangeNeedToMark - 1]) {
@@ -102,8 +106,10 @@ class RecordingController extends GetxController {
           //pointsLatLng.add(LatLng(position.latitude, position.longitude));       
           _addPointToPolyline(position.latitude, position.longitude);
         }
-        _updateMarkerLayer();
-        updateMap();
+        if (updatingMap) {
+          _updateMarkerLayer();
+          updateMap();
+        }
       }
     });
   }
@@ -128,11 +134,15 @@ class RecordingController extends GetxController {
   }
 
   void _updateMarkerLayer() {
-    markerLayer.value = MarkerLayer(markers: <Marker>[...recordingMarkers, _userLocationMarker(currentPosition.value!.latitude, currentPosition.value!.longitude)]);
+    if (updatingMap) {
+      markerLayer.value = MarkerLayer(markers: <Marker>[...recordingMarkers, _userLocationMarker(currentPosition.value!.latitude, currentPosition.value!.longitude)]);
+    } else {
+      markerLayer.value = MarkerLayer(markers: <Marker>[...recordingMarkers]);
+    }
   }
 
   void _addPointToPolyline(double lat, double long) {
-    if (!recording.value) {
+    if (!inWorkZone.value) {
       nonWorkZonePointsLatLng.add(LatLng(lat, long));
     } else {
       if (pointsLatLng.isEmpty) {
@@ -167,17 +177,28 @@ class RecordingController extends GetxController {
 
   void startWorkZoneRecording() {
     currentSpeedLimit.value = mobilitySpeedMPH!.toInt(); //TODO: Figure Out what this mobility speed thing is
-    recording.value = true;
-    recordingNeedToMark = true;
+    inWorkZone.value = true;
+    refPtNeedToMark = true;
   }
 
   void stopWorkZoneRecording() {
-    recordingNeedToMark = true;
-    recording.value = false;
+    refPtNeedToMark = true;
+    inWorkZone.value = false;
     recordingLocation = false;
     addStopWorkZoneToRecording();
     _saveRecording();
+    updatingMap = false;
+    _showFullRecordingMap();
     Get.dialog(_createRecordingDialog());
+  }
+
+
+  void _showFullRecordingMap() {
+    List<LatLng> constraintPoints = findRecordingBounds();
+    LatLngBounds bounds = LatLngBounds(constraintPoints.first, constraintPoints.last);
+    CameraFit cameraFit = CameraFit.bounds(bounds: bounds, padding: EdgeInsets.all(60.0));
+    _updateMarkerLayer();
+    mapController!.fitCamera(cameraFit);
   }
 
   void toggleWorkersPresent() {
@@ -218,11 +239,11 @@ class RecordingController extends GetxController {
 
   void addStopWorkZoneToRecording() {
     late RecordingMarking marking;
-    recordingNeedToMark = false;
+    refPtNeedToMark = false;
     if (workersPresent.value == true) {
-      marking = RecordingMarking(refPt: recordingNeedToMark, workersPresent: false);
+      marking = RecordingMarking(refPt: refPtNeedToMark, workersPresent: false);
     }else {
-      marking = RecordingMarking(refPt: recordingNeedToMark);
+      marking = RecordingMarking(refPt: refPtNeedToMark);
     }
     RecordingPoint lastpoint = points.last;
     RecordingPoint newLastPoint = RecordingPoint(
@@ -258,7 +279,7 @@ class RecordingController extends GetxController {
     fileStorageService.saveRecording(recording);
   }
 
-  AlertDialog _createRecordingDialog() {
+  AlertDialog _createRecordingDialog() {  
     return AlertDialog(
       title: const Text('Recording Saved'),
       content: const Text('The recording has been saved.'),
@@ -269,6 +290,12 @@ class RecordingController extends GetxController {
           },
           child: const Text('OK'),
         ),
+        TextButton(  
+          onPressed: () {
+            Get.back();
+          },
+          child: const Text('View Recording'),
+        )
       ],
     );
   }
@@ -309,5 +336,52 @@ class RecordingController extends GetxController {
       rotate: true,
     );
     _addMarker(marker);
+  }
+
+  /*FlutterMap recordingMap() {
+    List<LatLng> points = findRecordingBounds();
+    LatLngBounds bounds = LatLngBounds(points.first, points.last);
+    return FlutterMap(  
+      mapController: mapController,
+      /*options: MapOptions(
+        cameraConstraint: CameraConstraint.contain(bounds: bounds)
+      ),*/
+      children: [
+        TileLayer(
+          urlTemplate: "https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}",
+          additionalOptions: {
+            'accessToken': dotenv.env['MAPBOX_ACCESS_TOKEN']!,
+            'id': 'mapbox.satellite',
+          },
+        ),
+        polylineLayer.value,
+        markerLayer.value,
+      ]
+    );
+  }*/
+
+  List<LatLng> findRecordingBounds() {
+    List<LatLng> points = [];
+    double smallLat = pointsLatLng.first.latitude;  //TODO: This can fail is you stop the recording before anything is actually recorded
+    double smallLong = pointsLatLng.first.longitude;
+    double bigLat = pointsLatLng.first.latitude;
+    double bigLong = pointsLatLng.first.longitude;
+    for (LatLng points in pointsLatLng) {
+      if (points.latitude < smallLat) {
+        smallLat = points.latitude;
+      }
+      if (points.latitude > bigLat) {
+        bigLat = points.latitude;
+      }
+      if (points.longitude < smallLong) {
+        smallLong = points.longitude;
+      }
+      if (points.longitude > bigLong) {
+        bigLong = points.longitude;
+      }
+    }
+    LatLng cornerOne = LatLng(smallLat, smallLong);
+    LatLng cornerTwo = LatLng(bigLat, bigLong);
+    return [cornerOne, cornerTwo];
   }
 }

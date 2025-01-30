@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -9,6 +11,7 @@ import 'package:wzam/ui/pages/report_location_selection.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
 import 'package:wzam/ui/styles/widgets/wzam_app_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 class ReportPageController extends GetxController {
@@ -33,6 +36,10 @@ class ReportPage extends StatelessWidget {
   final TextEditingController endDateController = TextEditingController();
   final TextEditingController reportDateController = TextEditingController();
   final TextEditingController mobilitySpeedController = TextEditingController();
+
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+  DateTime reportDate = DateTime.now();
   
   ReportPage({super.key});
   @override
@@ -43,6 +50,7 @@ class ReportPage extends StatelessWidget {
     RxList<Widget> workTypeSegments = <Widget>[
       ..._workTypeSegment(context, workTypeNames, 0),
     ].obs;
+
 
     return Scaffold(
       appBar: WZAMAppBar(
@@ -86,11 +94,11 @@ class ReportPage extends StatelessWidget {
             child: const Text("Add Another Type of Work"),
           ),
           verticalSpaceMedium,
-          _inputField("Start Date", startDateController, isDate: true, context: context), //optional
+          _inputField("Start Date", startDateController, isDate: true, dateStorage: startDate, context: context), //optional
           verticalSpaceMedium,
-          _inputField("End Date", endDateController, isDate: true, context: context), //optional
+          _inputField("End Date", endDateController, isDate: true, dateStorage: endDate, context: context), //optional
           verticalSpaceMedium,
-          _inputField("Report Date", reportDateController, isDate: true, isRequired: true, context: context), 
+          _inputField("Report Date", reportDateController, isDate: true, dateStorage: reportDate, isRequired: true, context: context), 
           verticalSpaceMedium,
           _dropdownField("Area Type", areaTypes, context, isAreaWorkType: true),
           verticalSpaceMedium,
@@ -102,14 +110,21 @@ class ReportPage extends StatelessWidget {
             onPressed: () {
               Get.to(() => const ReportLocationSelection());
             },
-            child: controller.point.isEmpty ? const Text("Select Activty Location Area") : Text("Activity Location: ${controller.point[0]}, ${controller.point[1]}"),
+            child: controller.point.isEmpty ? const Text("Select Activty Location Point") : Text("Change Activity Location Point"),
           ),
+          verticalSpaceSmall,
+          Container(  
+            height: 3,
+            decoration: BoxDecoration(
+              color: Colors.black,
+          )),
+          verticalSpaceSmall,
           _submitButton(),
         ])),
       ));
   }
 
-  Widget _inputField(String labelText, TextEditingController controller, {bool isNumeric = false, bool isDate = false, bool isRequired = false, bool isDouble = false, BuildContext? context}) {
+  Widget _inputField(String labelText, TextEditingController controller, {bool isNumeric = false, bool isDate = false, DateTime? dateStorage, bool isRequired = false, bool isDouble = false, BuildContext? context}) {
     return TextField(
       decoration: InputDecoration(
         labelText: isRequired ? labelText : "$labelText (optional)",
@@ -133,11 +148,13 @@ class ReportPage extends StatelessWidget {
           controller.text = "${pickedDate.toLocal()}".split(' ')[0];
           TimeOfDay? pickedTime = await showTimePicker(
             context: context,
-            initialTime: TimeOfDay.now(), //TODO: Change this to be the expected time that would be inputted
+            initialTime: const TimeOfDay(hour: 8, minute: 0),
           );
           if (pickedTime != null) {
             DateTime finalDateTime = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
-            controller.text = finalDateTime.toString();
+            String formattedDate = DateFormat.yMd().add_jm().format(finalDateTime);
+            dateStorage = finalDateTime;
+            controller.text = formattedDate;
           }
         }
       } : null,
@@ -382,18 +399,18 @@ class ReportPage extends StatelessWidget {
     List<TypeOfWork> typesOfWork = _getTypesOfWork();
 
     Report report = Report(
-      projectId: projectIdController.text != "" ? int.parse(projectIdController.text) : null, //optional field
-      segmentId: segmentIdController.text != "" ? int.parse(segmentIdController.text) : null, //optional field
-      areaId: areaIdController.text != "" ? int.parse(areaIdController.text) : null, //optional field
-      reportName: reportNameController.text,
-      typesOfWork: typesOfWork,
-      workersPresent: areWorkersPresent.value,
-      startDate: _parseDate(startDateController.text), //optional field
-      endDate: _parseDate(endDateController.text), //optional field
-      reportDate: _parseDate(reportDateController.text) ?? DateTime.now().millisecondsSinceEpoch, //TODO change to launch an error
-      areaType: _stringToWorkZoneType(controller.areaType),
-      mobilitySpeedMPH: mobilitySpeedController.text != "" ? double.parse(mobilitySpeedController.text) : null, //optional field
-      geometryType: _stringToGeometryType(controller.geometryType),
+      project_id: projectIdController.text != "" ? int.parse(projectIdController.text) : null, //optional field
+      segment_id: segmentIdController.text != "" ? int.parse(segmentIdController.text) : null, //optional field
+      area_id: areaIdController.text != "" ? int.parse(areaIdController.text) : null, //optional field
+      report_name: reportNameController.text,
+      types_of_work: typesOfWork,
+      workers_present: areWorkersPresent.value,
+      start_date: startDate.millisecondsSinceEpoch,//_parseDate(startDateController.text), //optional field
+      end_date: endDate.millisecondsSinceEpoch,//_parseDate(endDateController.text), //optional field
+      report_date: reportDate.millisecondsSinceEpoch,//_parseDate(reportDateController.text) ?? DateTime.now().millisecondsSinceEpoch, //TODO change to launch an error
+      area_type: _stringToWorkZoneType(controller.areaType),
+      mobility_speed_mph: mobilitySpeedController.text != "" ? double.parse(mobilitySpeedController.text) : null, //optional field
+      geometry_type: _stringToGeometryType(controller.geometryType),
       point: controller.point
     );
     fileStorageService.saveReport(report);
@@ -401,27 +418,30 @@ class ReportPage extends StatelessWidget {
     Get.back();
   }
 
-  void postReport(Report? report) async {
-    /*final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
-    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+  void postReport(Report report) async {
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
+    final headers = {'Content-Type': 'application/json'};
     try {
       final response = await http.post(url, 
         headers: headers, 
-        body: {
-          "project_id": "0",
-          "segment_id": "0",
-          "area_id": "0",
-          "report_name": "string",
-          "types_of_work": "[{\"type_name\":\"maintenance\",\"is_architectural_change\":false}]",
-          "workers_present": "false",
-          "start_date": "0",
-          "end_date": "0",
-          "report_date": "0",
-          "area_type": "static",
-          "mobility_speed_mph": "25",
-          "geometry_type": "multipoint",
-          "point": "[0]"
-        }
+        body: json.encode({
+            "project_id": report.project_id,
+            "segment_id": report.segment_id,
+            "area_id": report.area_id,
+            "report_name": report.report_name,
+            "types_of_work": report.types_of_work.map((e) => e.toJson()).toList(),
+            "workers_present": report.workers_present,
+            "start_date": 0,
+            "end_date": 0,
+            "report_date": 0,
+            "area_type": report.area_type.toString().split('.').last,
+            "mobility_speed_mph": report.mobility_speed_mph,
+            "geometry_type": report.geometry_type.toString().split('.').last,
+            "point": [
+              report.point[0], report.point[1]
+            ]
+          }
+        ),
       );
       if (response.statusCode == 200) {
         print('Report posted successfully');
@@ -431,6 +451,6 @@ class ReportPage extends StatelessWidget {
       }
     } catch (e) {
       print('Error posting report: $e');
-    }*/
+    }
   }
 }

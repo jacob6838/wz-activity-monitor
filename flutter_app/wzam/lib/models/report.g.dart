@@ -7,38 +7,38 @@ part of 'report.dart';
 // **************************************************************************
 
 Report _$ReportFromJson(Map<String, dynamic> json) => Report(
-      projectId: (json['projectId'] as num?)?.toInt(),
-      segmentId: (json['segmentId'] as num?)?.toInt(),
-      areaId: (json['areaId'] as num?)?.toInt(),
-      reportName: json['reportName'] as String,
-      typesOfWork: (json['typesOfWork'] as List<dynamic>)
+      project_id: (json['project_id'] as num?)?.toInt(),
+      segment_id: (json['segment_id'] as num?)?.toInt(),
+      area_id: (json['area_id'] as num?)?.toInt(),
+      report_name: json['report_name'] as String,
+      types_of_work: (json['types_of_work'] as List<dynamic>)
           .map((e) => TypeOfWork.fromJson(e as Map<String, dynamic>))
           .toList(),
-      workersPresent: json['workersPresent'] as bool,
-      startDate: (json['startDate'] as num?)?.toInt(),
-      endDate: (json['endDate'] as num?)?.toInt(),
-      reportDate: (json['reportDate'] as num).toInt(),
-      areaType: $enumDecode(_$WorkZoneTypeEnumMap, json['areaType']),
-      mobilitySpeedMPH: (json['mobilitySpeedMPH'] as num?)?.toDouble(),
-      geometryType: $enumDecode(_$GeometryTypeEnumMap, json['geometryType']),
+      workers_present: json['workers_present'] as bool,
+      start_date: (json['start_date'] as num?)?.toInt(),
+      end_date: (json['end_date'] as num?)?.toInt(),
+      report_date: (json['report_date'] as num).toInt(),
+      area_type: $enumDecode(_$WorkZoneTypeEnumMap, json['area_type']),
+      mobility_speed_mph: (json['mobility_speed_mph'] as num?)?.toDouble(),
+      geometry_type: $enumDecode(_$GeometryTypeEnumMap, json['geometry_type']),
       point: (json['point'] as List<dynamic>)
           .map((e) => (e as num).toDouble())
           .toList(),
     );
 
 Map<String, dynamic> _$ReportToJson(Report instance) => <String, dynamic>{
-      'projectId': instance.projectId,
-      'segmentId': instance.segmentId,
-      'areaId': instance.areaId,
-      'reportName': instance.reportName,
-      'typesOfWork': instance.typesOfWork,
-      'workersPresent': instance.workersPresent,
-      'startDate': instance.startDate,
-      'endDate': instance.endDate,
-      'reportDate': instance.reportDate,
-      'areaType': _$WorkZoneTypeEnumMap[instance.areaType]!,
-      'mobilitySpeedMPH': instance.mobilitySpeedMPH,
-      'geometryType': _$GeometryTypeEnumMap[instance.geometryType]!,
+      'project_id': instance.project_id,
+      'segment_id': instance.segment_id,
+      'area_id': instance.area_id,
+      'report_name': instance.report_name,
+      'types_of_work': instance.types_of_work,
+      'workers_present': instance.workers_present,
+      'start_date': instance.start_date,
+      'end_date': instance.end_date,
+      'report_date': instance.report_date,
+      'area_type': _$WorkZoneTypeEnumMap[instance.area_type]!,
+      'mobility_speed_mph': instance.mobility_speed_mph,
+      'geometry_type': _$GeometryTypeEnumMap[instance.geometry_type]!,
       'point': instance.point,
     };
 
@@ -56,20 +56,20 @@ const _$GeometryTypeEnumMap = {
 
 ReportWithId _$ReportWithIdFromJson(Map<String, dynamic> json) => ReportWithId(
       id: (json['id'] as num).toInt(),
-      projectId: (json['projectId'] as num?)?.toInt(),
-      segmentId: (json['segmentId'] as num?)?.toInt(),
-      areaId: (json['areaId'] as num?)?.toInt(),
-      reportName: json['reportName'] as String,
-      typesOfWork: (json['typesOfWork'] as List<dynamic>)
+      project_id: (json['project_id'] as num?)?.toInt(),
+      segment_id: (json['segment_id'] as num?)?.toInt(),
+      area_id: (json['area_id'] as num?)?.toInt(),
+      report_name: json['report_name'] as String,
+      types_of_work: (json['types_of_work'] as List<dynamic>)
           .map((e) => TypeOfWork.fromJson(e as Map<String, dynamic>))
           .toList(),
-      workersPresent: json['workersPresent'] as bool,
-      startDate: (json['startDate'] as num?)?.toInt(),
-      endDate: (json['endDate'] as num?)?.toInt(),
-      reportDate: (json['reportDate'] as num).toInt(),
-      areaType: $enumDecode(_$WorkZoneTypeEnumMap, json['areaType']),
-      mobilitySpeedMPH: (json['mobilitySpeedMPH'] as num?)?.toDouble(),
-      geometryType: $enumDecode(_$GeometryTypeEnumMap, json['geometryType']),
+      workers_present: json['workers_present'] as bool,
+      start_date: (json['start_date'] as num?)?.toInt(),
+      end_date: (json['end_date'] as num?)?.toInt(),
+      report_date: (json['report_date'] as num).toInt(),
+      area_type: $enumDecode(_$WorkZoneTypeEnumMap, json['area_type']),
+      mobility_speed_mph: (json['mobility_speed_mph'] as num?)?.toDouble(),
+      geometry_type: $enumDecode(_$GeometryTypeEnumMap, json['geometry_type']),
       point: (json['point'] as List<dynamic>)
           .map((e) => (e as num).toDouble())
           .toList(),
@@ -77,18 +77,18 @@ ReportWithId _$ReportWithIdFromJson(Map<String, dynamic> json) => ReportWithId(
 
 Map<String, dynamic> _$ReportWithIdToJson(ReportWithId instance) =>
     <String, dynamic>{
-      'projectId': instance.projectId,
-      'segmentId': instance.segmentId,
-      'areaId': instance.areaId,
-      'reportName': instance.reportName,
-      'typesOfWork': instance.typesOfWork,
-      'workersPresent': instance.workersPresent,
-      'startDate': instance.startDate,
-      'endDate': instance.endDate,
-      'reportDate': instance.reportDate,
-      'areaType': _$WorkZoneTypeEnumMap[instance.areaType]!,
-      'mobilitySpeedMPH': instance.mobilitySpeedMPH,
-      'geometryType': _$GeometryTypeEnumMap[instance.geometryType]!,
+      'project_id': instance.project_id,
+      'segment_id': instance.segment_id,
+      'area_id': instance.area_id,
+      'report_name': instance.report_name,
+      'types_of_work': instance.types_of_work,
+      'workers_present': instance.workers_present,
+      'start_date': instance.start_date,
+      'end_date': instance.end_date,
+      'report_date': instance.report_date,
+      'area_type': _$WorkZoneTypeEnumMap[instance.area_type]!,
+      'mobility_speed_mph': instance.mobility_speed_mph,
+      'geometry_type': _$GeometryTypeEnumMap[instance.geometry_type]!,
       'point': instance.point,
       'id': instance.id,
     };

@@ -73,6 +73,13 @@ class RecordingConfiguration extends StatelessWidget {
           _inputField("Mobility Speed (MPH)", mobilitySpeedController, isDouble: true),
           verticalSpaceMedium,
           _inputField("Number of Lanes", numberOfLanesController, isDouble: true, isRequired: true),
+          verticalSpaceMedium,
+          Container(  
+            height: 3,
+            decoration: BoxDecoration(
+              color: Colors.black,
+          )),
+          verticalSpaceMedium,
           _startRecordingButton(),
         ])),
       ));

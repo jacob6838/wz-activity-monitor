@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:wzam/services/location_service.dart';
 import 'package:wzam/ui/pages/report_generator.dart';
 
+import '../ui/styles/app_colors.dart';
+
 //This controller is used to manage the report location selection map and the report location point
 class ReportLocationSelectionController extends GetxController {
   late MapController? mapController;
@@ -31,12 +33,7 @@ class ReportLocationSelectionController extends GetxController {
   Marker _userLocationMarker() {
     return Marker(
         point: LatLng(currentPosition.value!.latitude, currentPosition.value!.longitude),
-        child: Container(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-            ),
-            child: const Icon(Icons.person, color: Color.fromARGB(255, 3, 134, 25), size: 25.0)),
+        child: Image.asset('assets/images/location_with_border.png', width: 25.0, height: 25.0),
         rotate: true
     );
   }
@@ -48,7 +45,17 @@ class ReportLocationSelectionController extends GetxController {
 
   void _updateMarkerLayer() {
     List<Marker> markers = <Marker>[_userLocationMarker()];
-    markers.add(Marker(point: point, child: Icon(Icons.circle, color: Colors.red, size: 10.0)));
+    markers.add(Marker(
+      point: point, 
+      child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10.0),
+              border: Border.all(color: Colors.black, width: 1.0),
+            ),
+            child: Icon(Icons.construction, color: primaryColor, size: 25.0),
+          ),
+    ));
     markerLayer.value = MarkerLayer(markers: markers);
   }
 

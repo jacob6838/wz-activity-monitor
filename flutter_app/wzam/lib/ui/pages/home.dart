@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/ui/pages/recording_configuration.dart';
 import 'package:wzam/ui/pages/report_generator.dart';
+import 'package:wzam/ui/pages/view_recordings.dart';
 import 'package:wzam/ui/pages/view_reports.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
@@ -54,6 +55,15 @@ class Home extends StatelessWidget {
                 Get.to(() => const ViewReports());
               },
               title: 'View Reports',
+              context: context
+            ),
+            verticalSpaceMedium,
+            //View the recordings list
+            _button(
+              onPressed: () {
+                Get.to(() => ViewRecordings());
+              },
+              title: 'View Recordings',
               context: context
             ),
           ]

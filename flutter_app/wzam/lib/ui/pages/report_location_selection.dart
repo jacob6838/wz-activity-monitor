@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wzam/controllers/report_location_selection_controller.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
-import 'package:wzam/ui/styles/spacing.dart';
+import 'package:wzam/ui/styles/text_styles.dart';
 
 //This is the map that pops up while making a report to place the workers location
 class ReportLocationSelection extends StatelessWidget {
@@ -38,16 +38,36 @@ class ReportLocationSelection extends StatelessWidget {
           body: Stack(
             children: [
               _map(context, controller, mapController, MediaQuery.of(context).orientation),
-              Column(
-                children: [
-                  verticalSpaceMedium,
-                  ElevatedButton(
+              Positioned(  
+                top: 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.white.withOpacity(0.6),
+                    ),
+                    width: screenWidth(context) - 40,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('Tap on the map to select the location of the work zone area', style: style_three, textAlign: TextAlign.center),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(  
+                bottom: 0,
+                left: 20,
+                right: 20,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 40),
+                  child: ElevatedButton(
                     onPressed: () {
                       controller.saveReportLocationPoint();
                     },
                     child: const Text('Save Report Location Point'),
                   ),
-                ],
+                ),
               )
             ],
           ),

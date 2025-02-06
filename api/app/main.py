@@ -1,6 +1,5 @@
 import datetime
 
-import wzdx_models
 from postgres_adapter import DatabaseAdapter
 from fastapi import Depends, FastAPI, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -13,6 +12,7 @@ import pytz
 import json
 
 from auth import KeycloakProvider
+from recording_to_wzdx import recording_to_wzdx
 
 
 ISO_8601_FORMAT_STRING = "%Y-%m-%dT%H:%M:%SZ"
@@ -256,9 +256,31 @@ async def get_recordings(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Recording with ID {recording_id} not found",
             )
+
         return recording.model_dump()
     else:
         return [o.model_dump() for o in db_adapter.get_recordings()]
+
+
+@app.get("/wzdx-recordings", description="Get all WZDx recordings")
+async def get_wzdx_recordings(
+    recording_id: int = Query(None, description="WZDx recording ID to filter for"),
+) -> models.WzdxRecordingWithId | list[models.WzdxRecordingWithId]:
+    logger.debug(
+        f"Received GET request to /recordings at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    if recording_id is not None:
+        recording = db_adapter.get_wzdx_recording(recording_id)
+        if not recording:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Recording with ID {recording_id} not found",
+            )
+
+        return recording.model_dump()
+    else:
+        return [o.model_dump() for o in db_adapter.get_wzdx_recordings()]
 
 
 @app.post("/recordings", description="Create a new recording")
@@ -270,6 +292,9 @@ async def create_recording(recording: models.Recording) -> models.RecordingWithI
     # Insert the recording into the database
     recording_id = db_adapter.insert_recording(recording)
     # db_adapter.close()
+
+    wzdx_recording = recording_to_wzdx(recording)
+    wzdx_recording_id = db_adapter.insert_wzdx_recording(wzdx_recording)
 
     # Retrieve the inserted recording to return it
     inserted_recording = db_adapter.get_recording(recording_id)

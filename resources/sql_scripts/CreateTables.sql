@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS public.projects (
     tmc_notes TEXT,
     active_status VARCHAR(255) NOT NULL,
     hyperlink TEXT,
-    start_date INT,
-    end_date INT,
+    start_date BIGINT,
+    end_date BIGINT,
     districts TEXT[],
     wydot_contact VARCHAR(255),
     project_update_contact VARCHAR(255),
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS public.road_sections (
     end_mm VARCHAR(255) NOT NULL,
     direction VARCHAR(255) NOT NULL,
     surface_type VARCHAR(255) NOT NULL,
-    start_date INT,
-    end_date INT,
+    start_date BIGINT,
+    end_date BIGINT,
     armed_status VARCHAR(255) NOT NULL,
     geometry GEOMETRY(LineString, 4326) NOT NULL, -- Storing as LineString
     bbox FLOAT8[][],
@@ -65,10 +65,10 @@ CREATE TABLE IF NOT EXISTS public.activity_areas (
     segment_id INT NOT NULL,
     area_name VARCHAR(255) NOT NULL,
     description TEXT,
-    creation_date INT NOT NULL,
-    update_date INT NOT NULL,
-    start_date INT NOT NULL,
-    end_date INT NOT NULL,
+    creation_date BIGINT NOT NULL,
+    update_date BIGINT NOT NULL,
+    start_date BIGINT NOT NULL,
+    end_date BIGINT NOT NULL,
     start_date_verified BOOLEAN,
     end_date_verified BOOLEAN,
     area_type VARCHAR(255) NOT NULL,
@@ -105,13 +105,16 @@ CREATE TABLE IF NOT EXISTS public.reports (
     report_name VARCHAR(255) NOT NULL,
     types_of_work JSONB NOT NULL, -- Storing as JSONB
     workers_present BOOLEAN NOT NULL,
-    start_date INT,
-    end_date INT,
-    report_date INT NOT NULL,
+    start_date BIGINT,
+    end_date BIGINT,
+    report_date BIGINT NOT NULL,
     area_type VARCHAR(255) NOT NULL, -- Assuming WorkZoneType is a VARCHAR
     mobility_speed_mph FLOAT,
-    geometry_type VARCHAR(50) NOT NULL, -- Storing GeometryType as a string
-    point GEOMETRY(Point, 4326), -- Storing as Point
+    geometry_type VARCHAR(255) NOT NULL,
+    geometry GEOMETRY(MultiPoint, 4326) NOT NULL,
+    geometry_line_width FLOAT,
+    license_plate VARCHAR(255),
+    surface_type VARCHAR(255),
     CONSTRAINT reports_pkey PRIMARY KEY (id)
 );
 
@@ -129,11 +132,33 @@ CREATE TABLE IF NOT EXISTS public.recordings (
     area_id INT,
     recording_name VARCHAR(255) NOT NULL,
     types_of_work JSONB NOT NULL, -- Storing as JSONB
-    start_date INT,
-    end_date INT,
-    recording_date INT NOT NULL,
+    start_date BIGINT,
+    end_date BIGINT,
+    recording_date BIGINT NOT NULL,
     area_type VARCHAR(255) NOT NULL,
     mobility_speed_mph FLOAT,
+    surface_type VARCHAR(255),
     points JSONB, -- Storing as JSONB
     CONSTRAINT recordings_pkey PRIMARY KEY (id)
+);
+
+CREATE SEQUENCE IF NOT EXISTS public.wzdx_recordings_id_seq
+   INCREMENT 1
+   START 1
+   MINVALUE 1
+   MAXVALUE 2147483647
+   CACHE 1;
+
+CREATE TABLE IF NOT EXISTS public.wzdx_recordings (
+    id INTEGER NOT NULL DEFAULT nextval('wzdx_recordings_id_seq'::regclass),
+    project_id INT,
+    segment_id INT,
+    area_id INT,
+    features JSONB NOT NULL, -- Storing features array as JSONB
+    types_of_work JSONB NOT NULL, -- Storing as JSONB
+    start_date BIGINT,
+    end_date BIGINT,
+    creation_date BIGINT NOT NULL,
+    area_type VARCHAR(255) NOT NULL,
+    CONSTRAINT wzdx_recordings_pkey PRIMARY KEY (id)
 );

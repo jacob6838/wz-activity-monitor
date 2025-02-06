@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -10,6 +13,7 @@ import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/location_service.dart';
 import 'package:wzam/ui/pages/home.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
+import 'package:http/http.dart' as http;
 
 import '../ui/styles/app_colors.dart';
 
@@ -264,20 +268,141 @@ class RecordingController extends GetxController {
 
   void _saveRecording() {
     Recording recording = Recording(
-      projectId: projectId,
-      segmentId: segmentId,
-      areaId: areaId,
-      recordingName: recordingName,
-      typesOfWork: typesOfWork,
-      startDate: startDate,
-      endDate: endDate,
-      recordingDate: recordingDate,
-      areaType: areaType,
-      mobilitySpeedMPH: mobilitySpeedMPH,
+      project_id: projectId,
+      segment_id: segmentId,
+      area_id: areaId,
+      recording_name: recordingName,
+      types_of_work: typesOfWork,
+      start_date: startDate,
+      end_date: endDate,
+      recording_date: recordingDate,
+      area_type: areaType,
+      mobility_speed_mph: mobilitySpeedMPH,
       points: points,
     );
-    fileStorageService.saveRecording(recording);
+    //fileStorageService.saveRecording(recording);
+    postRecording(recording);
   }
+
+  void postRecording(Recording recording) async {
+
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/recordings');
+    final headers = {'Content-Type': 'application/json'};
+    try {
+      final response = await http.post(url, 
+        headers: headers, 
+        /*body: json.encode({
+            'project_id': recording.project_id,
+            'segment_id': recording.segment_id,
+            'area_id': recording.area_id,
+            'recording_name': recording.recording_name,
+            'types_of_work': [
+              {
+                'type_name': "maintenance",
+                'is_architectural_change': true,
+              }
+            ],
+            //recording.types_of_work.map((e) => e.toJson()).toList(),
+            'start_date': 0,
+            'end_date': 0,
+            'recording_date': 0,
+            'area_type': recording.area_type,
+            'mobility_speed_mph': recording.mobility_speed_mph,
+            'points': recording.points.map((point) => {
+              'date': point.date,
+              'num_satellites': point.numSatellites,
+              'accuracy': point.accuracy,
+              'latitude': point.latitude,
+              'longitude': point.longitude,
+              'altitude': point.altitude,
+              'speed': point.speed,
+              'heading': point.heading,
+              'num_lanes': point.numLanes,
+              'markings': point.markings?.map((marking) => {
+                if (marking.refPt != null) {
+                  'ref_pt': marking.refPt
+                } else if (marking.laneOpened != null) {
+                  'lane_opened': marking.laneOpened
+                } else if (marking.laneClosed != null) {
+                  'lane_closed': marking.laneClosed
+                } else if (marking.speedLimitMPH != null) {
+                  'speed_limit_mph': marking.speedLimitMPH
+                } else if (marking.workersPresent != null) {
+                  'workers_present': marking.workersPresent
+                }
+              }).toList(),
+            }).toList(),
+          }
+        ),*/
+        body: json.encode( 
+          {
+            "project_id": recording.project_id,
+            "segment_id": recording.segment_id,
+            "area_id": recording.area_id,
+            "recording_name": recording.recording_name,
+            "types_of_work": recording.types_of_work.map((e) => e.toJson()).toList(),
+            "start_date": 0,
+            "end_date": 0,
+            "recording_date": 0,
+            "area_type": recording.area_type.toString().split('.').last,
+            "mobility_speed_mph": recording.mobility_speed_mph,
+            'points': recording.points.map((point) => {
+              'date': point.date,
+              'num_satellites': point.numSatellites,
+              'accuracy': point.accuracy,
+              'latitude': point.latitude,
+              'longitude': point.longitude,
+              'altitude': point.altitude,
+              'speed': point.speed,
+              'heading': point.heading,
+              'num_lanes': point.numLanes,
+              'markings': point.markings?.map((marking) => marking.toJson()).toList(),
+              /*'markings': [{
+                "ref_pt": true,
+                "lane_closed": 0,
+                "lane_opened": 0,
+                "workers_present": true,
+                "speed_limit_mph": 0
+              }]*/
+            }).toList(),
+            /*"points": [
+              {
+                "date": 0,
+                "num_satellites": 0,
+                "accuracy": 0,
+                "latitude": 0,
+                "longitude": 0,
+                "altitude": 0,
+                "speed": 0,
+                "heading": 0,
+                "num_lanes": 0,
+                "markings": [
+                  {
+                    "ref_pt": true,
+                    "lane_closed": 0,
+                    "lane_opened": 0,
+                    "workers_present": true,
+                    "speed_limit_mph": 0
+                  }
+                ]
+              }
+            ]*/
+          }
+        )
+      );
+      if (response.statusCode == 200) {
+        print('Recording posted successfully');
+        fileStorageService.saveRecording(recording, true);
+      } else {
+        print('Failed to post recording: ${response.statusCode}');
+        fileStorageService.saveRecording(recording, false);
+      }
+    } catch (e) {
+      print('Error posting recording: $e');
+      fileStorageService.saveRecording(recording, false);
+    }
+  }
+
 
   AlertDialog _createRecordingDialog() {  
     return AlertDialog(

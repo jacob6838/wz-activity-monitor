@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,6 +15,7 @@ import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
 import 'package:wzam/ui/styles/text_styles.dart';
 import 'package:wzam/ui/styles/widgets/wzam_text.dart';
+import 'package:http/http.dart' as http;
 
 class ViewReportsController extends GetxController {
   late MapController? mapController;
@@ -20,6 +23,7 @@ class ViewReportsController extends GetxController {
   late Rx<Position?> currentPosition;
   List<Marker> reportMarkers = [];
   Rx<MarkerLayer> markerLayer = const MarkerLayer(markers: <Marker>[]).obs;
+  RxBool areThereLocalReports = false.obs;
 
   Future<void> initialize(BuildContext context) async {
     currentPosition = locationService.currentPosition;
@@ -47,9 +51,7 @@ class ViewReportsController extends GetxController {
     FileStorageService fileService = Get.find<FileStorageService>();
     List<Report> reports = await fileService.getReportFiles('reports');
     List<Marker> markers = <Marker>[];
-    print("report length: ${reports.length}");
     for (Report report in reports) {
-      print("went here");
       markers.add(Marker(
         point: LatLng(report.point[0], report.point[1]),
         child: GestureDetector(  
@@ -65,12 +67,32 @@ class ViewReportsController extends GetxController {
             child: Icon(Icons.construction, color: primaryColor, size: 25.0),
           ),
         )
-        /*child: IconButton(
-          icon: Icon(Icons.construction, color: Color.fromARGB(255, 187, 0, 0), size: 25.0),
-          onPressed: () {
+        ),
+      );
+    }
+
+    areThereLocalReports.value = false;
+    List<Report> reportsLocal = await fileService.getReportFiles('reports_local');
+    print(reportsLocal.length);
+    if (reportsLocal.isNotEmpty) {
+      areThereLocalReports.value = true;
+    }
+    for (Report report in reportsLocal) {
+      markers.add(Marker(
+        point: LatLng(report.point[0], report.point[1]),
+        child: GestureDetector(  
+          onTap: () {
             Get.dialog(_viewReportStats(context, report));
-          }
-        ),*/
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: primaryColor,
+              borderRadius: BorderRadius.circular(10.0),
+              border: Border.all(color: Colors.black, width: 1.0),
+            ),
+            child: Icon(Icons.construction, color: Colors.black, size: 25.0),
+          ),
+        )
         ),
       );
     }
@@ -78,7 +100,54 @@ class ViewReportsController extends GetxController {
     return markers;
   }
 
-  List<Marker> createReportMarkers(BuildContext context, List<Report> reports) {
+  Future<void> uploadLocalReports() async {
+    FileStorageService fileService = Get.find<FileStorageService>();
+    List<Report> reportsLocal = await fileService.getReportFiles('reports_local');
+    for (Report report in reportsLocal) {
+      await postReport(report, fileService);
+    }
+    reportMarkers = await _getReportMarkers(Get.context!);
+    _updateMarkerLayer();
+  }
+
+  Future<void> postReport(Report report, FileStorageService fileService) async {
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
+    final headers = {'Content-Type': 'application/json'};
+    try {
+      final response = await http.post(url, 
+        headers: headers, 
+        body: json.encode({
+            "project_id": report.project_id,
+            "segment_id": report.segment_id,
+            "area_id": report.area_id,
+            "report_name": report.report_name,
+            "types_of_work": report.types_of_work.map((e) => e.toJson()).toList(),
+            "workers_present": report.workers_present,
+            "start_date": 0,
+            "end_date": 0,
+            "report_date": 0,
+            "area_type": report.area_type.toString().split('.').last,
+            "mobility_speed_mph": report.mobility_speed_mph,
+            "geometry_type": report.geometry_type.toString().split('.').last,
+            "point": [
+              report.point[0], report.point[1]
+            ]
+          }
+        ),
+      );
+      if (response.statusCode == 200) {
+        print('Report posted successfully');
+        await fileService.saveReport(report, true);
+        await fileService.deleteReport(report, 'reports_local');
+      } else {
+        print('Failed to post report: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error posting report: $e');
+    }
+  }
+
+  /*List<Marker> createReportMarkers(BuildContext context, List<Report> reports) {
     List<Marker> markers = <Marker>[];
     for (Report report in reports) {
       markers.add(Marker(
@@ -100,7 +169,7 @@ class ViewReportsController extends GetxController {
       );
     }
     return markers;
-  }
+  }*/
 
   Future<List<Report>> getReports() async {
     FileStorageService fileService = Get.find<FileStorageService>();
@@ -108,7 +177,7 @@ class ViewReportsController extends GetxController {
     return reports;
   }
 
-  void downloadReportsFromServer() async {
+  Future<void> downloadReportsFromServer() async {
     FileStorageService fileService = Get.find<FileStorageService>();
     await fileService.downloadReportsFromServer();
     reportMarkers = await _getReportMarkers(Get.context!);

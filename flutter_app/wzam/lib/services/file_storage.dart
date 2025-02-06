@@ -101,20 +101,19 @@ class FileStorageService extends GetxService {
     return dir.list().where((v) => v is File).map((v) => v.path.split('/').last).toList();
   }
 
-  //TODO: make asynchronous and and await to writeToFile
-  void saveReport(Report report) {
+  Future<void> saveReport(Report report, bool alreadyUploaded) async {
     final String reportJson = jsonEncode(report);
-    final String fileName = 'report_${DateTime.now().toUtc().toIso8601String()}.json';
-    createFile(fileName: fileName, subdirectory: 'reports').then((fileName) {
-      writeToFile(fileName, reportJson, 'reports');
+    final String fileName = 'report_${report.report_name}_${DateTime.now().toUtc().toIso8601String()}.json';
+    await createFile(fileName: fileName, subdirectory: alreadyUploaded ? 'reports' : 'reports_local').then((fileName) async {
+      await writeToFile(fileName, reportJson, alreadyUploaded ? 'reports' : 'reports_local');
     });
   }
 
-  void saveRecording(Recording recording) {
+  Future<void> saveRecording(Recording recording, bool alreadyUploaded) async {
     final String recordingJson = jsonEncode(recording);
-    final String fileName = 'recording_${DateTime.now().toUtc().toIso8601String()}.json';
-    createFile(fileName: fileName, subdirectory: 'recordings').then((fileName) {
-      writeToFile(fileName, recordingJson, 'recordings');
+    final String fileName = 'recording_${recording.recording_name}_${DateTime.now().toUtc().toIso8601String()}.json';
+    await createFile(fileName: fileName, subdirectory: alreadyUploaded ? 'recordings' : 'recordings_local').then((fileName) async {
+      await writeToFile(fileName, recordingJson, alreadyUploaded ? 'recordings' : 'recordings_local');
     });
   }
 
@@ -154,13 +153,12 @@ class FileStorageService extends GetxService {
   }
 
   Future<void> downloadReportsFromServer() async {
-    final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/reports'); //<-- TODO: change so url is not hardcoded like this?
     final headers = {'Content-Type': 'application/json'};
     try {
       final response = await http.get(url, headers: headers);
       if (response.statusCode == 200) {
         print('Report gathered successfully');
-        //print(response.body);
         await saveReports(response.body);
       } else {
         print('Failed to post report: ${response.statusCode}');
@@ -172,10 +170,10 @@ class FileStorageService extends GetxService {
   }
 
   Future saveReports(String responseBody) async{
+    await deleteAllReports();
     List<dynamic> reportsJson = jsonDecode(responseBody);
     print(reportsJson[0].toString());
     List<ReportWithId> reports = reportsJson.map((report) => ReportWithId.fromJson(report)).toList();
-    //print(reports[0].toJson().toString());
     List<Report> reportsWithoutId = reports.map((report) => Report(
       project_id: report.project_id,
       segment_id: report.segment_id,
@@ -191,11 +189,11 @@ class FileStorageService extends GetxService {
       geometry_type: report.geometry_type,
       point: report.point
     )).toList();
-    await deleteAllReports();
-    for (Report report in reportsWithoutId) {
-      saveReport(report);
+    for (Report report in reportsWithoutId){
+      await saveReport(report, true);
     }
   }
+
 
   Future deleteAllReports() async {
     String directoryPath = 'reports';
@@ -209,6 +207,21 @@ class FileStorageService extends GetxService {
         file.deleteSync();
       } else if (file is Directory) {
         file.deleteSync(recursive: true);
+      }
+    });
+  }
+
+  Future deleteReport(Report report, String subdirectory) async {
+    String path = await _getDownloadsDirectory(subdirectory: subdirectory) ?? "";
+    final dir = Directory(path);
+    if (!dir.existsSync()) {
+      return;
+    }
+    dir.listSync().forEach((file) {
+      if (file is File) {
+        if (file.path.contains(report.report_name)) {
+          file.deleteSync();
+        }
       }
     });
   }

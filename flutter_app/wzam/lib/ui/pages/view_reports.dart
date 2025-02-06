@@ -54,17 +54,27 @@ class ViewReports extends StatelessWidget {
           body: Stack(
             children: [
               _map(context, controller, mapController, MediaQuery.of(context).orientation),
-              /*Positioned(  
+              Positioned(  
                 bottom: 40,
                 left: 20,
                 right: 20,
-                child: ElevatedButton(  
-                  onPressed: () {
-                    controller.downloadReportsFromServer();
-                  },
-                  child: const Text('Load Reports'),
+                child: Column(
+                  children: [
+                    ElevatedButton(  
+                      onPressed: () async{
+                        await controller.downloadReportsFromServer();
+                      },
+                      child: const Text('Load Reports'),
+                    ),
+                    Obx(() => ElevatedButton(  
+                      onPressed: controller.areThereLocalReports.value ? () async{
+                        await controller.uploadLocalReports();
+                      } : null,
+                      child: const Text('Upload Local Reports'),
+                    )),
+                  ],
                 )
-              )*/
+              )
             ],
           ),
         );

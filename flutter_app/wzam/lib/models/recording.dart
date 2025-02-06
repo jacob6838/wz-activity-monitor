@@ -5,29 +5,29 @@ part 'recording.g.dart';
 
 @JsonSerializable()
 class Recording{
-  final int? projectId;
-  final int? segmentId;
-  final int? areaId;
-  final String recordingName;
-  final List<TypeOfWork> typesOfWork;
-  final int? startDate;
-  final int? endDate;
-  final int recordingDate;
-  final WorkZoneType areaType;
-  final double? mobilitySpeedMPH;
+  final int? project_id;
+  final int? segment_id;
+  final int? area_id;
+  final String recording_name;
+  final List<TypeOfWork> types_of_work;
+  final int? start_date;
+  final int? end_date;
+  final int recording_date;
+  final WorkZoneType area_type;
+  final double? mobility_speed_mph;
   final List<RecordingPoint> points;
   
   Recording(
-      {required this.projectId,
-      required this.segmentId,
-      required this.areaId,
-      required this.recordingName,
-      required this.typesOfWork,
-      required this.startDate,
-      required this.endDate,
-      required this.recordingDate,
-      required this.areaType,
-      required this.mobilitySpeedMPH,
+      {required this.project_id,
+      required this.segment_id,
+      required this.area_id,
+      required this.recording_name,
+      required this.types_of_work,
+      required this.start_date,
+      required this.end_date,
+      required this.recording_date,
+      required this.area_type,
+      required this.mobility_speed_mph,
       required this.points});
 
   factory Recording.fromJson(Map<String, dynamic> json) => _$RecordingFromJson(json);

@@ -80,8 +80,8 @@ class ViewRecordings extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.0),
             side: const BorderSide(color: Colors.black, width: 1.0)
           ),
-          title: Text(recording.recordingName),
-          subtitle: _formattedDate(recording.recordingDate),
+          title: Text(recording.recording_name),
+          subtitle: _formattedDate(recording.recording_date),
           onTap: () {
             //Get.to(() => ViewRecording(recording: recording));
           },

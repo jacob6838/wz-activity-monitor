@@ -37,9 +37,9 @@ class ReportPage extends StatelessWidget {
   final TextEditingController reportDateController = TextEditingController();
   final TextEditingController mobilitySpeedController = TextEditingController();
 
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
-  DateTime reportDate = DateTime.now();
+  final TextEditingController startDate = TextEditingController();
+  final TextEditingController endDate = TextEditingController();
+  final TextEditingController reportDate = TextEditingController();
   
   ReportPage({super.key});
   @override
@@ -124,7 +124,7 @@ class ReportPage extends StatelessWidget {
       ));
   }
 
-  Widget _inputField(String labelText, TextEditingController controller, {bool isNumeric = false, bool isDate = false, DateTime? dateStorage, bool isRequired = false, bool isDouble = false, BuildContext? context}) {
+  Widget _inputField(String labelText, TextEditingController controller, {bool isNumeric = false, bool isDate = false, TextEditingController? dateStorage, bool isRequired = false, bool isDouble = false, BuildContext? context}) {
     return TextField(
       decoration: InputDecoration(
         labelText: isRequired ? labelText : "$labelText (optional)",
@@ -153,7 +153,7 @@ class ReportPage extends StatelessWidget {
           if (pickedTime != null) {
             DateTime finalDateTime = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
             String formattedDate = DateFormat.yMd().add_jm().format(finalDateTime);
-            dateStorage = finalDateTime;
+            dateStorage?.text = finalDateTime.toString();
             controller.text = formattedDate;
           }
         }
@@ -405,15 +405,15 @@ class ReportPage extends StatelessWidget {
       report_name: reportNameController.text,
       types_of_work: typesOfWork,
       workers_present: areWorkersPresent.value,
-      start_date: startDate.millisecondsSinceEpoch,//_parseDate(startDateController.text), //optional field
-      end_date: endDate.millisecondsSinceEpoch,//_parseDate(endDateController.text), //optional field
-      report_date: reportDate.millisecondsSinceEpoch,//_parseDate(reportDateController.text) ?? DateTime.now().millisecondsSinceEpoch, //TODO change to launch an error
+      start_date: _parseDate(startDate.text), //optional field
+      end_date: _parseDate(endDate.text), //optional field
+      report_date: _parseDate(reportDate.text) ?? DateTime.now().millisecondsSinceEpoch, //TODO change to launch an error
       area_type: _stringToWorkZoneType(controller.areaType),
       mobility_speed_mph: mobilitySpeedController.text != "" ? double.parse(mobilitySpeedController.text) : null, //optional field
       geometry_type: _stringToGeometryType(controller.geometryType),
       point: controller.point
     );
-    fileStorageService.saveReport(report);
+    //fileStorageService.saveReport(report, false); //TODO try to upload. If successful, save to different folder
     postReport(report);
     Get.back();
   }
@@ -445,12 +445,14 @@ class ReportPage extends StatelessWidget {
       );
       if (response.statusCode == 200) {
         print('Report posted successfully');
+        fileStorageService.saveReport(report, true);
       } else {
         print('Failed to post report: ${response.statusCode}');
-        print(response.body);
+        fileStorageService.saveReport(report, false);
       }
     } catch (e) {
       print('Error posting report: $e');
+      fileStorageService.saveReport(report, false);
     }
   }
 }

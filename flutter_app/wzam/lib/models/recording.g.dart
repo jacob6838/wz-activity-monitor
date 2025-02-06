@@ -7,34 +7,34 @@ part of 'recording.dart';
 // **************************************************************************
 
 Recording _$RecordingFromJson(Map<String, dynamic> json) => Recording(
-      projectId: (json['projectId'] as num?)?.toInt(),
-      segmentId: (json['segmentId'] as num?)?.toInt(),
-      areaId: (json['areaId'] as num?)?.toInt(),
-      recordingName: json['recordingName'] as String,
-      typesOfWork: (json['typesOfWork'] as List<dynamic>)
+      project_id: (json['project_id'] as num?)?.toInt(),
+      segment_id: (json['segment_id'] as num?)?.toInt(),
+      area_id: (json['area_id'] as num?)?.toInt(),
+      recording_name: json['recording_name'] as String,
+      types_of_work: (json['types_of_work'] as List<dynamic>)
           .map((e) => TypeOfWork.fromJson(e as Map<String, dynamic>))
           .toList(),
-      startDate: (json['startDate'] as num?)?.toInt(),
-      endDate: (json['endDate'] as num?)?.toInt(),
-      recordingDate: (json['recordingDate'] as num).toInt(),
-      areaType: $enumDecode(_$WorkZoneTypeEnumMap, json['areaType']),
-      mobilitySpeedMPH: (json['mobilitySpeedMPH'] as num?)?.toDouble(),
+      start_date: (json['start_date'] as num?)?.toInt(),
+      end_date: (json['end_date'] as num?)?.toInt(),
+      recording_date: (json['recording_date'] as num).toInt(),
+      area_type: $enumDecode(_$WorkZoneTypeEnumMap, json['area_type']),
+      mobility_speed_mph: (json['mobility_speed_mph'] as num?)?.toDouble(),
       points: (json['points'] as List<dynamic>)
           .map((e) => RecordingPoint.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$RecordingToJson(Recording instance) => <String, dynamic>{
-      'projectId': instance.projectId,
-      'segmentId': instance.segmentId,
-      'areaId': instance.areaId,
-      'recordingName': instance.recordingName,
-      'typesOfWork': instance.typesOfWork,
-      'startDate': instance.startDate,
-      'endDate': instance.endDate,
-      'recordingDate': instance.recordingDate,
-      'areaType': _$WorkZoneTypeEnumMap[instance.areaType]!,
-      'mobilitySpeedMPH': instance.mobilitySpeedMPH,
+      'project_id': instance.project_id,
+      'segment_id': instance.segment_id,
+      'area_id': instance.area_id,
+      'recording_name': instance.recording_name,
+      'types_of_work': instance.types_of_work,
+      'start_date': instance.start_date,
+      'end_date': instance.end_date,
+      'recording_date': instance.recording_date,
+      'area_type': _$WorkZoneTypeEnumMap[instance.area_type]!,
+      'mobility_speed_mph': instance.mobility_speed_mph,
       'points': instance.points,
     };
 

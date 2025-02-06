@@ -36,18 +36,18 @@ class Recording{
 
 @JsonSerializable()
 class RecordingMarking{
-  final bool? refPt;
-  final int? laneClosed;
-  final int? laneOpened;
-  final bool? workersPresent;
-  final double? speedLimitMPH;
+  final bool? ref_pt;
+  final int? lane_closed;
+  final int? lane_opened;
+  final bool? workers_present;
+  final double? speed_limit_mph;
   
   RecordingMarking(
-      {this.refPt, 
-      this.laneClosed,
-      this.laneOpened,
-      this.workersPresent,
-      this.speedLimitMPH});
+      {this.ref_pt, 
+      this.lane_closed,
+      this.lane_opened,
+      this.workers_present,
+      this.speed_limit_mph});
 
   factory RecordingMarking.fromJson(Map<String, dynamic> json) => _$RecordingMarkingFromJson(json);
   Map<String, dynamic> toJson() => _$RecordingMarkingToJson(this);

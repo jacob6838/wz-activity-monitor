@@ -46,20 +46,20 @@ const _$WorkZoneTypeEnumMap = {
 
 RecordingMarking _$RecordingMarkingFromJson(Map<String, dynamic> json) =>
     RecordingMarking(
-      refPt: json['refPt'] as bool?,
-      laneClosed: (json['laneClosed'] as num?)?.toInt(),
-      laneOpened: (json['laneOpened'] as num?)?.toInt(),
-      workersPresent: json['workersPresent'] as bool?,
-      speedLimitMPH: (json['speedLimitMPH'] as num?)?.toDouble(),
+      ref_pt: json['ref_pt'] as bool?,
+      lane_closed: (json['lane_closed'] as num?)?.toInt(),
+      lane_opened: (json['lane_opened'] as num?)?.toInt(),
+      workers_present: json['workers_present'] as bool?,
+      speed_limit_mph: (json['speed_limit_mph'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$RecordingMarkingToJson(RecordingMarking instance) =>
     <String, dynamic>{
-      'refPt': instance.refPt,
-      'laneClosed': instance.laneClosed,
-      'laneOpened': instance.laneOpened,
-      'workersPresent': instance.workersPresent,
-      'speedLimitMPH': instance.speedLimitMPH,
+      'ref_pt': instance.ref_pt,
+      'lane_closed': instance.lane_closed,
+      'lane_opened': instance.lane_opened,
+      'workers_present': instance.workers_present,
+      'speed_limit_mph': instance.speed_limit_mph,
     };
 
 RecordingPoint _$RecordingPointFromJson(Map<String, dynamic> json) =>

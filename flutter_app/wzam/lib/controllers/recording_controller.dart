@@ -68,35 +68,35 @@ class RecordingController extends GetxController {
           List<RecordingMarking> markings = [];
           //TODO: I'm not sure this is correct. 
           if (workersPresentNeedToMark) {
-            RecordingMarking marking = RecordingMarking(workersPresent: workersPresent.value);
+            RecordingMarking marking = RecordingMarking(workers_present: workersPresent.value);
             markings.add(marking);
             workersPresentNeedToMark = false;
           }
           if(refPtNeedToMark) {
-            RecordingMarking marking = RecordingMarking(refPt: inWorkZone.value);
+            RecordingMarking marking = RecordingMarking(ref_pt: inWorkZone.value);
             markings.add(marking);
             refPtNeedToMark = false;
           }
           if (laneChangeNeedToMark != 0) {
             if (lanesOpened[laneChangeNeedToMark - 1]) {
               print("went open");
-              RecordingMarking marking = RecordingMarking(laneOpened: laneChangeNeedToMark);
+              RecordingMarking marking = RecordingMarking(lane_opened: laneChangeNeedToMark);
               markings.add(marking);
             } else {
               print("went closed");
-              RecordingMarking marking = RecordingMarking(laneClosed: laneChangeNeedToMark);
+              RecordingMarking marking = RecordingMarking(lane_closed: laneChangeNeedToMark);
               markings.add(marking);
             }
             laneChangeNeedToMark = 0;
           }
           if (speedLimitChangeNeedToMark != 0) {
-            RecordingMarking marking = RecordingMarking(speedLimitMPH: currentSpeedLimit.value.toDouble());
+            RecordingMarking marking = RecordingMarking(speed_limit_mph: currentSpeedLimit.value.toDouble());
             markings.add(marking);
             speedLimitChangeNeedToMark = 0;
           }
           RecordingPoint recordingPoint = RecordingPoint(
-            date: 0,
-            numSatellites: 0,
+            date: 0, //TODO: Put this in when time on the server is figured out
+            numSatellites: 0, //TODO: Figure out how to get this
             accuracy: position.accuracy,
             latitude: position.latitude,
             longitude: position.longitude,
@@ -245,9 +245,9 @@ class RecordingController extends GetxController {
     late RecordingMarking marking;
     refPtNeedToMark = false;
     if (workersPresent.value == true) {
-      marking = RecordingMarking(refPt: refPtNeedToMark, workersPresent: false);
+      marking = RecordingMarking(ref_pt: refPtNeedToMark, workers_present: false);
     }else {
-      marking = RecordingMarking(refPt: refPtNeedToMark);
+      marking = RecordingMarking(ref_pt: refPtNeedToMark);
     }
     RecordingPoint lastpoint = points.last;
     RecordingPoint newLastPoint = RecordingPoint(
@@ -291,49 +291,6 @@ class RecordingController extends GetxController {
     try {
       final response = await http.post(url, 
         headers: headers, 
-        /*body: json.encode({
-            'project_id': recording.project_id,
-            'segment_id': recording.segment_id,
-            'area_id': recording.area_id,
-            'recording_name': recording.recording_name,
-            'types_of_work': [
-              {
-                'type_name': "maintenance",
-                'is_architectural_change': true,
-              }
-            ],
-            //recording.types_of_work.map((e) => e.toJson()).toList(),
-            'start_date': 0,
-            'end_date': 0,
-            'recording_date': 0,
-            'area_type': recording.area_type,
-            'mobility_speed_mph': recording.mobility_speed_mph,
-            'points': recording.points.map((point) => {
-              'date': point.date,
-              'num_satellites': point.numSatellites,
-              'accuracy': point.accuracy,
-              'latitude': point.latitude,
-              'longitude': point.longitude,
-              'altitude': point.altitude,
-              'speed': point.speed,
-              'heading': point.heading,
-              'num_lanes': point.numLanes,
-              'markings': point.markings?.map((marking) => {
-                if (marking.refPt != null) {
-                  'ref_pt': marking.refPt
-                } else if (marking.laneOpened != null) {
-                  'lane_opened': marking.laneOpened
-                } else if (marking.laneClosed != null) {
-                  'lane_closed': marking.laneClosed
-                } else if (marking.speedLimitMPH != null) {
-                  'speed_limit_mph': marking.speedLimitMPH
-                } else if (marking.workersPresent != null) {
-                  'workers_present': marking.workersPresent
-                }
-              }).toList(),
-            }).toList(),
-          }
-        ),*/
         body: json.encode( 
           {
             "project_id": recording.project_id,
@@ -357,36 +314,7 @@ class RecordingController extends GetxController {
               'heading': point.heading,
               'num_lanes': point.numLanes,
               'markings': point.markings?.map((marking) => marking.toJson()).toList(),
-              /*'markings': [{
-                "ref_pt": true,
-                "lane_closed": 0,
-                "lane_opened": 0,
-                "workers_present": true,
-                "speed_limit_mph": 0
-              }]*/
             }).toList(),
-            /*"points": [
-              {
-                "date": 0,
-                "num_satellites": 0,
-                "accuracy": 0,
-                "latitude": 0,
-                "longitude": 0,
-                "altitude": 0,
-                "speed": 0,
-                "heading": 0,
-                "num_lanes": 0,
-                "markings": [
-                  {
-                    "ref_pt": true,
-                    "lane_closed": 0,
-                    "lane_opened": 0,
-                    "workers_present": true,
-                    "speed_limit_mph": 0
-                  }
-                ]
-              }
-            ]*/
           }
         )
       );

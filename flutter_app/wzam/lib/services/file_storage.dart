@@ -226,6 +226,21 @@ class FileStorageService extends GetxService {
     });
   }
 
+  Future deleteRecording(Recording recording, String subdirectory) async {
+    String path = await _getDownloadsDirectory(subdirectory: subdirectory) ?? "";
+    final dir = Directory(path);
+    if (!dir.existsSync()) {
+      return;
+    }
+    dir.listSync().forEach((file) {
+      if (file is File) {
+        if (file.path.contains(recording.recording_name)) {
+          file.deleteSync();
+        }
+      }
+    });
+  }
+
   List<Recording> convertFilesToRecordings(List<File> files) {
     List<Recording> recordings = [];
     for (File file in files) {

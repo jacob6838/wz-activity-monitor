@@ -110,8 +110,11 @@ CREATE TABLE IF NOT EXISTS public.reports (
     report_date INT NOT NULL,
     area_type VARCHAR(255) NOT NULL, -- Assuming WorkZoneType is a VARCHAR
     mobility_speed_mph FLOAT,
-    geometry_type VARCHAR(50) NOT NULL, -- Storing GeometryType as a string
-    point GEOMETRY(Point, 4326), -- Storing as Point
+    geometry_type VARCHAR(255) NOT NULL,
+    geometry GEOMETRY(MultiPoint, 4326) NOT NULL,
+    geometry_line_width FLOAT,
+    license_plate VARCHAR(255),
+    surface_type VARCHAR(255),
     CONSTRAINT reports_pkey PRIMARY KEY (id)
 );
 
@@ -134,6 +137,7 @@ CREATE TABLE IF NOT EXISTS public.recordings (
     recording_date INT NOT NULL,
     area_type VARCHAR(255) NOT NULL,
     mobility_speed_mph FLOAT,
+    surface_type VARCHAR(255),
     points JSONB, -- Storing as JSONB
     CONSTRAINT recordings_pkey PRIMARY KEY (id)
 );

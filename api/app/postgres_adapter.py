@@ -7,16 +7,33 @@ import logging
 
 class DatabaseAdapter:
     def __init__(self, dbname, user, password, host, port):
+        self.dbname = dbname
+        self.user = user
+        self.password = password
+        self.host = host
+        self.port = port
+        self.connection = None
+        self.cursor = None
+        self.connect()
+
+    def connect(self):
         self.connection = psycopg2.connect(
-            dbname=dbname, user=user, password=password, host=host, port=port
+            dbname=self.dbname, user=self.user, password=self.password, host=self.host, port=self.port
         )
         self.cursor = self.connection.cursor()
 
     def close(self):
-        self.cursor.close()
-        self.connection.close()
+        if self.cursor:
+            self.cursor.close()
+        if self.connection:
+            self.connection.close()
+
+    def ensure_cursor(self):
+        if self.cursor.closed:
+            self.connect()
 
     def insert_project(self, project: models.Project) -> int:
+        self.ensure_cursor()
         query = """
         INSERT INTO public.projects (
             name, description, tmc_notes, active_status, hyperlink, start_date, end_date,
@@ -46,6 +63,7 @@ class DatabaseAdapter:
         return self.cursor.fetchone()[0]
 
     def get_projects(self) -> list[models.ProjectWithId]:
+        self.ensure_cursor()
         query = "SELECT * FROM public.projects"
         self.cursor.execute(query)
         columns = [desc[0] for desc in self.cursor.description]
@@ -73,13 +91,15 @@ class DatabaseAdapter:
             )
         return projects
 
-    def get_project(self, project_id: int) -> models.ProjectWithId:
+    def get_project(self, project_id: int) -> models.ProjectWithId | None:
+        self.ensure_cursor()
         query = "SELECT * FROM public.projects WHERE id = %s"
         self.cursor.execute(query, (project_id,))
         columns = [desc[0] for desc in self.cursor.description]
+        results = self.cursor.fetchone()
         row = (
-            dict(zip(columns, self.cursor.fetchone()))
-            if self.cursor.fetchone()
+            dict(zip(columns, results))
+            if results
             else None
         )
         if row:
@@ -103,11 +123,13 @@ class DatabaseAdapter:
         return None
 
     def remove_project(self, project_id: int) -> None:
+        self.ensure_cursor()
         query = "DELETE FROM public.projects WHERE id = %s"
         self.cursor.execute(query, (project_id,))
         self.connection.commit()
 
     def insert_road_section(self, road_section: models.RoadSection) -> int:
+        self.ensure_cursor()
         query = """
         INSERT INTO public.road_sections (
             project_id, segment_name, reference_type, start_mm, end_mm,
@@ -136,6 +158,7 @@ class DatabaseAdapter:
         return self.cursor.fetchone()[0]
 
     def get_road_sections(self) -> list[models.RoadSectionWithId]:
+        self.ensure_cursor()
         query = (
             "SELECT *, ST_AsText(geometry) as geometry_text FROM public.road_sections"
         )
@@ -169,13 +192,15 @@ class DatabaseAdapter:
             )
         return sections
 
-    def get_road_section(self, road_section_id: int) -> models.RoadSectionWithId:
+    def get_road_section(self, road_section_id: int) -> models.RoadSectionWithId | None:
+        self.ensure_cursor()
         query = "SELECT *, ST_AsText(geometry) as geometry_text FROM public.road_sections WHERE id = %s"
         self.cursor.execute(query, (road_section_id,))
         columns = [desc[0] for desc in self.cursor.description]
+        results = self.cursor.fetchone()
         row = (
-            dict(zip(columns, self.cursor.fetchone()))
-            if self.cursor.fetchone()
+            dict(zip(columns, results))
+            if results
             else None
         )
         if row:
@@ -203,11 +228,13 @@ class DatabaseAdapter:
         return None
 
     def remove_road_section(self, road_section_id: int) -> None:
+        self.ensure_cursor()
         query = "DELETE FROM public.road_sections WHERE id = %s"
         self.cursor.execute(query, (road_section_id,))
         self.connection.commit()
 
     def insert_activity_area(self, activity_area: models.ActivityArea) -> int:
+        self.ensure_cursor()
         query = """
         INSERT INTO public.activity_areas (
             segment_id, area_name, description, creation_date, update_date,
@@ -232,7 +259,7 @@ class DatabaseAdapter:
             activity_area.location_method.value,
             activity_area.vehicle_impact.value,
             json.dumps(activity_area.impacted_cds_curb_zones),
-            json.dumps([lane.model_dump() for lane in activity_area.lanes]),
+            json.dumps([lane.model_dump() for lane in (activity_area.lanes if activity_area.lanes else [])]),
             activity_area.beginning_cross_street,
             activity_area.ending_cross_street,
             activity_area.beginning_milepost,
@@ -250,7 +277,7 @@ class DatabaseAdapter:
             ),
             activity_area.reduced_speed_limit_kph,
             json.dumps(
-                [restriction.model_dump() for restriction in activity_area.restrictions]
+                [restriction.model_dump() for restriction in (activity_area.restrictions if activity_area.restrictions else [])]
             ),
             "LINESTRING("
             + ", ".join(f"{coord[0]} {coord[1]}" for coord in activity_area.geometry)
@@ -262,6 +289,7 @@ class DatabaseAdapter:
         return self.cursor.fetchone()[0]
 
     def get_activity_areas(self) -> list[models.ActivityAreaWithId]:
+        self.ensure_cursor()
         query = (
             "SELECT *, ST_AsText(geometry) as geometry_text FROM public.activity_areas"
         )
@@ -317,13 +345,15 @@ class DatabaseAdapter:
             )
         return areas
 
-    def get_activity_area(self, activity_area_id: int) -> models.ActivityAreaWithId:
+    def get_activity_area(self, activity_area_id: int) -> models.ActivityAreaWithId | None:
+        self.ensure_cursor()
         query = "SELECT *, ST_AsText(geometry) as geometry_text FROM public.activity_areas WHERE id = %s"
         self.cursor.execute(query, (activity_area_id,))
         columns = [desc[0] for desc in self.cursor.description]
+        results = self.cursor.fetchone()
         row = (
-            dict(zip(columns, self.cursor.fetchone()))
-            if self.cursor.fetchone()
+            dict(zip(columns, results))
+            if results
             else None
         )
         if row:
@@ -373,17 +403,19 @@ class DatabaseAdapter:
         return None
 
     def remove_activity_area(self, activity_area_id: int) -> None:
+        self.ensure_cursor()
         query = "DELETE FROM public.activity_areas WHERE id = %s"
         self.cursor.execute(query, (activity_area_id,))
         self.connection.commit()
 
     def insert_report(self, report: models.Report) -> int:
+        self.ensure_cursor()
         query = """
         INSERT INTO public.reports (
             project_id, segment_id, area_id, report_name, types_of_work,
             workers_present, start_date, end_date, report_date, area_type,
-            mobility_speed_mph, geometry_type, point
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, ST_GeomFromText(%s, 4326))
+            mobility_speed_mph, geometry_type, geometry, geometry_line_width, license_plate, surface_type
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, ST_GeomFromText(%s, 4326), %s, %s, %s)
         RETURNING id
         """
         values = (
@@ -401,17 +433,24 @@ class DatabaseAdapter:
             report.area_type.value,
             report.mobility_speed_mph,
             report.geometry_type.value,
-            f"POINT({report.point[0]} {report.point[1]})",
+            "MultiPoint("
+            + ", ".join(f"{coord[0]} {coord[1]}" for coord in report.geometry)
+            + ")",
+            report.geometry_line_width,
+            report.license_plate,
+            report.surface_type.value if report.surface_type else None,
         )
         self.cursor.execute(query, values)
         self.connection.commit()
         return self.cursor.fetchone()[0]
 
     def get_reports(self) -> list[models.ReportWithId]:
+        self.ensure_cursor()
         query = """
         SELECT id, project_id, segment_id, area_id, report_name, types_of_work,
                workers_present, start_date, end_date, report_date, area_type,
-               mobility_speed_mph, geometry_type, ST_AsText(point) AS point
+               mobility_speed_mph, geometry_type, ST_AsText(geometry) AS geometry_text, 
+               geometry_line_width, license_plate, surface_type
         FROM public.reports
         """
         self.cursor.execute(query)
@@ -438,30 +477,37 @@ class DatabaseAdapter:
                     area_type=wzdx_models.WorkZoneType(row["area_type"]),
                     mobility_speed_mph=row["mobility_speed_mph"],
                     geometry_type=models.GeometryType(row["geometry_type"]),
-                    point=[
-                        float(coord)
-                        for coord in row["point"]
-                        .replace("POINT(", "")
+                    geometry=[
+                        [float(coord) for coord in point.split()]
+                        for point in row["geometry_text"]
+                        .replace("MULTIPOINT", "")
+                        .replace("(", "")
                         .replace(")", "")
-                        .split()
+                        .split(",")
                     ],
+                    geometry_line_width=row["geometry_line_width"],
+                    license_plate=row["license_plate"],
+                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"])
                 )
             )
         return reports
 
-    def get_report(self, report_id: int) -> models.ReportWithId:
+    def get_report(self, report_id: int) -> models.ReportWithId | None:
+        self.ensure_cursor()
         query = """
         SELECT id, project_id, segment_id, area_id, report_name, types_of_work,
                workers_present, start_date, end_date, report_date, area_type,
-               mobility_speed_mph, geometry_type, ST_AsText(point) AS point
+               mobility_speed_mph, geometry_type, ST_AsText(geometry) AS geometry_text,
+               geometry_line_width, license_plate, surface_type
         FROM public.reports
         WHERE id = %s
         """
         self.cursor.execute(query, (report_id,))
         columns = [desc[0] for desc in self.cursor.description]
+        results = self.cursor.fetchone()
         row = (
-            dict(zip(columns, self.cursor.fetchone()))
-            if self.cursor.fetchone()
+            dict(zip(columns, results))
+            if results
             else None
         )
         if row:
@@ -482,27 +528,33 @@ class DatabaseAdapter:
                 area_type=wzdx_models.WorkZoneType(row["area_type"]),
                 mobility_speed_mph=row["mobility_speed_mph"],
                 geometry_type=models.GeometryType(row["geometry_type"]),
-                point=[
-                    float(coord)
-                    for coord in row["point"]
-                    .replace("POINT(", "")
-                    .replace(")", "")
-                    .split()
-                ],
+                    geometry=[
+                        [float(coord) for coord in point.split()]
+                        for point in row["geometry_text"]
+                        .replace("MULTIPOINT", "")
+                        .replace("(", "")
+                        .replace(")", "")
+                        .split(",")
+                    ],
+                    geometry_line_width=row["geometry_line_width"],
+                    license_plate=row["license_plate"],
+                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"])
             )
         return None
 
     def remove_report(self, report_id: int) -> None:
+        self.ensure_cursor()
         query = "DELETE FROM public.reports WHERE id = %s"
         self.cursor.execute(query, (report_id,))
         self.connection.commit()
 
     def insert_recording(self, recording: models.Recording) -> int:
+        self.ensure_cursor()
         query = """
         INSERT INTO public.recordings (
             project_id, segment_id, area_id, recording_name, types_of_work,
-            start_date, end_date, recording_date, area_type, mobility_speed_mph, points
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            start_date, end_date, recording_date, area_type, mobility_speed_mph, surface_type, points
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING id
         """
         values = (
@@ -518,6 +570,7 @@ class DatabaseAdapter:
             recording.recording_date,
             recording.area_type.value,
             recording.mobility_speed_mph,
+            recording.surface_type.value if recording.surface_type else None,
             json.dumps([point.model_dump() for point in recording.points]),
         )
         self.cursor.execute(query, values)
@@ -547,12 +600,14 @@ class DatabaseAdapter:
                     recording_date=row["recording_date"],
                     area_type=wzdx_models.WorkZoneType(row["area_type"]),
                     mobility_speed_mph=row["mobility_speed_mph"],
+                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"]),
                     points=[models.RecordingPoint(**point) for point in row["points"]],
                 )
             )
         return recordings
 
-    def get_recording(self, recording_id: int) -> models.RecordingWithId:
+    def get_recording(self, recording_id: int) -> models.RecordingWithId | None:
+        self.ensure_cursor()
         """Get a specific recording from the database."""
         query = "SELECT * FROM public.recordings WHERE id = %s"
         self.cursor.execute(query, (recording_id,))
@@ -580,15 +635,18 @@ class DatabaseAdapter:
             recording_date=row["recording_date"],
             area_type=wzdx_models.WorkZoneType(row["area_type"]),
             mobility_speed_mph=row["mobility_speed_mph"],
+            surface_type=models.RoadSegmentSurfaceType(row["surface_type"]),
             points=[models.RecordingPoint(**point) for point in row["points"]],
         )
 
     def remove_recording(self, recording_id: int) -> None:
+        self.ensure_cursor()
         query = "DELETE FROM public.recordings WHERE id = %s"
         self.cursor.execute(query, (recording_id,))
         self.connection.commit()
 
     def insert_wzdx_recording(self, wzdx_recording: models.WzdxRecording) -> int:
+        self.ensure_cursor()
         """Insert a WZDx recording into the database."""
         query = """
         INSERT INTO public.wzdx_recordings (
@@ -618,6 +676,7 @@ class DatabaseAdapter:
         return self.cursor.fetchone()[0]
 
     def get_wzdx_recordings(self) -> list[models.WzdxRecordingWithId]:
+        self.ensure_cursor()
         """Get all WZDx recordings from the database."""
         query = "SELECT * FROM public.wzdx_recordings"
         self.cursor.execute(query)
@@ -647,13 +706,15 @@ class DatabaseAdapter:
     def get_wzdx_recording(
         self, recording_id: int
     ) -> models.WzdxRecordingWithId | None:
+        self.ensure_cursor()
         """Get a specific WZDx recording from the database."""
         query = "SELECT * FROM public.wzdx_recordings WHERE id = %s"
         self.cursor.execute(query, (recording_id,))
         columns = [desc[0] for desc in self.cursor.description]
+        results = self.cursor.fetchone()
         row = (
-            dict(zip(columns, self.cursor.fetchone()))
-            if self.cursor.fetchone()
+            dict(zip(columns, results))
+            if results
             else None
         )
 
@@ -676,6 +737,7 @@ class DatabaseAdapter:
         return None
 
     def remove_wzdx_recording(self, recording_id: int) -> None:
+        self.ensure_cursor()
         """Remove a WZDx recording from the database."""
         query = "DELETE FROM public.wzdx_recordings WHERE id = %s"
         self.cursor.execute(query, (recording_id,))

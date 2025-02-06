@@ -96,14 +96,14 @@ class RecordingController extends GetxController {
           }
           RecordingPoint recordingPoint = RecordingPoint(
             date: 0, //TODO: Put this in when time on the server is figured out
-            numSatellites: 0, //TODO: Figure out how to get this
+            num_satellites: 0, //TODO: Figure out how to get this
             accuracy: position.accuracy,
             latitude: position.latitude,
             longitude: position.longitude,
             altitude: position.altitude,
             speed: position.speed,
             heading: position.heading,
-            numLanes: lanesOpened.length,
+            num_lanes: lanesOpened.length,
             markings: markings.isEmpty ? null : markings,
           );
           points.add(recordingPoint);
@@ -252,14 +252,14 @@ class RecordingController extends GetxController {
     RecordingPoint lastpoint = points.last;
     RecordingPoint newLastPoint = RecordingPoint(
       date: 0,
-      numSatellites: 0,
+      num_satellites: 0,
       accuracy: lastpoint.accuracy,
       latitude: lastpoint.latitude,
       longitude: lastpoint.longitude,
       altitude: lastpoint.altitude,
       speed: lastpoint.speed,
       heading: lastpoint.heading,
-      numLanes: lastpoint.numLanes,
+      num_lanes: lastpoint.num_lanes,
       markings: <RecordingMarking>[marking],
     );
     points.removeLast();
@@ -305,14 +305,14 @@ class RecordingController extends GetxController {
             "mobility_speed_mph": recording.mobility_speed_mph,
             'points': recording.points.map((point) => {
               'date': point.date,
-              'num_satellites': point.numSatellites,
+              'num_satellites': point.num_satellites,
               'accuracy': point.accuracy,
               'latitude': point.latitude,
               'longitude': point.longitude,
               'altitude': point.altitude,
               'speed': point.speed,
               'heading': point.heading,
-              'num_lanes': point.numLanes,
+              'num_lanes': point.num_lanes,
               'markings': point.markings?.map((marking) => marking.toJson()).toList(),
             }).toList(),
           }

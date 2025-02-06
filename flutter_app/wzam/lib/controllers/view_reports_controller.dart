@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:get/get.dart';
+import 'package:wzam/controllers/notification_controller.dart';
 import 'package:wzam/models/report.dart';
 import 'package:wzam/models/wzdx_models.dart';
 import 'package:wzam/services/file_storage.dart';
@@ -141,9 +142,11 @@ class ViewReportsController extends GetxController {
         await fileService.deleteReport(report, 'reports_local');
       } else {
         print('Failed to post report: ${response.statusCode}');
+        NotificationController().queueNotification('Failed to upload Report', 'Check your internet and try again');
       }
     } catch (e) {
       print('Error posting report: $e');
+      NotificationController().queueNotification('Failed to upload Report', 'Check your internet and try again');
     }
   }
 

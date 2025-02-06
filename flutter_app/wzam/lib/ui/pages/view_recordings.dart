@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:wzam/controllers/notification_controller.dart';
 import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/models/recording.dart';
 import 'package:wzam/services/file_storage.dart';
@@ -76,7 +77,8 @@ class ViewRecordings extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  //await downloadRecordingsFromServer();
+                  await downloadRecordingsFromServer();
+                  Get.forceAppUpdate(); //TODO: Make this better so you don't have to force update
                 },
                 child: const Text('Load Recordings'),
               ),
@@ -84,9 +86,9 @@ class ViewRecordings extends StatelessWidget {
               ElevatedButton(  
                 onPressed: unUploadedRecordings.isEmpty ? null : () async {
                   await uploadLocalRecordings();
-                  Get.forceAppUpdate();
+                  Get.forceAppUpdate(); //TODO: Make this better so you don't have to force update
                 },
-                child: const Text('Upload Recordings'),
+                child: const Text('Upload Local Recordings'),
               ),
               verticalSpaceLarge
             ],
@@ -173,14 +175,14 @@ class ViewRecordings extends StatelessWidget {
             "mobility_speed_mph": recording.mobility_speed_mph,
             'points': recording.points.map((point) => {
               'date': point.date,
-              'num_satellites': point.numSatellites,
+              'num_satellites': point.num_satellites,
               'accuracy': point.accuracy,
               'latitude': point.latitude,
               'longitude': point.longitude,
               'altitude': point.altitude,
               'speed': point.speed,
               'heading': point.heading,
-              'num_lanes': point.numLanes,
+              'num_lanes': point.num_lanes,
               'markings': point.markings?.map((marking) => marking.toJson()).toList(),
             }).toList(),
           }
@@ -192,9 +194,18 @@ class ViewRecordings extends StatelessWidget {
         await fileStorageService.deleteRecording(recording, 'recordings_local');
       } else {
         print('Failed to post recording: ${response.statusCode}'); //TODO: add notification
+        NotificationController().queueNotification('Failed to upload Recording', 'Check your internet and try again');
+        
       }
     } catch (e) {
       print('Error posting recording: $e'); //TODO: add notification
+      NotificationController().queueNotification('Failed to upload Recording', 'Check your internet and try again');
     }
+  }
+
+  Future<void> downloadRecordingsFromServer() async {
+    FileStorageService fileService = Get.find<FileStorageService>();
+    await fileService.downloadRecordingsFromServer();
+    await loadInRecordings();
   }
 }

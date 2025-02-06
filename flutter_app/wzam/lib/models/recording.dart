@@ -33,6 +33,27 @@ class Recording{
   factory Recording.fromJson(Map<String, dynamic> json) => _$RecordingFromJson(json);
   Map<String, dynamic> toJson() => _$RecordingToJson(this);
 }
+@JsonSerializable()
+class RecordingWithId extends Recording {
+  final int id;
+  
+  RecordingWithId(
+      {required this.id, 
+      super.project_id,
+      super.segment_id,
+      super.area_id,
+      required super.recording_name,
+      required super.types_of_work,
+      super.start_date,
+      super.end_date,
+      required super.recording_date,
+      required super.area_type,
+      super.mobility_speed_mph,
+      required super.points});
+
+  factory RecordingWithId.fromJson(Map<String, dynamic> json) => _$RecordingWithIdFromJson(json);
+  Map<String, dynamic> toJson() => _$RecordingWithIdToJson(this);
+}
 
 @JsonSerializable()
 class RecordingMarking{
@@ -56,26 +77,26 @@ class RecordingMarking{
 @JsonSerializable()
 class RecordingPoint{
   final int date;
-  final int numSatellites;
+  final int num_satellites;
   final double accuracy;
   final double latitude;
   final double longitude;
   final double altitude;
   final double speed;
   final double heading;
-  final int numLanes; 
+  final int num_lanes; 
   final List<RecordingMarking>? markings;
   
   RecordingPoint(
       {required this.date, 
-      required this.numSatellites,
+      required this.num_satellites,
       required this.accuracy,
       required this.latitude,
       required this.longitude,
       required this.altitude,
       required this.speed,
       required this.heading,
-      required this.numLanes,
+      required this.num_lanes,
       required this.markings});
 
   factory RecordingPoint.fromJson(Map<String, dynamic> json) => _$RecordingPointFromJson(json);

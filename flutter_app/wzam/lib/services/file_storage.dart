@@ -169,6 +169,23 @@ class FileStorageService extends GetxService {
     }
   }
 
+  Future<void> downloadRecordingsFromServer() async {
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/recordings'); //<-- TODO: change so url is not hardcoded like this?
+    final headers = {'Content-Type': 'application/json'};
+    try {
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        print('Recording gathered successfully');
+        await saveRecordings(response.body);
+      } else {
+        print('Failed to post report: ${response.statusCode}');
+        print(response.body);
+      }
+    } catch (e) {
+      print('Error posting report: $e');
+    }
+  }
+
   Future saveReports(String responseBody) async{
     await deleteAllReports();
     List<dynamic> reportsJson = jsonDecode(responseBody);
@@ -194,9 +211,49 @@ class FileStorageService extends GetxService {
     }
   }
 
+  Future saveRecordings(String responseBody) async{
+    await deleteAllRecordings();
+    print(responseBody);
+    List<dynamic> recordingsJson = jsonDecode(responseBody);
+    print(recordingsJson[0].toString());
+    List<RecordingWithId> recordings = recordingsJson.map((recording) => RecordingWithId.fromJson(recording)).toList();
+    List<Recording> recordingsWithoutId = recordings.map((report) => Recording(
+      project_id: report.project_id,
+      segment_id: report.segment_id,
+      area_id: report.area_id,
+      recording_name: report.recording_name,
+      types_of_work: report.types_of_work,
+      start_date: report.start_date,
+      end_date: report.end_date,
+      recording_date: report.recording_date,
+      area_type: report.area_type,
+      mobility_speed_mph: report.mobility_speed_mph,
+      points: report.points
+    )).toList();
+    for (Recording recording in recordingsWithoutId){
+      await saveRecording(recording, true);
+    }
+  }
+
 
   Future deleteAllReports() async {
-    String directoryPath = 'reports';
+    String directoryPath = 'reports'; //TODO: combine with deleteAllRecordings
+    String path = await _getDownloadsDirectory(subdirectory: directoryPath) ?? "";
+    final dir = Directory(path);
+    if (!dir.existsSync()) {
+      return;
+    }
+    dir.listSync().forEach((file) {
+      if (file is File) {
+        file.deleteSync();
+      } else if (file is Directory) {
+        file.deleteSync(recursive: true);
+      }
+    });
+  }
+
+  Future deleteAllRecordings() async {
+    String directoryPath = 'recordings';
     String path = await _getDownloadsDirectory(subdirectory: directoryPath) ?? "";
     final dir = Directory(path);
     if (!dir.existsSync()) {

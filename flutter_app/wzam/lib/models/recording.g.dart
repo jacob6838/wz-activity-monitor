@@ -44,6 +44,42 @@ const _$WorkZoneTypeEnumMap = {
   WorkZoneType.plannedMovingArea: 'planned_moving_area',
 };
 
+RecordingWithId _$RecordingWithIdFromJson(Map<String, dynamic> json) =>
+    RecordingWithId(
+      id: (json['id'] as num).toInt(),
+      project_id: (json['project_id'] as num?)?.toInt(),
+      segment_id: (json['segment_id'] as num?)?.toInt(),
+      area_id: (json['area_id'] as num?)?.toInt(),
+      recording_name: json['recording_name'] as String,
+      types_of_work: (json['types_of_work'] as List<dynamic>)
+          .map((e) => TypeOfWork.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      start_date: (json['start_date'] as num?)?.toInt(),
+      end_date: (json['end_date'] as num?)?.toInt(),
+      recording_date: (json['recording_date'] as num).toInt(),
+      area_type: $enumDecode(_$WorkZoneTypeEnumMap, json['area_type']),
+      mobility_speed_mph: (json['mobility_speed_mph'] as num?)?.toDouble(),
+      points: (json['points'] as List<dynamic>)
+          .map((e) => RecordingPoint.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$RecordingWithIdToJson(RecordingWithId instance) =>
+    <String, dynamic>{
+      'project_id': instance.project_id,
+      'segment_id': instance.segment_id,
+      'area_id': instance.area_id,
+      'recording_name': instance.recording_name,
+      'types_of_work': instance.types_of_work,
+      'start_date': instance.start_date,
+      'end_date': instance.end_date,
+      'recording_date': instance.recording_date,
+      'area_type': _$WorkZoneTypeEnumMap[instance.area_type]!,
+      'mobility_speed_mph': instance.mobility_speed_mph,
+      'points': instance.points,
+      'id': instance.id,
+    };
+
 RecordingMarking _$RecordingMarkingFromJson(Map<String, dynamic> json) =>
     RecordingMarking(
       ref_pt: json['ref_pt'] as bool?,
@@ -65,14 +101,14 @@ Map<String, dynamic> _$RecordingMarkingToJson(RecordingMarking instance) =>
 RecordingPoint _$RecordingPointFromJson(Map<String, dynamic> json) =>
     RecordingPoint(
       date: (json['date'] as num).toInt(),
-      numSatellites: (json['numSatellites'] as num).toInt(),
+      num_satellites: (json['num_satellites'] as num).toInt(),
       accuracy: (json['accuracy'] as num).toDouble(),
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
       altitude: (json['altitude'] as num).toDouble(),
       speed: (json['speed'] as num).toDouble(),
       heading: (json['heading'] as num).toDouble(),
-      numLanes: (json['numLanes'] as num).toInt(),
+      num_lanes: (json['num_lanes'] as num).toInt(),
       markings: (json['markings'] as List<dynamic>?)
           ?.map((e) => RecordingMarking.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -81,13 +117,13 @@ RecordingPoint _$RecordingPointFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$RecordingPointToJson(RecordingPoint instance) =>
     <String, dynamic>{
       'date': instance.date,
-      'numSatellites': instance.numSatellites,
+      'num_satellites': instance.num_satellites,
       'accuracy': instance.accuracy,
       'latitude': instance.latitude,
       'longitude': instance.longitude,
       'altitude': instance.altitude,
       'speed': instance.speed,
       'heading': instance.heading,
-      'numLanes': instance.numLanes,
+      'num_lanes': instance.num_lanes,
       'markings': instance.markings,
     };

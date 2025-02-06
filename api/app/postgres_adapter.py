@@ -144,7 +144,7 @@ class DatabaseAdapter:
             road_section.start_mm,
             road_section.end_mm,
             road_section.direction.value,
-            road_section.surface_type.value,
+            road_section.surface_type.value if road_section.surface_type else None,
             road_section.start_date,
             road_section.end_date,
             road_section.armed_status.value,
@@ -176,7 +176,7 @@ class DatabaseAdapter:
                     start_mm=row["start_mm"],
                     end_mm=row["end_mm"],
                     direction=models.RoadSegmentDirection(row["direction"]),
-                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"]),
+                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"]) if row["surface_type"] else None,
                     start_date=row["start_date"],
                     end_date=row["end_date"],
                     armed_status=models.RoadSegmentArmedStatus(row["armed_status"]),
@@ -212,7 +212,7 @@ class DatabaseAdapter:
                 start_mm=row["start_mm"],
                 end_mm=row["end_mm"],
                 direction=models.RoadSegmentDirection(row["direction"]),
-                surface_type=models.RoadSegmentSurfaceType(row["surface_type"]),
+                surface_type=models.RoadSegmentSurfaceType(row["surface_type"]) if row["surface_type"] else None,
                 start_date=row["start_date"],
                 end_date=row["end_date"],
                 armed_status=models.RoadSegmentArmedStatus(row["armed_status"]),
@@ -487,7 +487,7 @@ class DatabaseAdapter:
                     ],
                     geometry_line_width=row["geometry_line_width"],
                     license_plate=row["license_plate"],
-                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"])
+                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"]) if row["surface_type"] else None
                 )
             )
         return reports
@@ -538,7 +538,7 @@ class DatabaseAdapter:
                     ],
                     geometry_line_width=row["geometry_line_width"],
                     license_plate=row["license_plate"],
-                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"])
+                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"]) if row["surface_type"] else None
             )
         return None
 
@@ -600,7 +600,7 @@ class DatabaseAdapter:
                     recording_date=row["recording_date"],
                     area_type=wzdx_models.WorkZoneType(row["area_type"]),
                     mobility_speed_mph=row["mobility_speed_mph"],
-                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"]),
+                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"]) if row["surface_type"] else None,
                     points=[models.RecordingPoint(**point) for point in row["points"]],
                 )
             )
@@ -635,7 +635,7 @@ class DatabaseAdapter:
             recording_date=row["recording_date"],
             area_type=wzdx_models.WorkZoneType(row["area_type"]),
             mobility_speed_mph=row["mobility_speed_mph"],
-            surface_type=models.RoadSegmentSurfaceType(row["surface_type"]),
+            surface_type=models.RoadSegmentSurfaceType(row["surface_type"]) if row["surface_type"] else None,
             points=[models.RecordingPoint(**point) for point in row["points"]],
         )
 

@@ -118,12 +118,6 @@ class MobilityType(str, Enum):
     mobile = "mobile"
 
 
-class ReportGeometry(BaseModel):
-    geometry_type: GeometryType
-    geometry: list[float] | list[list[float]] # list[float] for multipoint, list[list[float]] for linestring and polygon
-    line_width: Optional[float] = None # Required if geometry_type is linestring
-
-
 class Report(BaseModel):
     project_id: Optional[int] = None
     segment_id: Optional[int] = None
@@ -136,7 +130,9 @@ class Report(BaseModel):
     report_date: int
     area_type: wzdx_models.WorkZoneType
     mobility_speed_mph: Optional[float] = None
-    geometry: ReportGeometry
+    geometry_type: GeometryType
+    geometry: list[list[float]]
+    geometry_line_width: Optional[float] = None # Required if geometry_type is linestring
     license_plate: Optional[str] = None
     surface_type: Optional[RoadSegmentSurfaceType] = None
 

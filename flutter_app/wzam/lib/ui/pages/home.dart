@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_tts/flutter_tts.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:get/get.dart';
+import 'package:wzam/models/stt_commands.dart';
 import 'package:wzam/services/file_storage.dart';
+import 'package:wzam/services/speech_service.dart';
 import 'package:wzam/ui/pages/recording_configuration.dart';
 import 'package:wzam/ui/pages/report_generator.dart';
 import 'package:wzam/ui/pages/view_reports.dart';
@@ -13,54 +13,14 @@ import 'package:wzam/ui/styles/widgets/wzam_app_bar.dart';
 import 'package:wzam/ui/styles/widgets/wzam_text.dart';
 import 'package:wzam/controllers/settings_controller.dart';
 
-class Home extends StatefulWidget {
+class Home extends StatelessWidget {
   Home({super.key});
 
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
   final FileStorageService fileStorageService = Get.find<FileStorageService>();
-  final FlutterTts flutterTts = FlutterTts(); // Text-to-speech instance
-  late stt.SpeechToText _speech; // Speech-to-text instance
   bool _isListening = false; // To track if the app is listening
   String _command = ""; // Captured voice command
   final SettingsController settingsController = Get.find<SettingsController>();
-
-  @override
-  void initState() {
-    super.initState();
-    _speech = stt.SpeechToText();
-    print("initstate");
-  }
-
-  Future<void> _initializeSpeech() async {
-    bool available = await _speech.initialize(
-      onStatus: (status) {
-        debugPrint("Speech status: $status");
-        if (status == "listening") {
-          setState(() {
-            _isListening = true;
-          });
-        } else if (status == "notListening") {
-          setState(() {
-            _isListening = false;
-          });
-        }
-      },
-      onError: (error) {
-        debugPrint("Speech error: $error");
-      },
-    );
-
-    if (available && settingsController.listeningEnabled.value) {
-      _listen();
-    } else {
-      debugPrint(
-          "Speech recognition is not available or disabled in settings.");
-    }
-  }
+  final SpeechService speechService = Get.find<SpeechService>();
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +30,20 @@ class _HomeState extends State<Home> {
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
     ]);
+    speechService.initializeSpeech();
+    print("Home Page");
+    speechService.commandStream.listen((SttCommand command) {
+      print("Home Page Command: ${command.text}");
+      if (command.text == "create report") {
+        Get.to(() => ReportPage());
+      } else if (command.text == "map work zone") {
+        Get.to(() => RecordingConfiguration());
+      } else if (command.text == "view reports") {
+        Get.to(() => ViewReports());
+      } else {
+        speechService.speak("Command Not Found, Please try again");
+      }
+    });
     return Scaffold(
       appBar: WZAMAppBar(
         title: 'Work Zone Activity Mapper',
@@ -80,7 +54,6 @@ class _HomeState extends State<Home> {
           children: [
             _button(
               onPressed: () {
-                _speak("Create Report");
                 print("Create Report");
                 Get.to(() => ReportPage());
               },
@@ -106,55 +79,44 @@ class _HomeState extends State<Home> {
             verticalSpaceMedium,
             ElevatedButton(
               onPressed: () {
-                if (settingsController.listeningEnabled.value) {
-                  _listen();
+                if (speechService.isListening.value) {
+                  speechService.stopListening();
                 } else {
+                  speechService.startListening();
                   Get.snackbar('Voice Commands Disabled',
                       'Please enable voice commands in Settings.');
                 }
               },
               child:
                   Text(_isListening ? 'Listening...' : 'Start Voice Command'),
-            )
+            ),
+            Obx(() => Text("Has Speech: ${speechService.hasSpeech.value}")),
+            Obx(() => Text("Is Listening: ${speechService.isListening.value}")),
           ],
+        ),
+      ),
+      floatingActionButton: Obx(
+        () => FloatingActionButton(
+          onPressed: () {
+            if (speechService.isListening.value) {
+              print("Stop Listening");
+              speechService.stopListening();
+            } else {
+              print("Start Listening");
+              speechService.startListening();
+            }
+          },
+          tooltip: 'Listen',
+          child:
+              Icon(speechService.isListening.value ? Icons.mic : Icons.mic_off),
         ),
       ),
     );
   }
 
-  // Method to speak the text
-  Future<void> _speak(String text) async {
-    await flutterTts.setLanguage("en-US");
-    await flutterTts.setSpeechRate(0.5);
-    await flutterTts.speak(text);
-  }
-
-  // Method to listen for voice commands
-  Future<void> _listen() async {
-    print(_isListening);
-    if (!_isListening && await _speech.initialize()) {
-      setState(() => _isListening = true);
-      _speech.listen(onResult: (result) {
-        setState(() {
-          _command = result.recognizedWords;
-          if (_command.toLowerCase() == "create report") {
-            _speak("Navigating to Create Report");
-            Get.to(() => ReportPage());
-          } else if (_command.toLowerCase() == "map work zone") {
-            _speak("Navigating to Map Work Zone");
-            Get.to(() => RecordingConfiguration());
-          } else if (_command.toLowerCase() == "view reports") {
-            _speak("Navigating to View Reports");
-            Get.to(() => ViewReports());
-          } else {
-            _speak("Command Not Found, Please try again");
-          }
-        });
-      });
-    } else {
-      setState(() => _isListening = false);
-      _speech.stop();
-    }
+  @override
+  void dispose() {
+    speechService.stopListening();
   }
 
   SizedBox _button({

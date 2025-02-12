@@ -15,6 +15,7 @@ class Recording{
   final int recording_date;
   final WorkZoneType area_type;
   final double? mobility_speed_mph;
+  final RoadSegmentSurfaceType? surface_type;
   final List<RecordingPoint> points;
   
   Recording(
@@ -28,6 +29,7 @@ class Recording{
       required this.recording_date,
       required this.area_type,
       required this.mobility_speed_mph,
+      this.surface_type,
       required this.points});
 
   factory Recording.fromJson(Map<String, dynamic> json) => _$RecordingFromJson(json);
@@ -49,6 +51,7 @@ class RecordingWithId extends Recording {
       required super.recording_date,
       required super.area_type,
       super.mobility_speed_mph,
+      super.surface_type,
       required super.points});
 
   factory RecordingWithId.fromJson(Map<String, dynamic> json) => _$RecordingWithIdFromJson(json);
@@ -62,13 +65,15 @@ class RecordingMarking{
   final int? lane_opened;
   final bool? workers_present;
   final double? speed_limit_mph;
+  final RoadSegmentSurfaceType? surface_type;
   
   RecordingMarking(
       {this.ref_pt, 
       this.lane_closed,
       this.lane_opened,
       this.workers_present,
-      this.speed_limit_mph});
+      this.speed_limit_mph,
+      this.surface_type});
 
   factory RecordingMarking.fromJson(Map<String, dynamic> json) => _$RecordingMarkingFromJson(json);
   Map<String, dynamic> toJson() => _$RecordingMarkingToJson(this);

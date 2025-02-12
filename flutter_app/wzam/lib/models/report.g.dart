@@ -21,9 +21,14 @@ Report _$ReportFromJson(Map<String, dynamic> json) => Report(
       area_type: $enumDecode(_$WorkZoneTypeEnumMap, json['area_type']),
       mobility_speed_mph: (json['mobility_speed_mph'] as num?)?.toDouble(),
       geometry_type: $enumDecode(_$GeometryTypeEnumMap, json['geometry_type']),
-      point: (json['point'] as List<dynamic>)
-          .map((e) => (e as num).toDouble())
+      geometry: (json['geometry'] as List<dynamic>)
+          .map((e) =>
+              (e as List<dynamic>).map((e) => (e as num).toDouble()).toList())
           .toList(),
+      geometry_line_width: (json['geometry_line_width'] as num?)?.toDouble(),
+      license_plate: json['license_plate'] as String?,
+      surface_type: $enumDecodeNullable(
+          _$RoadSegmentSurfaceTypeEnumMap, json['surface_type']),
     );
 
 Map<String, dynamic> _$ReportToJson(Report instance) => <String, dynamic>{
@@ -39,7 +44,10 @@ Map<String, dynamic> _$ReportToJson(Report instance) => <String, dynamic>{
       'area_type': _$WorkZoneTypeEnumMap[instance.area_type]!,
       'mobility_speed_mph': instance.mobility_speed_mph,
       'geometry_type': _$GeometryTypeEnumMap[instance.geometry_type]!,
-      'point': instance.point,
+      'geometry': instance.geometry,
+      'geometry_line_width': instance.geometry_line_width,
+      'license_plate': instance.license_plate,
+      'surface_type': _$RoadSegmentSurfaceTypeEnumMap[instance.surface_type],
     };
 
 const _$WorkZoneTypeEnumMap = {
@@ -52,6 +60,13 @@ const _$GeometryTypeEnumMap = {
   GeometryType.multipoint: 'multipoint',
   GeometryType.linestring: 'linestring',
   GeometryType.polygon: 'polygon',
+};
+
+const _$RoadSegmentSurfaceTypeEnumMap = {
+  RoadSegmentSurfaceType.paved: 'paved',
+  RoadSegmentSurfaceType.gravel: 'gravel',
+  RoadSegmentSurfaceType.dirt: 'dirt',
+  RoadSegmentSurfaceType.grooved: 'grooved',
 };
 
 ReportWithId _$ReportWithIdFromJson(Map<String, dynamic> json) => ReportWithId(
@@ -70,9 +85,14 @@ ReportWithId _$ReportWithIdFromJson(Map<String, dynamic> json) => ReportWithId(
       area_type: $enumDecode(_$WorkZoneTypeEnumMap, json['area_type']),
       mobility_speed_mph: (json['mobility_speed_mph'] as num?)?.toDouble(),
       geometry_type: $enumDecode(_$GeometryTypeEnumMap, json['geometry_type']),
-      point: (json['point'] as List<dynamic>)
-          .map((e) => (e as num).toDouble())
+      geometry: (json['geometry'] as List<dynamic>)
+          .map((e) =>
+              (e as List<dynamic>).map((e) => (e as num).toDouble()).toList())
           .toList(),
+      geometry_line_width: (json['geometry_line_width'] as num?)?.toDouble(),
+      license_plate: json['license_plate'] as String?,
+      surface_type: $enumDecodeNullable(
+          _$RoadSegmentSurfaceTypeEnumMap, json['surface_type']),
     );
 
 Map<String, dynamic> _$ReportWithIdToJson(ReportWithId instance) =>
@@ -89,6 +109,9 @@ Map<String, dynamic> _$ReportWithIdToJson(ReportWithId instance) =>
       'area_type': _$WorkZoneTypeEnumMap[instance.area_type]!,
       'mobility_speed_mph': instance.mobility_speed_mph,
       'geometry_type': _$GeometryTypeEnumMap[instance.geometry_type]!,
-      'point': instance.point,
+      'geometry': instance.geometry,
+      'geometry_line_width': instance.geometry_line_width,
+      'license_plate': instance.license_plate,
+      'surface_type': _$RoadSegmentSurfaceTypeEnumMap[instance.surface_type],
       'id': instance.id,
     };

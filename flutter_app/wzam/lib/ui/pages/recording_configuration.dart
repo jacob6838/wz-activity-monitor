@@ -27,6 +27,7 @@ class RecordingConfiguration extends StatelessWidget {
   final TextEditingController recordingDateController = TextEditingController();
   String areaType = "";
   final TextEditingController mobilitySpeedController = TextEditingController();
+  String surfaceType = "";
   final TextEditingController numberOfLanesController = TextEditingController();
   
   @override
@@ -36,6 +37,7 @@ class RecordingConfiguration extends StatelessWidget {
     RxList<Widget> workTypeSegments = <Widget>[
       ..._workTypeSegment(context, workTypeNames, 0),
     ].obs;
+    List<String> surfaceTypes = _getSurfaceTypes();
     recordingDateController.text = DateTime.now().toString();
     return Scaffold(
       appBar: WZAMAppBar(
@@ -71,6 +73,8 @@ class RecordingConfiguration extends StatelessWidget {
           _dropdownField("Area Type", areaTypes, context, isAreaWorkType: true),
           verticalSpaceMedium,
           _inputField("Mobility Speed (MPH)", mobilitySpeedController, isDouble: true),
+          verticalSpaceMedium,
+          _dropdownField("Surface Type", surfaceTypes, context, isSurfaceType: true),
           verticalSpaceMedium,
           _inputField("Number of Lanes", numberOfLanesController, isDouble: true, isRequired: true),
           verticalSpaceMedium,
@@ -122,7 +126,7 @@ class RecordingConfiguration extends StatelessWidget {
     );
   }
 
-  Widget _dropdownField(String labelText, List<String> optionsList, BuildContext context, {int? index, bool isAreaWorkType = false}) {
+  Widget _dropdownField(String labelText, List<String> optionsList, BuildContext context, {int? index, bool isAreaWorkType = false, bool isSurfaceType = false}) {
     return DropdownButtonFormField(
       decoration: InputDecoration(
         labelText: labelText,
@@ -142,7 +146,9 @@ class RecordingConfiguration extends StatelessWidget {
       onChanged: (value) async {
         if (isAreaWorkType) {
           areaType = value.toString();
-        } else {
+        } else if (isSurfaceType) {
+          surfaceType = value.toString();
+        }else {
           workTypeNameList[index!][0] = value.toString();
         }
       }
@@ -174,7 +180,7 @@ class RecordingConfiguration extends StatelessWidget {
         if (!_fieldsValid()) {
           return;
         }
-        RecordingController recordingController = Get.put(RecordingController(), tag: 'thisone'); //TODO: chang tag
+        RecordingController recordingController = Get.put(RecordingController(), tag: 'thisone'); //TODO: change tag
         recordingController.projectId = projectIdController.text != "" ? int.parse(projectIdController.text) : null; //optional
         recordingController.segmentId = segmentIdController.text != "" ? int.parse(segmentIdController.text) : null; //optional
         recordingController.areaId = areaIdController.text != "" ? int.parse(areaIdController.text) : null; //optional
@@ -185,6 +191,7 @@ class RecordingConfiguration extends StatelessWidget {
         recordingController.recordingDate = _parseDate(recordingDateController.text) ?? DateTime.now().millisecondsSinceEpoch; //TODO change to launch an error
         recordingController.areaType = _stringToWorkZoneType(areaType);
         recordingController.mobilitySpeedMPH =  mobilitySpeedController.text != "" ? double.parse(mobilitySpeedController.text) : null; //optional
+        recordingController.surfaceType = _stringToSurfaceType(surfaceType);
         int maxLanes = int.parse(numberOfLanesController.text);
         recordingController.setLanesOpened(maxLanes);
         Get.to(() => const WorkZoneRecording());
@@ -280,6 +287,26 @@ class RecordingConfiguration extends StatelessWidget {
     return workTypeNamesStr;
   }
 
+  List<String> _getSurfaceTypes() {
+    List<RoadSegmentSurfaceType> surfaceTypeOptions = RoadSegmentSurfaceType.values;
+    List<String> surfaceTypes = [];
+    for (RoadSegmentSurfaceType type in surfaceTypeOptions) {
+      switch (type) {
+        case RoadSegmentSurfaceType.paved:
+          surfaceTypes.add('paved');
+        case RoadSegmentSurfaceType.gravel:
+          surfaceTypes.add('gravel');
+        case RoadSegmentSurfaceType.dirt:
+          surfaceTypes.add('dirt');
+        case RoadSegmentSurfaceType.grooved:
+          surfaceTypes.add('grooved');
+        default:
+          surfaceTypes.add('unknown');
+      }
+    }
+    return surfaceTypes;
+  }
+
   WorkTypeName _stringToWorkTypeName(String type) {
     switch (type) {
       case 'maintenance':
@@ -304,6 +331,21 @@ class RecordingConfiguration extends StatelessWidget {
         return WorkTypeName.roadwayCreation;
       default:
         throw ArgumentError('Invalid WorkTypeName: $type');
+    }
+  }
+
+  RoadSegmentSurfaceType _stringToSurfaceType(String type) {
+    switch (type) {
+      case 'paved':
+        return RoadSegmentSurfaceType.paved;
+      case 'gravel':
+        return RoadSegmentSurfaceType.gravel;
+      case 'dirt':
+        return RoadSegmentSurfaceType.dirt;
+      case 'grooved':
+        return RoadSegmentSurfaceType.grooved;
+      default:
+        throw ArgumentError('Invalid SurfaceType: $type');
     }
   }
 

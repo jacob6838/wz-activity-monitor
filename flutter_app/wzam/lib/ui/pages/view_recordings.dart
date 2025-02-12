@@ -15,6 +15,7 @@ import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:wzam/ui/styles/text_styles.dart';
 
 
 class ViewRecordings extends StatelessWidget {
@@ -59,39 +60,69 @@ class ViewRecordings extends StatelessWidget {
               ),
             ],
           ),
-          body: Column(
-            children: [
-              SizedBox(
-                height: screenHeight(context) * 0.5,
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
+          body: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                Expanded(  
                   child: ListView(  
                     children: [
                       ..._getRecordingsList(context),
                     ],
-                  ),
+                  )  
                 ),
-              ),
-              Expanded(  
-                child: Container(),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  await downloadRecordingsFromServer();
-                  Get.forceAppUpdate(); //TODO: Make this better so you don't have to force update
-                },
-                child: const Text('Load Recordings'),
-              ),
-              verticalSpaceSmall,
-              ElevatedButton(  
-                onPressed: unUploadedRecordings.isEmpty ? null : () async {
-                  await uploadLocalRecordings();
-                  Get.forceAppUpdate(); //TODO: Make this better so you don't have to force update
-                },
-                child: const Text('Upload Local Recordings'),
-              ),
-              verticalSpaceLarge
-            ],
+                verticalSpaceMedium,
+                ElevatedButton(
+                  onPressed: () async {
+                    await downloadRecordingsFromServer();
+                    Get.forceAppUpdate(); //TODO: Make this better so you don't have to force update
+                  },
+                  child: const Text('Load Recordings'),
+                ),
+                verticalSpaceSmall,
+                ElevatedButton(  
+                  onPressed: unUploadedRecordings.isEmpty ? null : () async {
+                    await uploadLocalRecordings();
+                    Get.forceAppUpdate(); //TODO: Make this better so you don't have to force update
+                  },
+                  child: const Text('Upload Local Recordings'),
+                ),
+                /*SizedBox(
+                  height: screenHeight(context) * 0.65,
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: ListView(  
+                      children: [
+                        ..._getRecordingsList(context),
+                      ],
+                    ),
+                  ),
+                ),*/
+                /*SizedBox(
+                  height: screenHeight(context) * 0.35,
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          await downloadRecordingsFromServer();
+                          Get.forceAppUpdate(); //TODO: Make this better so you don't have to force update
+                        },
+                        child: const Text('Load Recordings'),
+                      ),
+                      verticalSpaceSmall,
+                      ElevatedButton(  
+                        onPressed: unUploadedRecordings.isEmpty ? null : () async {
+                          await uploadLocalRecordings();
+                          Get.forceAppUpdate(); //TODO: Make this better so you don't have to force update
+                        },
+                        child: const Text('Upload Local Recordings'),
+                      ),
+                      verticalSpaceLarge,
+                    ],
+                  ),
+                )*/
+              ],
+            ),
           )
         );
       }
@@ -108,7 +139,7 @@ class ViewRecordings extends StatelessWidget {
     List<Widget> recordingsList = [];
     for (Recording recording in recordings) {
       recordingsList.add(
-        ListTile(
+        /*ListTile(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
             side: BorderSide(color: Theme.of(context).hintColor ,width: 1.0)
@@ -118,22 +149,47 @@ class ViewRecordings extends StatelessWidget {
           onTap: () {
             //Get.to(() => ViewRecording(recording: recording));
           },
+        )*/
+        Container(  
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(10.0),
+            border: Border.all(color: Theme.of(context).hintColor ,width: 1.0)
+          ),
+          height: 70,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(recording.recording_name, style: style_four),
+                _formattedDate(recording.recording_date),
+              ],
+            ),
+          ),
         )
       );
       recordingsList.add(verticalSpaceSmall);
     }
     for (Recording recording in unUploadedRecordings) {
       recordingsList.add(
-        ListTile(
-          shape: RoundedRectangleBorder(
+        Container(  
+          decoration: BoxDecoration(
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(10.0),
-            side: BorderSide(color: primaryColor, width: 1.0)
+            border: Border.all(color: Theme.of(context).primaryColor, width: 1.0)
           ),
-          title: Text(recording.recording_name, style: TextStyle(color: primaryColor)),
-          subtitle: _formattedDate(recording.recording_date),
-          onTap: () {
-            //Get.to(() => ViewRecording(recording: recording));
-          },
+          height: 70,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(recording.recording_name, style: style_four),
+                _formattedDate(recording.recording_date),
+              ],
+            ),
+          ),
         )
       );
       recordingsList.add(verticalSpaceSmall);

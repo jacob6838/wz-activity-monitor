@@ -54,7 +54,7 @@ class ViewReportsController extends GetxController {
     List<Marker> markers = <Marker>[];
     for (Report report in reports) {
       markers.add(Marker(
-        point: LatLng(report.point[0], report.point[1]),
+        point: LatLng(report.geometry[0][0], report.geometry[0][1]),
         child: GestureDetector(  
           onTap: () {
             Get.dialog(_viewReportStats(context, report));
@@ -80,7 +80,7 @@ class ViewReportsController extends GetxController {
     }
     for (Report report in reportsLocal) {
       markers.add(Marker(
-        point: LatLng(report.point[0], report.point[1]),
+        point: LatLng(report.geometry[0][0], report.geometry[0][1]),
         child: GestureDetector(  
           onTap: () {
             Get.dialog(_viewReportStats(context, report));
@@ -130,9 +130,12 @@ class ViewReportsController extends GetxController {
             "area_type": report.area_type.toString().split('.').last,
             "mobility_speed_mph": report.mobility_speed_mph,
             "geometry_type": report.geometry_type.toString().split('.').last,
-            "point": [
-              report.point[0], report.point[1]
-            ]
+            "geometry": [[
+              report.geometry[0][0], report.geometry[0][1]
+            ]],
+            "geometry_line_width": report.geometry_line_width,
+            "license_plate": report.license_plate,
+            "surface_type": 'paved'//report.surface_type.toString().split('.').last
           }
         ),
       );
@@ -149,30 +152,6 @@ class ViewReportsController extends GetxController {
       NotificationController().queueNotification('Failed to upload Report', 'Check your internet and try again');
     }
   }
-
-  /*List<Marker> createReportMarkers(BuildContext context, List<Report> reports) {
-    List<Marker> markers = <Marker>[];
-    for (Report report in reports) {
-      markers.add(Marker(
-        point: LatLng(report.point[0], report.point[1]), //TODO: Add a check to make sure points are there
-        child: GestureDetector(  
-          onTap: () {
-            Get.dialog(_viewReportStats(context, report));
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(color: Colors.black, width: 1.0),
-            ),
-            child: Icon(Icons.construction, color: primaryColor, size: 25.0),
-          ),
-        )
-        ),
-      );
-    }
-    return markers;
-  }*/
 
   Future<List<Report>> getReports() async {
     FileStorageService fileService = Get.find<FileStorageService>();
@@ -245,6 +224,7 @@ class ViewReportsController extends GetxController {
                     ...typesOfWork,
                     report.start_date != null ? _formattedText("Start Date", formattedStartDate, context) : Container(),
                     report.end_date != null ? _formattedText("End Date", formattedEndDate, context) : Container(),
+                    _formattedText("Report Date", DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(report.report_date)), context),
                     _formattedText("Area Type", areaType, context),
                     report.mobility_speed_mph != null ? _formattedText("Mobility Speed MPH", report.mobility_speed_mph.toString(), context) : Container(),
                   ],

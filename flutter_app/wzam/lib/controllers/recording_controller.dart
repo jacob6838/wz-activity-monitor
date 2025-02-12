@@ -32,6 +32,7 @@ class RecordingController extends GetxController {
   int? endDate = 0;
   int recordingDate = 0;
   WorkZoneType areaType = WorkZoneType.static;
+  RoadSegmentSurfaceType surfaceType = RoadSegmentSurfaceType.paved;  //TODO: Make this optional?
   double? mobilitySpeedMPH = 0.0;
   Rx<MarkerLayer> markerLayer = const MarkerLayer(markers: <Marker>[]).obs;
   RxList<Marker> recordingMarkers = <Marker>[].obs;
@@ -149,7 +150,7 @@ class RecordingController extends GetxController {
     if (!inWorkZone.value) {
       nonWorkZonePointsLatLng.add(LatLng(lat, long));
     } else {
-      if (pointsLatLng.isEmpty) {
+      if (pointsLatLng.isEmpty && nonWorkZonePointsLatLng.isNotEmpty) {
         pointsLatLng.add(nonWorkZonePointsLatLng.last);
       }
       pointsLatLng.add(LatLng(lat, long));
@@ -278,6 +279,7 @@ class RecordingController extends GetxController {
       recording_date: recordingDate,
       area_type: areaType,
       mobility_speed_mph: mobilitySpeedMPH,
+      surface_type: surfaceType,
       points: points,
     );
     //fileStorageService.saveRecording(recording);
@@ -303,7 +305,31 @@ class RecordingController extends GetxController {
             "recording_date": 0,
             "area_type": recording.area_type.toString().split('.').last,
             "mobility_speed_mph": recording.mobility_speed_mph,
-            'points': recording.points.map((point) => {
+            "surface_type": recording.surface_type.toString().split('.').last,
+            "points": [
+              {
+                "date": 0,
+                "num_satellites": 0,
+                "accuracy": 0,
+                "latitude": 0,
+                "longitude": 0,
+                "altitude": 0,
+                "speed": 0,
+                "heading": 0,
+                "num_lanes": 0,
+                "markings": [
+                  {
+                    "ref_pt": true,
+                    "lane_closed": 0,
+                    "lane_opened": 0,
+                    "workers_present": true,
+                    "speed_limit_mph": 0,
+                    "surface_type": "paved"
+                  }
+                ]
+              }
+            ],
+            /*'points': recording.points.map((point) => {
               'date': point.date,
               'num_satellites': point.num_satellites,
               'accuracy': point.accuracy,
@@ -314,7 +340,7 @@ class RecordingController extends GetxController {
               'heading': point.heading,
               'num_lanes': point.num_lanes,
               'markings': point.markings?.map((marking) => marking.toJson()).toList(),
-            }).toList(),
+            }).toList(),*/
           }
         )
       );

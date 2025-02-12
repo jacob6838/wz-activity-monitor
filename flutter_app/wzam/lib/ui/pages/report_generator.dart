@@ -18,6 +18,7 @@ class ReportPageController extends GetxController {
   RxList<double> point = <double>[].obs;
   String areaType = "";
   String geometryType = "";
+  String surfaceType = "";
 }
 
 //This is the report page where the user can generate a report
@@ -50,6 +51,7 @@ class ReportPage extends StatelessWidget {
     RxList<Widget> workTypeSegments = <Widget>[
       ..._workTypeSegment(context, workTypeNames, 0),
     ].obs;
+    List<String> surfaceType = _getSurfaceTypes();
 
 
     return Scaffold(
@@ -105,6 +107,8 @@ class ReportPage extends StatelessWidget {
           _inputField("Mobility Speed (MPH)", mobilitySpeedController, isDouble: true), //optional
           verticalSpaceMedium,
           _dropdownField("Geometry Type", geometryTypes, context, isGeometryType: true),
+          verticalSpaceMedium,
+          _dropdownField("Surface Type", surfaceType, context, isSurfaceType: true),
           verticalSpaceMedium,
           ElevatedButton(
             onPressed: () {
@@ -164,7 +168,7 @@ class ReportPage extends StatelessWidget {
     );
   }
 
-  Widget _dropdownField(String labelText, List<String> optionsList, BuildContext context, {int? index, bool isAreaWorkType = false, bool isGeometryType = false}) {
+  Widget _dropdownField(String labelText, List<String> optionsList, BuildContext context, {int? index, bool isAreaWorkType = false, bool isGeometryType = false, bool isSurfaceType = false}) {
     return DropdownButtonFormField(
       decoration: InputDecoration(
         labelText: labelText,
@@ -186,6 +190,8 @@ class ReportPage extends StatelessWidget {
           controller.areaType = value.toString();
         } else if (isGeometryType) {
           controller.geometryType = value.toString();
+        } else if (isSurfaceType) {
+          controller.surfaceType = value.toString();
         } else {
           workTypeNameList[index!][0] = value.toString();
         }
@@ -270,6 +276,26 @@ class ReportPage extends StatelessWidget {
     return areaTypes;
   }
 
+  List<String> _getSurfaceTypes() {
+    List<RoadSegmentSurfaceType> surfaceTypeOptions = RoadSegmentSurfaceType.values;
+    List<String> surfaceTypes = [];
+    for (RoadSegmentSurfaceType type in surfaceTypeOptions) {
+      switch (type) {
+        case RoadSegmentSurfaceType.paved:
+          surfaceTypes.add('paved');
+        case RoadSegmentSurfaceType.gravel:
+          surfaceTypes.add('gravel');
+        case RoadSegmentSurfaceType.dirt:
+          surfaceTypes.add('dirt');
+        case RoadSegmentSurfaceType.grooved:
+          surfaceTypes.add('grooved');
+        default:
+          surfaceTypes.add('unknown');
+      }
+    }
+    return surfaceTypes;
+  }
+
   WorkZoneType _stringToWorkZoneType(String type) {
     switch (type) {
       case 'static':
@@ -284,7 +310,7 @@ class ReportPage extends StatelessWidget {
   }
 
   List<String> _getWorkTypeNames() {
-    List<WorkTypeName> workTypeNameOptions = WorkTypeName.values;
+    List<WorkTypeName> workTypeNameOptions = WorkTypeName.values; //TODO get rid of this and use .toString().split('.').last instead
     List<String> workTypeNamesStr = [];
     for (WorkTypeName type in workTypeNameOptions) {
       switch (type) {
@@ -373,6 +399,21 @@ class ReportPage extends StatelessWidget {
     }
   }
 
+  RoadSegmentSurfaceType _stringToSurfaceType(String type) {
+    switch (type) {
+      case 'paved':
+        return RoadSegmentSurfaceType.paved;
+      case 'gravel':
+        return RoadSegmentSurfaceType.gravel;
+      case 'dirt':
+        return RoadSegmentSurfaceType.dirt;
+      case 'grooved':
+        return RoadSegmentSurfaceType.grooved;
+      default:
+        throw ArgumentError('Invalid SurfaceType: $type');
+    }
+  }
+
   int? _parseDate(String? date) {
     if (date == "" || date == null) {
       return null;
@@ -411,7 +452,10 @@ class ReportPage extends StatelessWidget {
       area_type: _stringToWorkZoneType(controller.areaType),
       mobility_speed_mph: mobilitySpeedController.text != "" ? double.parse(mobilitySpeedController.text) : null, //optional field
       geometry_type: _stringToGeometryType(controller.geometryType),
-      point: controller.point
+      geometry: [controller.point],
+      geometry_line_width: null,
+      license_plate: null,
+      surface_type: _stringToSurfaceType(controller.surfaceType),
     );
     //fileStorageService.saveReport(report, false); //TODO try to upload. If successful, save to different folder
     postReport(report);
@@ -431,15 +475,18 @@ class ReportPage extends StatelessWidget {
             "report_name": report.report_name,
             "types_of_work": report.types_of_work.map((e) => e.toJson()).toList(),
             "workers_present": report.workers_present,
-            "start_date": 0,
-            "end_date": 0,
-            "report_date": 0,
+            "start_date": report.start_date,
+            "end_date": report.end_date,
+            "report_date": report.report_date,
             "area_type": report.area_type.toString().split('.').last,
             "mobility_speed_mph": report.mobility_speed_mph,
             "geometry_type": report.geometry_type.toString().split('.').last,
-            "point": [
-              report.point[0], report.point[1]
-            ]
+            "geometry": [[
+              report.geometry[0][0], report.geometry[0][1]
+            ]],
+            "geometry_line_width": report.geometry_line_width,
+            "license_plate": report.license_plate,
+            "surface_type": report.surface_type.toString().split('.').last,
           }
         ),
       );

@@ -161,11 +161,11 @@ class FileStorageService extends GetxService {
         print('Report gathered successfully');
         await saveReports(response.body);
       } else {
-        print('Failed to post report: ${response.statusCode}');
+        print('Failed to get report: ${response.statusCode}');
         print(response.body);
       }
     } catch (e) {
-      print('Error posting report: $e');
+      print('Error getting report: $e');
     }
   }
 
@@ -204,7 +204,11 @@ class FileStorageService extends GetxService {
       area_type: report.area_type,
       mobility_speed_mph: report.mobility_speed_mph,
       geometry_type: report.geometry_type,
-      point: report.point
+      geometry: report.geometry,
+      geometry_line_width: report.geometry_line_width,
+      license_plate: report.license_plate,
+      surface_type: report.surface_type,
+      //point: report.point
     )).toList();
     for (Report report in reportsWithoutId){
       await saveReport(report, true);

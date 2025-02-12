@@ -19,6 +19,8 @@ Recording _$RecordingFromJson(Map<String, dynamic> json) => Recording(
       recording_date: (json['recording_date'] as num).toInt(),
       area_type: $enumDecode(_$WorkZoneTypeEnumMap, json['area_type']),
       mobility_speed_mph: (json['mobility_speed_mph'] as num?)?.toDouble(),
+      surface_type: $enumDecodeNullable(
+          _$RoadSegmentSurfaceTypeEnumMap, json['surface_type']),
       points: (json['points'] as List<dynamic>)
           .map((e) => RecordingPoint.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -35,6 +37,7 @@ Map<String, dynamic> _$RecordingToJson(Recording instance) => <String, dynamic>{
       'recording_date': instance.recording_date,
       'area_type': _$WorkZoneTypeEnumMap[instance.area_type]!,
       'mobility_speed_mph': instance.mobility_speed_mph,
+      'surface_type': _$RoadSegmentSurfaceTypeEnumMap[instance.surface_type],
       'points': instance.points,
     };
 
@@ -42,6 +45,13 @@ const _$WorkZoneTypeEnumMap = {
   WorkZoneType.static: 'static',
   WorkZoneType.moving: 'moving',
   WorkZoneType.plannedMovingArea: 'planned_moving_area',
+};
+
+const _$RoadSegmentSurfaceTypeEnumMap = {
+  RoadSegmentSurfaceType.paved: 'paved',
+  RoadSegmentSurfaceType.gravel: 'gravel',
+  RoadSegmentSurfaceType.dirt: 'dirt',
+  RoadSegmentSurfaceType.grooved: 'grooved',
 };
 
 RecordingWithId _$RecordingWithIdFromJson(Map<String, dynamic> json) =>
@@ -59,6 +69,8 @@ RecordingWithId _$RecordingWithIdFromJson(Map<String, dynamic> json) =>
       recording_date: (json['recording_date'] as num).toInt(),
       area_type: $enumDecode(_$WorkZoneTypeEnumMap, json['area_type']),
       mobility_speed_mph: (json['mobility_speed_mph'] as num?)?.toDouble(),
+      surface_type: $enumDecodeNullable(
+          _$RoadSegmentSurfaceTypeEnumMap, json['surface_type']),
       points: (json['points'] as List<dynamic>)
           .map((e) => RecordingPoint.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -76,6 +88,7 @@ Map<String, dynamic> _$RecordingWithIdToJson(RecordingWithId instance) =>
       'recording_date': instance.recording_date,
       'area_type': _$WorkZoneTypeEnumMap[instance.area_type]!,
       'mobility_speed_mph': instance.mobility_speed_mph,
+      'surface_type': _$RoadSegmentSurfaceTypeEnumMap[instance.surface_type],
       'points': instance.points,
       'id': instance.id,
     };
@@ -87,6 +100,8 @@ RecordingMarking _$RecordingMarkingFromJson(Map<String, dynamic> json) =>
       lane_opened: (json['lane_opened'] as num?)?.toInt(),
       workers_present: json['workers_present'] as bool?,
       speed_limit_mph: (json['speed_limit_mph'] as num?)?.toDouble(),
+      surface_type: $enumDecodeNullable(
+          _$RoadSegmentSurfaceTypeEnumMap, json['surface_type']),
     );
 
 Map<String, dynamic> _$RecordingMarkingToJson(RecordingMarking instance) =>
@@ -96,6 +111,7 @@ Map<String, dynamic> _$RecordingMarkingToJson(RecordingMarking instance) =>
       'lane_opened': instance.lane_opened,
       'workers_present': instance.workers_present,
       'speed_limit_mph': instance.speed_limit_mph,
+      'surface_type': _$RoadSegmentSurfaceTypeEnumMap[instance.surface_type],
     };
 
 RecordingPoint _$RecordingPointFromJson(Map<String, dynamic> json) =>

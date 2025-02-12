@@ -17,7 +17,11 @@ class Report{
   final WorkZoneType area_type;
   final double? mobility_speed_mph;
   final GeometryType geometry_type;
-  final List<double> point;
+  final List<List<double>> geometry;
+  final double? geometry_line_width;
+  final String? license_plate;
+  final RoadSegmentSurfaceType? surface_type; 
+  //final List<double> point;
   
   Report(
       {this.project_id,
@@ -32,7 +36,11 @@ class Report{
       required this.area_type,
       this.mobility_speed_mph,
       required this.geometry_type,
-      required this.point});
+      required this.geometry,
+      this.geometry_line_width,
+      this.license_plate,
+      this.surface_type,
+      });
 
   factory Report.fromJson(Map<String, dynamic> json) => _$ReportFromJson(json);
 
@@ -57,7 +65,10 @@ class ReportWithId extends Report {
     required super.area_type,
     super.mobility_speed_mph,
     required super.geometry_type,
-    required super.point,
+    required super.geometry,
+    super.geometry_line_width,
+    super.license_plate,
+    super.surface_type,
   });
 
   factory ReportWithId.fromJson(Map<String, dynamic> json) => _$ReportWithIdFromJson(json);

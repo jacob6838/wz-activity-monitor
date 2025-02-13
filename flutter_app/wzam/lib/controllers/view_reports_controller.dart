@@ -24,8 +24,10 @@ class ViewReportsController extends GetxController {
   late Rx<Position?> currentPosition;
   List<Marker> reportMarkers = [];
   List<Polyline> reportPolylines = [];
+  List<Polygon> reportPolygons = [];
   Rx<MarkerLayer> markerLayer = const MarkerLayer(markers: <Marker>[]).obs;
   Rx<PolylineLayer> polylineLayer = const PolylineLayer(polylines: <Polyline>[]).obs;
+  Rx<PolygonLayer> polygonLayer = const PolygonLayer(polygons: <Polygon>[]).obs;
   RxBool areThereLocalReports = false.obs;
 
   Future<void> initialize(BuildContext context) async {
@@ -36,6 +38,7 @@ class ViewReportsController extends GetxController {
     }
     _updateMarkerLayer();
     polylineLayer.value = PolylineLayer(polylines: reportPolylines);
+    polygonLayer.value = PolygonLayer(polygons: reportPolygons);
   }
   
   Marker _userLocationMarker() {
@@ -51,12 +54,23 @@ class ViewReportsController extends GetxController {
     markerLayer.value = MarkerLayer(markers: markers);
   }
 
+  _updatePolylineLayer() {
+    print(reportPolylines.length);
+    polylineLayer.value = PolylineLayer(polylines: reportPolylines);
+  }
+
+  _updatePolygonLayer() {
+    print(reportPolygons.length);
+    polygonLayer.value = PolygonLayer(polygons: reportPolygons);
+  }
+
 
   Future<List<Marker>> _getReportMarkers(BuildContext context) async {
     FileStorageService fileService = Get.find<FileStorageService>();
     List<Report> reports = await fileService.getReportFiles('reports');
     List<Marker> markers = <Marker>[];
     List<Polyline> polylines = <Polyline>[];
+    List<Polygon> polygons = <Polygon>[];
     for (Report report in reports) {
       markers.add(Marker(
         point: LatLng(report.geometry[0][0], report.geometry[0][1]),
@@ -84,6 +98,16 @@ class ViewReportsController extends GetxController {
           points: points,
           strokeWidth: 5.0,
           color: primaryColor,
+        ));
+      }
+      if (report.geometry_type == GeometryType.polygon) {
+        List<LatLng> points = <LatLng>[];
+        for (List<double> point in report.geometry) {
+          points.add(LatLng(point[0], point[1]));
+        }
+        polygons.add(Polygon(
+          points: points,
+          color: primaryColor.withOpacity(0.5),
         ));
       }
     }
@@ -123,9 +147,20 @@ class ViewReportsController extends GetxController {
           color: primaryColor,
         ));
       }
+      if (report.geometry_type == GeometryType.polygon) {
+        List<LatLng> points = <LatLng>[];
+        for (List<double> point in report.geometry) {
+          points.add(LatLng(point[0], point[1]));
+        }
+        polygons.add(Polygon(
+          points: points,
+          color: primaryColor.withOpacity(0.5),
+        ));
+      }
     }
     print(markers.length);
     reportPolylines = polylines;
+    reportPolygons = polygons;
     return markers;
   }
 
@@ -152,9 +187,9 @@ class ViewReportsController extends GetxController {
             "report_name": report.report_name,
             "types_of_work": report.types_of_work.map((e) => e.toJson()).toList(),
             "workers_present": report.workers_present,
-            "start_date": 0,
-            "end_date": 0,
-            "report_date": 0,
+            "start_date": report.start_date,
+            "end_date": report.end_date,
+            "report_date": report.report_date,
             "area_type": report.area_type.toString().split('.').last,
             "mobility_speed_mph": report.mobility_speed_mph,
             "geometry_type": report.geometry_type.toString().split('.').last,
@@ -163,7 +198,7 @@ class ViewReportsController extends GetxController {
             ]],
             "geometry_line_width": report.geometry_line_width,
             "license_plate": report.license_plate,
-            "surface_type": 'paved'//report.surface_type.toString().split('.').last
+            "surface_type": report.surface_type.toString().split('.').last
           }
         ),
       );
@@ -192,6 +227,8 @@ class ViewReportsController extends GetxController {
     await fileService.downloadReportsFromServer();
     reportMarkers = await _getReportMarkers(Get.context!);
     _updateMarkerLayer();
+    _updatePolylineLayer();
+    _updatePolygonLayer();
   }
 
   Dialog _viewReportStats(BuildContext context, Report report) {

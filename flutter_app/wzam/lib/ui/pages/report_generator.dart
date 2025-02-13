@@ -19,6 +19,7 @@ class ReportPageController extends GetxController {
   String areaType = "";
   GeometryType geometryType = GeometryType.multipoint;
   String surfaceType = "";
+  double lineWidth = 30.0;
 }
 
 //This is the report page where the user can generate a report
@@ -453,7 +454,7 @@ class ReportPage extends StatelessWidget {
       mobility_speed_mph: mobilitySpeedController.text != "" ? double.parse(mobilitySpeedController.text) : null, //optional field
       geometry_type: controller.geometryType,
       geometry: controller.points,
-      geometry_line_width: null,
+      geometry_line_width: controller.geometryType == GeometryType.linestring ? controller.lineWidth : null,
       license_plate: null,
       surface_type: _stringToSurfaceType(controller.surfaceType),
     );
@@ -481,9 +482,7 @@ class ReportPage extends StatelessWidget {
             "area_type": report.area_type.toString().split('.').last,
             "mobility_speed_mph": report.mobility_speed_mph,
             "geometry_type": report.geometry_type.toString().split('.').last,
-            "geometry": [[
-              report.geometry[0][0], report.geometry[0][1]
-            ]],
+            "geometry": report.geometry,
             "geometry_line_width": report.geometry_line_width,
             "license_plate": report.license_plate,
             "surface_type": report.surface_type.toString().split('.').last,

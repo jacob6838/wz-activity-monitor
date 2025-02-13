@@ -56,6 +56,36 @@ class ReportLocationSelection extends StatelessWidget {
                   ),
                 ),
               ),
+              Obx(() => controller.geometryType == GeometryType.linestring ? Positioned(  
+                top: 150,
+                left: 20,
+                right: 20,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Colors.white.withOpacity(0.6),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20, top: 8, bottom: 8),
+                    child: Row(  
+                      children: [  
+                        Text('Line Width (m): ', style: style_four),
+                        Slider(  
+                          value: controller.lineWidth.value,
+                          onChanged: (double value) {
+                            controller.lineWidth.value = value;
+                          },
+                          min: 10,
+                          max: 50,
+                          divisions: 8,
+                          label: controller.lineWidth.value.toStringAsFixed(1),
+                          activeColor: Colors.black,
+                        ),
+                      ]
+                    ),
+                  ),
+                ),
+              ): Container()),
               Positioned(  
                 bottom: 0,
                 left: 20,
@@ -65,9 +95,9 @@ class ReportLocationSelection extends StatelessWidget {
                   child: Obx(() => Column(
                     children: [
                       controller.geometryType != GeometryType.multipoint ?ElevatedButton(
-                        onPressed: () {
+                        onPressed: controller.points.isNotEmpty ? () {
                           controller.clearReportZonePoints();
-                        },
+                        } : null,
                         child: const Text('Clear Report Zone'),
                       ) : Container(),
                       ElevatedButton(
@@ -166,8 +196,9 @@ class ReportLocationSelection extends StatelessWidget {
                   'id': 'mapbox.satellite',
                 },
               ),
-              controller.markerLayer.value,
+              controller.polygonLayer.value,
               controller.polylineLayer.value,
+              controller.markerLayer.value,
             ]),
     ));
   }

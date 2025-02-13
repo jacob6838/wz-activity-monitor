@@ -58,7 +58,7 @@ class ViewReports extends StatelessWidget {
                 bottom: 40,
                 left: 20,
                 right: 20,
-                child: Column(
+                child: Obx(() => Column(
                   children: [
                     ElevatedButton(  
                       onPressed: () async{
@@ -66,14 +66,14 @@ class ViewReports extends StatelessWidget {
                       },
                       child: const Text('Load Reports'),
                     ),
-                    Obx(() => ElevatedButton(  
+                    ElevatedButton(  
                       onPressed: controller.areThereLocalReports.value ? () async{
                         await controller.uploadLocalReports();
                       } : null,
                       child: const Text('Upload Local Reports'),
-                    )),
+                    ),
                   ],
-                )
+                )),
               )
             ],
           ),
@@ -106,6 +106,7 @@ class ViewReports extends StatelessWidget {
                   'id': 'mapbox.satellite',
                 },
               ),
+              controller.polygonLayer.value,
               controller.polylineLayer.value,
               controller.markerLayer.value,
             ]),

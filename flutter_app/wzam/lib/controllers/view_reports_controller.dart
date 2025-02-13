@@ -23,7 +23,9 @@ class ViewReportsController extends GetxController {
   LocationService locationService = Get.find<LocationService>(); 
   late Rx<Position?> currentPosition;
   List<Marker> reportMarkers = [];
+  List<Polyline> reportPolylines = [];
   Rx<MarkerLayer> markerLayer = const MarkerLayer(markers: <Marker>[]).obs;
+  Rx<PolylineLayer> polylineLayer = const PolylineLayer(polylines: <Polyline>[]).obs;
   RxBool areThereLocalReports = false.obs;
 
   Future<void> initialize(BuildContext context) async {
@@ -33,6 +35,7 @@ class ViewReportsController extends GetxController {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     _updateMarkerLayer();
+    polylineLayer.value = PolylineLayer(polylines: reportPolylines);
   }
   
   Marker _userLocationMarker() {
@@ -48,10 +51,12 @@ class ViewReportsController extends GetxController {
     markerLayer.value = MarkerLayer(markers: markers);
   }
 
+
   Future<List<Marker>> _getReportMarkers(BuildContext context) async {
     FileStorageService fileService = Get.find<FileStorageService>();
     List<Report> reports = await fileService.getReportFiles('reports');
     List<Marker> markers = <Marker>[];
+    List<Polyline> polylines = <Polyline>[];
     for (Report report in reports) {
       markers.add(Marker(
         point: LatLng(report.geometry[0][0], report.geometry[0][1]),
@@ -70,6 +75,17 @@ class ViewReportsController extends GetxController {
         )
         ),
       );
+      if (report.geometry.length > 1) {
+        List<LatLng> points = <LatLng>[];
+        for (List<double> point in report.geometry) {
+          points.add(LatLng(point[0], point[1]));
+        }
+        polylines.add(Polyline(
+          points: points,
+          strokeWidth: 5.0,
+          color: primaryColor,
+        ));
+      }
     }
 
     areThereLocalReports.value = false;
@@ -96,8 +112,20 @@ class ViewReportsController extends GetxController {
         )
         ),
       );
+      if (report.geometry.length > 1) {
+        List<LatLng> points = <LatLng>[];
+        for (List<double> point in report.geometry) {
+          points.add(LatLng(point[0], point[1]));
+        }
+        polylines.add(Polyline(
+          points: points,
+          strokeWidth: 5.0,
+          color: primaryColor,
+        ));
+      }
     }
     print(markers.length);
+    reportPolylines = polylines;
     return markers;
   }
 

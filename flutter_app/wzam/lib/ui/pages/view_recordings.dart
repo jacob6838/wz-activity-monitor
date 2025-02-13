@@ -87,40 +87,6 @@ class ViewRecordings extends StatelessWidget {
                   },
                   child: const Text('Upload Local Recordings'),
                 ),
-                /*SizedBox(
-                  height: screenHeight(context) * 0.65,
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: ListView(  
-                      children: [
-                        ..._getRecordingsList(context),
-                      ],
-                    ),
-                  ),
-                ),*/
-                /*SizedBox(
-                  height: screenHeight(context) * 0.35,
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          await downloadRecordingsFromServer();
-                          Get.forceAppUpdate(); //TODO: Make this better so you don't have to force update
-                        },
-                        child: const Text('Load Recordings'),
-                      ),
-                      verticalSpaceSmall,
-                      ElevatedButton(  
-                        onPressed: unUploadedRecordings.isEmpty ? null : () async {
-                          await uploadLocalRecordings();
-                          Get.forceAppUpdate(); //TODO: Make this better so you don't have to force update
-                        },
-                        child: const Text('Upload Local Recordings'),
-                      ),
-                      verticalSpaceLarge,
-                    ],
-                  ),
-                )*/
               ],
             ),
           )
@@ -139,17 +105,6 @@ class ViewRecordings extends StatelessWidget {
     List<Widget> recordingsList = [];
     for (Recording recording in recordings) {
       recordingsList.add(
-        /*ListTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            side: BorderSide(color: Theme.of(context).hintColor ,width: 1.0)
-          ),
-          title: Text(recording.recording_name),
-          subtitle: _formattedDate(recording.recording_date),
-          onTap: () {
-            //Get.to(() => ViewRecording(recording: recording));
-          },
-        )*/
         Container(  
           decoration: BoxDecoration(
             color: Colors.transparent,

@@ -106,6 +106,7 @@ class ViewReports extends StatelessWidget {
                   'id': 'mapbox.satellite',
                 },
               ),
+              controller.polylineLayer.value,
               controller.markerLayer.value,
             ]),
     ));

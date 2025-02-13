@@ -15,9 +15,9 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 class ReportPageController extends GetxController {
-  RxList<double> point = <double>[].obs;
+  RxList<List<double>> points = <List<double>>[].obs;
   String areaType = "";
-  String geometryType = "";
+  GeometryType geometryType = GeometryType.multipoint;
   String surfaceType = "";
 }
 
@@ -47,7 +47,7 @@ class ReportPage extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> areaTypes = _getAreaTypes();
     List<String> workTypeNames = _getWorkTypeNames();
-    List<String> geometryTypes = _getGeometryTypes();
+    //List<String> geometryTypes = _getGeometryTypes();
     RxList<Widget> workTypeSegments = <Widget>[
       ..._workTypeSegment(context, workTypeNames, 0),
     ].obs;
@@ -106,15 +106,15 @@ class ReportPage extends StatelessWidget {
           verticalSpaceMedium,
           _inputField("Mobility Speed (MPH)", mobilitySpeedController, isDouble: true), //optional
           verticalSpaceMedium,
-          _dropdownField("Geometry Type", geometryTypes, context, isGeometryType: true),
-          verticalSpaceMedium,
+          //_dropdownField("Geometry Type", geometryTypes, context, isGeometryType: true), //TODO: Get rid of
+          //verticalSpaceMedium,
           _dropdownField("Surface Type", surfaceType, context, isSurfaceType: true),
           verticalSpaceMedium,
           ElevatedButton(
             onPressed: () {
               Get.to(() => const ReportLocationSelection());
             },
-            child: controller.point.isEmpty ? const Text("Select Activty Location Point") : Text("Change Activity Location Point"),
+            child: controller.points.isEmpty ? const Text("Select Activty Location") : Text("Change Activity Location"),
           ),
           verticalSpaceSmall,
           Container(  
@@ -189,7 +189,7 @@ class ReportPage extends StatelessWidget {
         if (isAreaWorkType) {
           controller.areaType = value.toString();
         } else if (isGeometryType) {
-          controller.geometryType = value.toString();
+          //controller.geometryType = value
         } else if (isSurfaceType) {
           controller.surfaceType = value.toString();
         } else {
@@ -251,7 +251,7 @@ class ReportPage extends StatelessWidget {
       NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
       return false;
     }
-    if (controller.point.isEmpty) {
+    if (controller.points.isEmpty) {
       NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
       return false;
     }
@@ -451,8 +451,8 @@ class ReportPage extends StatelessWidget {
       report_date: _parseDate(reportDate.text) ?? DateTime.now().millisecondsSinceEpoch, //TODO change to launch an error
       area_type: _stringToWorkZoneType(controller.areaType),
       mobility_speed_mph: mobilitySpeedController.text != "" ? double.parse(mobilitySpeedController.text) : null, //optional field
-      geometry_type: _stringToGeometryType(controller.geometryType),
-      geometry: [controller.point],
+      geometry_type: controller.geometryType,
+      geometry: controller.points,
       geometry_line_width: null,
       license_plate: null,
       surface_type: _stringToSurfaceType(controller.surfaceType),

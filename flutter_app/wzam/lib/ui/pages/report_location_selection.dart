@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wzam/controllers/report_location_selection_controller.dart';
+import 'package:wzam/models/report.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/text_styles.dart';
 
@@ -39,7 +40,7 @@ class ReportLocationSelection extends StatelessWidget {
             children: [
               _map(context, controller, mapController, MediaQuery.of(context).orientation),
               Positioned(  
-                top: 0,
+                top: 50,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20),
                   child: Container(
@@ -61,13 +62,75 @@ class ReportLocationSelection extends StatelessWidget {
                 right: 20,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 40),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      controller.saveReportLocationPoint();
-                    },
-                    child: const Text('Save Report Location Point'),
-                  ),
+                  child: Obx(() => Column(
+                    children: [
+                      controller.geometryType != GeometryType.multipoint ?ElevatedButton(
+                        onPressed: () {
+                          controller.clearReportZonePoints();
+                        },
+                        child: const Text('Clear Report Zone'),
+                      ) : Container(),
+                      ElevatedButton(
+                        onPressed: () {
+                          controller.saveReportLocationPoint();
+                        },
+                        child: const Text('Save Report Zone'),
+                      ),
+                    ],
+                  )),
                 ),
+              ),
+              Positioned(  
+                top: 0,
+                right: 0,
+                left: 0,
+                child: Container(
+                  color: Colors.white.withOpacity(0.6),
+                  child: Obx(() => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,  
+                    children: [  
+                      Container(
+                        decoration: controller.geometryType.value == GeometryType.multipoint ? BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
+                          border: Border.all(color: Colors.black, width: 1.0),
+                        ) : null,
+                        child: IconButton(  
+                          icon: const Icon(Icons.circle),
+                          onPressed: () {
+                            controller.switchGeometryType(GeometryType.multipoint);
+                          },
+                        ),
+                      ),
+                      Container(
+                        decoration: controller.geometryType.value == GeometryType.linestring ? BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
+                          border: Border.all(color: Colors.black, width: 1.0),
+                        ) : null,
+                        child: IconButton(  
+                          icon: const Icon(Icons.linear_scale),
+                          onPressed: () {
+                            controller.switchGeometryType(GeometryType.linestring);
+                          },
+                        ),
+                      ),
+                      Container(
+                        decoration: controller.geometryType.value == GeometryType.polygon ? BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
+                          border: Border.all(color: Colors.black, width: 1.0),
+                        ) : null,
+                        child: IconButton(  
+                          icon: const Icon(Icons.format_shapes),
+                          onPressed: () {
+                            controller.switchGeometryType(GeometryType.polygon);
+                          },
+                        ),
+                      ),
+                    ]
+                  )),
+                )
               )
             ],
           ),
@@ -92,7 +155,7 @@ class ReportLocationSelection extends StatelessWidget {
                 controller.mapController = mapController;
               },
               onTap: (TapPosition position, LatLng latlng) {
-                controller.addMarker(position, latlng);
+                controller.changeOrAddMarker(position, latlng);
               },
             ),
             children: [
@@ -104,6 +167,7 @@ class ReportLocationSelection extends StatelessWidget {
                 },
               ),
               controller.markerLayer.value,
+              controller.polylineLayer.value,
             ]),
     ));
   }

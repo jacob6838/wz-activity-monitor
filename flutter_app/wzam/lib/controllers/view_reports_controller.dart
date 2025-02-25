@@ -29,6 +29,9 @@ class ViewReportsController extends GetxController {
   Rx<PolylineLayer> polylineLayer = const PolylineLayer(polylines: <Polyline>[]).obs;
   Rx<PolygonLayer> polygonLayer = const PolygonLayer(polygons: <Polygon>[]).obs;
   RxBool areThereLocalReports = false.obs;
+  final activeColor = primaryColor;
+  final pendingColor = Color.fromARGB(255, 255, 238, 0);
+  final recentlyCompletedColor = Color.fromARGB(255, 168, 0, 0).withOpacity(0.6);
 
   Future<void> initialize(BuildContext context) async {
     currentPosition = locationService.currentPosition;
@@ -64,6 +67,43 @@ class ViewReportsController extends GetxController {
     polygonLayer.value = PolygonLayer(polygons: reportPolygons);
   }
 
+  Marker reportMarker(Report report, String category, String source) {
+    Color iconColor = Colors.black;
+    IconData icon = Icons.construction;
+    if (category == 'pending') {
+      iconColor = pendingColor;
+      icon = Icons.construction;
+    } else if (category == 'active') {
+      iconColor = activeColor;
+      icon = Icons.construction;
+    } else if (category == 'recently_completed') {
+      iconColor = recentlyCompletedColor;
+      icon = Icons.construction;
+    } 
+    return Marker(
+      point: LatLng(report.geometry[0][0], report.geometry[0][1]),
+      child: GestureDetector(  
+        onTap: () {
+          Get.dialog(_viewReportStats(Get.context!, report, category));
+        },
+        child: source == 'server' ? Container(
+          decoration: BoxDecoration(
+            color: category == 'recently_completed' ? Colors.white.withOpacity(0.6) : category == 'active' ? Colors.white : darkGrey,
+            borderRadius: BorderRadius.circular(10.0),
+            border: category == 'active' ? Border.all(color: iconColor, width: 2.0) : Border.all(color: iconColor, width: 1.0),
+          ),
+          child: Icon(Icons.construction, color: iconColor, size: 25.0),
+        ) : Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: category == 'recently_completed' ? Colors.white.withOpacity(0.6) : category == 'active' ? Colors.white : darkGrey,
+            border: category == 'active' ? Border.all(color: iconColor, width: 2.0) : Border.all(color: iconColor, width: 1.0),
+          ),
+          child: Icon(icon, color: iconColor, size: 25.0),
+        ),
+      )
+    );
+  }
 
   Future<List<Marker>> _getReportMarkers(BuildContext context) async {
     FileStorageService fileService = Get.find<FileStorageService>();
@@ -71,97 +111,76 @@ class ViewReportsController extends GetxController {
     List<Marker> markers = <Marker>[];
     List<Polyline> polylines = <Polyline>[];
     List<Polygon> polygons = <Polygon>[];
-    for (Report report in reports) {
-      markers.add(Marker(
-        point: LatLng(report.geometry[0][0], report.geometry[0][1]),
-        child: GestureDetector(  
-          onTap: () {
-            Get.dialog(_viewReportStats(context, report));
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(color: Colors.black, width: 1.0),
-            ),
-            child: Icon(Icons.construction, color: primaryColor, size: 25.0),
-          ),
-        )
-        ),
-      );
-      if (report.geometry.length > 1) {
-        List<LatLng> points = <LatLng>[];
-        for (List<double> point in report.geometry) {
-          points.add(LatLng(point[0], point[1]));
-        }
-        polylines.add(Polyline(
-          points: points,
-          strokeWidth: 5.0,
-          color: primaryColor,
-        ));
-      }
-      if (report.geometry_type == GeometryType.polygon) {
-        List<LatLng> points = <LatLng>[];
-        for (List<double> point in report.geometry) {
-          points.add(LatLng(point[0], point[1]));
-        }
-        polygons.add(Polygon(
-          points: points,
-          color: primaryColor.withOpacity(0.5),
-        ));
-      }
-    }
+    ReportMarkerData serverReportMarkers = _generateReportMarkers(reports, 'server');
+    ReportMarkerData localReportMarkers = _generateReportMarkers(await fileService.getReportFiles('reports_local'), 'local');
+    markers = [...serverReportMarkers.marker, ...localReportMarkers.marker];
+    polylines = [...serverReportMarkers.polyline, ...localReportMarkers.polyline];
+    polygons = [...serverReportMarkers.polygon, ...localReportMarkers.polygon];
 
-    areThereLocalReports.value = false;
-    List<Report> reportsLocal = await fileService.getReportFiles('reports_local');
-    print(reportsLocal.length);
-    if (reportsLocal.isNotEmpty) {
-      areThereLocalReports.value = true;
-    }
-    for (Report report in reportsLocal) {
-      markers.add(Marker(
-        point: LatLng(report.geometry[0][0], report.geometry[0][1]),
-        child: GestureDetector(  
-          onTap: () {
-            Get.dialog(_viewReportStats(context, report));
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: primaryColor,
-              borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(color: Colors.black, width: 1.0),
-            ),
-            child: Icon(Icons.construction, color: Colors.black, size: 25.0),
-          ),
-        )
-        ),
-      );
-      if (report.geometry.length > 1) {
-        List<LatLng> points = <LatLng>[];
-        for (List<double> point in report.geometry) {
-          points.add(LatLng(point[0], point[1]));
-        }
-        polylines.add(Polyline(
-          points: points,
-          strokeWidth: 5.0,
-          color: primaryColor,
-        ));
-      }
-      if (report.geometry_type == GeometryType.polygon) {
-        List<LatLng> points = <LatLng>[];
-        for (List<double> point in report.geometry) {
-          points.add(LatLng(point[0], point[1]));
-        }
-        polygons.add(Polygon(
-          points: points,
-          color: primaryColor.withOpacity(0.5),
-        ));
-      }
-    }
-    print(markers.length);
     reportPolylines = polylines;
     reportPolygons = polygons;
     return markers;
+  }
+
+  ReportMarkerData _generateReportMarkers(List<Report> reports, String source) {
+    if (source == 'local') {
+      areThereLocalReports.value = reports.isNotEmpty;
+    }
+    List<Marker> markers = <Marker>[];
+    List<Polyline> polylines = <Polyline>[];
+    List<Polygon> polygons = <Polygon>[];
+    for (Report report in reports) {
+      String status = "";
+      if (report.start_date != null && report.end_date != null) {
+        DateTime startDate = DateTime.fromMillisecondsSinceEpoch(report.start_date!);
+        DateTime endDate = DateTime.fromMillisecondsSinceEpoch(report.end_date!);
+        if (DateTime.now().isBefore(startDate)) {
+          markers.add(reportMarker(report, 'pending', source));
+          status = 'pending';
+        } else if (DateTime.now().isAfter(startDate) && DateTime.now().isBefore(endDate)) {
+          markers.add(reportMarker(report, 'active', source));
+          status = 'active';
+        } else if (DateTime.now().isAfter(endDate) && DateTime.now().isBefore(endDate.add(const Duration(days: 7)))) {
+          markers.add(reportMarker(report, 'recently_completed', source));
+          status = 'recently_completed';
+        } 
+      } else if (report.start_date == null) {
+        markers.add(reportMarker(report, 'pending', source));
+        status = 'pending';
+      } else if (report.end_date == null && report.start_date != null) {
+        if (report.start_date != null && DateTime.now().isAfter(DateTime.fromMillisecondsSinceEpoch(report.start_date!))) {
+          markers.add(reportMarker(report, 'active', source));
+          status = 'active';
+        } else {
+          markers.add(reportMarker(report, 'pending', source));
+          status = 'pending';
+        }
+      }
+      if (report.geometry_type == GeometryType.linestring) {
+        List<LatLng> points = <LatLng>[];
+        for (List<double> point in report.geometry) {
+          points.add(LatLng(point[0], point[1]));
+        }
+        print("points: $points");
+        polylines.add(Polyline(
+          points: points,
+          strokeWidth: 5.0,
+          color: status == 'active' ? activeColor : status == 'pending' ? pendingColor : recentlyCompletedColor,
+        ));
+        print("polyline length: ${polylines.length}");
+      }
+      if (report.geometry_type == GeometryType.polygon) {
+        List<LatLng> points = <LatLng>[];
+        for (List<double> point in report.geometry) {
+          points.add(LatLng(point[0], point[1]));
+        }
+        polygons.add(Polygon(
+          points: points,
+          color: status == 'active' ? activeColor.withOpacity(0.5) : status == 'pending' ? pendingColor.withOpacity(0.5) : recentlyCompletedColor.withOpacity(0.5),
+        ));
+      }
+    }
+    return ReportMarkerData(marker: markers, polyline: polylines, polygon: polygons);
   }
 
   Future<void> uploadLocalReports() async {
@@ -193,9 +212,7 @@ class ViewReportsController extends GetxController {
             "area_type": report.area_type.toString().split('.').last,
             "mobility_speed_mph": report.mobility_speed_mph,
             "geometry_type": report.geometry_type.toString().split('.').last,
-            "geometry": [[
-              report.geometry[0][0], report.geometry[0][1]
-            ]],
+            "geometry": report.geometry,
             "geometry_line_width": report.geometry_line_width,
             "license_plate": report.license_plate,
             "surface_type": report.surface_type.toString().split('.').last
@@ -231,7 +248,7 @@ class ViewReportsController extends GetxController {
     _updatePolygonLayer();
   }
 
-  Dialog _viewReportStats(BuildContext context, Report report) {
+  Dialog _viewReportStats(BuildContext context, Report report, String status) {
     List<RichText> typesOfWork = [];
 
     for (TypeOfWork typeOfWork in report.types_of_work) {
@@ -298,9 +315,21 @@ class ViewReportsController extends GetxController {
               verticalSpaceSmall,
               Align(
                 alignment: Alignment.bottomRight,
-                child: ClickableText(
-                  text: "Close",
-                  onTap: () => Get.back(),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    status == 'pending' ? ClickableText(
+                      text: "Activate Report",
+                      onTap: () {
+                        // Add your onTap functionality here
+                      },
+                    ) : Container(),
+                    horizontalSpaceSmall,
+                    ClickableText(
+                      text: "Close",
+                      onTap: () => Get.back(),
+                    ), 
+                  ],
                 ),
               ),
             ],
@@ -393,6 +422,18 @@ class ViewReportsController extends GetxController {
           return 'unknown';
       }
   }
+}
+
+class ReportMarkerData {
+  final List<Marker> marker;
+  final List<Polyline> polyline;
+  final List<Polygon> polygon;
+
+  ReportMarkerData({
+    required this.marker,
+    required this.polyline,
+    required this.polygon,
+  });
 }
 
 

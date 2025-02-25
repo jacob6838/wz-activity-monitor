@@ -153,10 +153,13 @@ class FileStorageService extends GetxService {
   }
 
   Future<void> downloadReportsFromServer() async {
+    print("hi");
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports'); //<-- TODO: change so url is not hardcoded like this?
     final headers = {'Content-Type': 'application/json'};
+    print("bye");
     try {
       final response = await http.get(url, headers: headers);
+      print("hello");
       if (response.statusCode == 200) {
         print('Report gathered successfully');
         await saveReports(response.body);
@@ -210,6 +213,7 @@ class FileStorageService extends GetxService {
       surface_type: report.surface_type,
       //point: report.point
     )).toList();
+    print(reportsWithoutId.length);
     for (Report report in reportsWithoutId){
       await saveReport(report, true);
     }

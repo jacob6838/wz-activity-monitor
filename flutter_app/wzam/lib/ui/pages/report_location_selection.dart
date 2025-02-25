@@ -73,7 +73,8 @@ class ReportLocationSelection extends StatelessWidget {
                         Slider(  
                           value: controller.lineWidth.value,
                           onChanged: (double value) {
-                            controller.lineWidth.value = value;
+                            //controller.lineWidth.value = value;
+                            controller.updateBorderZone(value);
                           },
                           min: 10,
                           max: 50,
@@ -196,7 +197,7 @@ class ReportLocationSelection extends StatelessWidget {
                   'id': 'mapbox.satellite',
                 },
               ),
-              controller.polygonLayer.value,
+              controller.borderPoints.isNotEmpty || controller.geometryType == GeometryType.polygon ? controller.polygonLayer.value : Container(),
               controller.polylineLayer.value,
               controller.markerLayer.value,
             ]),

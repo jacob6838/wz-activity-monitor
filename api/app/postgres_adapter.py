@@ -578,6 +578,7 @@ class DatabaseAdapter:
         return self.cursor.fetchone()[0]
 
     def get_recordings(self) -> list[models.RecordingWithId]:
+        self.ensure_cursor()
         query = "SELECT * FROM public.recordings"
         self.cursor.execute(query)
         columns = [desc[0] for desc in self.cursor.description]

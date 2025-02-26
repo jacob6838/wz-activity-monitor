@@ -32,6 +32,7 @@ class ViewReportsController extends GetxController {
   final activeColor = primaryColor;
   final pendingColor = Color.fromARGB(255, 255, 238, 0);
   final recentlyCompletedColor = Color.fromARGB(255, 168, 0, 0).withOpacity(0.6);
+  RxBool tryingToUpload = false.obs;
 
   Future<void> initialize(BuildContext context) async {
     currentPosition = locationService.currentPosition;
@@ -84,7 +85,7 @@ class ViewReportsController extends GetxController {
       point: LatLng(report.geometry[0][0], report.geometry[0][1]),
       child: GestureDetector(  
         onTap: () {
-          Get.dialog(_viewReportStats(Get.context!, report, category));
+          Get.dialog(_viewReportStats(Get.context!, report, category, source));
         },
         child: source == 'server' ? Container(
           decoration: BoxDecoration(
@@ -145,10 +146,18 @@ class ViewReportsController extends GetxController {
           status = 'recently_completed';
         } 
       } else if (report.start_date == null) {
-        markers.add(reportMarker(report, 'pending', source));
-        status = 'pending';
+        if (report.end_date != null && DateTime.now().isBefore(DateTime.fromMillisecondsSinceEpoch(report.end_date!))) {
+          markers.add(reportMarker(report, 'active', source)); //TODO verify if this is active or pending
+          status = 'active';
+        } else if (report.end_date != null && DateTime.now().isAfter(DateTime.fromMillisecondsSinceEpoch(report.end_date!)) && DateTime.now().isBefore(DateTime.fromMillisecondsSinceEpoch(report.end_date!).add(const Duration(days: 7)))) {
+          markers.add(reportMarker(report, 'recently_completed', source));
+          status = 'recently_completed';
+        } else if (report.end_date == null){
+          markers.add(reportMarker(report, 'pending', source));
+          status = 'pending';
+        }
       } else if (report.end_date == null && report.start_date != null) {
-        if (report.start_date != null && DateTime.now().isAfter(DateTime.fromMillisecondsSinceEpoch(report.start_date!))) {
+        if (DateTime.now().isAfter(DateTime.fromMillisecondsSinceEpoch(report.start_date!))) {
           markers.add(reportMarker(report, 'active', source));
           status = 'active';
         } else {
@@ -187,7 +196,9 @@ class ViewReportsController extends GetxController {
     FileStorageService fileService = Get.find<FileStorageService>();
     List<Report> reportsLocal = await fileService.getReportFiles('reports_local');
     for (Report report in reportsLocal) {
+      tryingToUpload.value = true;
       await postReport(report, fileService);
+      tryingToUpload.value = false;
     }
     reportMarkers = await _getReportMarkers(Get.context!);
     _updateMarkerLayer();
@@ -248,7 +259,7 @@ class ViewReportsController extends GetxController {
     _updatePolygonLayer();
   }
 
-  Dialog _viewReportStats(BuildContext context, Report report, String status) {
+  Dialog _viewReportStats(BuildContext context, Report report, String status, String source) {
     List<RichText> typesOfWork = [];
 
     for (TypeOfWork typeOfWork in report.types_of_work) {
@@ -283,7 +294,19 @@ class ViewReportsController extends GetxController {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(report.report_name.toUpperCase(), style: style_two.copyWith(fontWeight: FontWeight.bold)),
+                    Row(
+                      children: [
+                        Text(report.report_name.toUpperCase(), style: style_two.copyWith(fontWeight: FontWeight.bold)),
+                        Expanded(child: Container()),
+                        IconButton(
+                          icon: Icon(Icons.edit), 
+                          onPressed: () {
+                            Get.back();
+                            Get.dialog(editReportTimesDialog(report, 'edit', context));
+                          }
+                        ),
+                      ],
+                    ),
                     verticalSpaceSmall,
                     Container(  
                       decoration: BoxDecoration(
@@ -309,6 +332,16 @@ class ViewReportsController extends GetxController {
                     _formattedText("Report Date", DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(report.report_date)), context),
                     _formattedText("Area Type", areaType, context),
                     report.mobility_speed_mph != null ? _formattedText("Mobility Speed MPH", report.mobility_speed_mph.toString(), context) : Container(),
+                    verticalSpaceSmall,
+                    ((status == 'pending' || status == 'active') && source == 'server') ? ElevatedButton(
+                      child: Text(status == 'pending' ? "Activate Report" : status == 'active' ? "Mark this report as completed" : ""),
+                      onPressed: () {
+                        Get.back();
+                        String typeOfEdit = status == 'pending' ? 'active' : status == 'active' ? 'complete' : "";
+                        Get.dialog(editReportTimesDialog(report, typeOfEdit, context)); 
+                      },
+                    ) : Container(),
+
                   ],
                 ),
               ),
@@ -318,13 +351,15 @@ class ViewReportsController extends GetxController {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    status == 'pending' ? ClickableText(
-                      text: "Activate Report",
+                    /*((status == 'pending' || status == 'active') && source == 'server') ? ClickableText(
+                      text: status == 'pending' ? "Activate Report" : status == 'active' ? "Mark this report as completed" : "",
                       onTap: () {
-                        // Add your onTap functionality here
+                        Get.back();
+                        String typeOfEdit = status == 'pending' ? 'active' : status == 'active' ? 'complete' : "";
+                        Get.dialog(editReportTimesDialog(report, typeOfEdit, context)); 
                       },
                     ) : Container(),
-                    horizontalSpaceSmall,
+                    horizontalSpaceSmall,*/
                     ClickableText(
                       text: "Close",
                       onTap: () => Get.back(),
@@ -337,51 +372,179 @@ class ViewReportsController extends GetxController {
         ),
       ),
     );
+  }
 
+  /*Dialog editReport(Report report) {
 
+  }*/
 
-    /*return Dialog(
+  Dialog editReportTimesDialog(Report report, String typeOfEdit, BuildContext context) {
+    Rx<DateTime> selectedStartTime = DateTime.now().obs;
+    Rx<DateTime?> selectedEndTime = Rx<DateTime?>(null);
+
+    if (typeOfEdit == 'complete') {
+      selectedEndTime.value = DateTime.now();
+    }
+
+    if (report.start_date != null) {
+      selectedStartTime.value = DateTime.fromMillisecondsSinceEpoch(report.start_date!);
+    }
+
+    if (report.end_date != null) {
+      if (typeOfEdit == 'complete') {
+        selectedEndTime.value = DateTime.now();
+      } else {
+        selectedEndTime.value = DateTime.fromMillisecondsSinceEpoch(report.end_date!);
+      }
+    }
+
+    Future<void> _selectDateTime(BuildContext context, bool isStartTime) async {
+      final DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+      );
+
+      if (pickedDate != null) {
+        final TimeOfDay? pickedTime = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.now(),
+        );
+
+        if (pickedTime != null) {
+          final DateTime pickedDateTime = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+
+          if (isStartTime) {
+            selectedStartTime.value = pickedDateTime;
+          } else {
+            selectedEndTime.value = pickedDateTime;
+          }
+        }
+      }
+    }
+
+    return Dialog(
       child: Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, 
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("${report.reportName}", style: style_two),
-              verticalSpaceMedium,
-              Expanded(
-                flex: 9,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    verticalSpaceSmall,
-                    report.projectId != null ? Text("Project Id: ${report.projectId}") : Container(),
-                    report.segmentId != null ? Text("Segment Id: ${report.segmentId}") : Container(),
-                    report.areaId != null ? Text("Area Id: ${report.areaId}") : Container(),
-                    ...typesOfWork,
-                    report.startDate != null ? Text("Start Date: $formattedStartDate") : Container(),
-                    report.endDate != null ? Text("End Date: $formattedEndDate") : Container(),
-                    Text("Area Type: $areaType"),
-                    report.mobilitySpeedMPH != null ? Text("Mobility Speed MPH: ${report.mobilitySpeedMPH}") : Container(),
-                 ]
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Container(),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: ClickableText(
-                  text: "Close",
-                  onTap: () => Get.back(),
-                ),
-              )
-                ]),
+        padding: const EdgeInsets.all(16.0),
+        child: Obx(() => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              typeOfEdit == 'activate' ? 'Activate Report' : typeOfEdit == 'complete' ? 'Complete Report' : 'Edit Report Times',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            ListTile(
+              title: Text('Start Time: ${DateFormat.yMd().add_jm().format(selectedStartTime.value)}'),
+              trailing: Icon(Icons.access_time),
+              onTap: () => _selectDateTime(context, true),
+            ),
+            ListTile(
+              title: Text('End Time: ${selectedEndTime.value != null ? DateFormat.yMd().add_jm().format(selectedEndTime.value!) : 'Not set'}'),
+              trailing: Icon(Icons.access_time),
+              onTap: () => _selectDateTime(context, false),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                DateTime startDateTime = selectedStartTime.value;
+                DateTime? endDateTime = selectedEndTime.value;
+                Get.back();
+                await _activateReport(report, startDateTime, endDateTime);
+                await downloadReportsFromServer();
+              },
+              child: Text(typeOfEdit == 'active' ? 'Activate Report' : typeOfEdit == 'complete' ? 'Complete Report' : 'Edit Report Times'),
+            ),
+          ],
+        )),
+      ),
+    );
+  }
+
+  Future<void> _activateReport(Report report, DateTime startDate, DateTime? endDate) async {
+    if (report is ReportWithId) {
+      int reportId = report.id;
+      Report newReport = Report(  
+        project_id: report.project_id,
+        segment_id: report.segment_id,
+        area_id: report.area_id,
+        report_name: report.report_name,
+        types_of_work: report.types_of_work,
+        workers_present: report.workers_present,
+        start_date: startDate.millisecondsSinceEpoch,
+        end_date: endDate != null ? endDate.millisecondsSinceEpoch : report.end_date,
+        report_date: report.report_date,
+        area_type: report.area_type,
+        mobility_speed_mph: report.mobility_speed_mph,
+        geometry_type: report.geometry_type,
+        geometry: report.geometry,
+        geometry_line_width: report.geometry_line_width,
+        license_plate: report.license_plate,
+        surface_type: report.surface_type,
+      );
+      print("1");
+      tryingToUpload = true.obs;
+      await _editReport(newReport, reportId, Get.find<FileStorageService>());
+      tryingToUpload = false.obs;
+    }
+  }
+
+  Future<void> _editReport(Report report, int reportId, FileStorageService fileService) async {
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
+    final headers = {'Content-Type': 'application/json'};
+    print("2");
+    try {
+      final response = await http.post(url, 
+        headers: headers, 
+        body: json.encode({
+            "project_id": report.project_id,
+            "segment_id": report.segment_id,
+            "area_id": report.area_id,
+            "report_name": report.report_name,
+            "types_of_work": report.types_of_work.map((e) => e.toJson()).toList(),
+            "workers_present": report.workers_present,
+            "start_date": report.start_date,
+            "end_date": report.end_date,
+            "report_date": report.report_date,
+            "area_type": report.area_type.toString().split('.').last,
+            "mobility_speed_mph": report.mobility_speed_mph,
+            "geometry_type": report.geometry_type.toString().split('.').last,
+            "geometry": report.geometry,
+            "geometry_line_width": report.geometry_line_width,
+            "license_plate": report.license_plate,
+            "surface_type": report.surface_type.toString().split('.').last
+          }
         ),
-    ),
-  );*/
+      );
+      if (response.statusCode == 200) {
+        print('Report posted successfully');
+        try {
+          final deleteUrl = Uri.parse('https://wzamapi.azurewebsites.net/reports/$reportId');
+          final headers = {'Content-Type': 'application/json'};
+          final deleteResponse = await http.delete(deleteUrl, headers: headers);
+          if(deleteResponse.statusCode == 200) {
+            print('Report deleted successfully');
+          } else {
+            print('Failed to delete old report: ${deleteResponse.statusCode}');
+          }
+        } catch (e) {
+          print('Error deleting old report: $e');
+        }
+      } else {
+        print('Failed to post report: ${response.statusCode}');
+        NotificationController().queueNotification('Failed to upload Report', 'Check your internet and try again');
+      }
+    } catch (e) {
+      print('Error posting report: $e');
+      NotificationController().queueNotification('Failed to upload Report', 'Check your internet and try again');
+    }
   }
 
   RichText _formattedText(String name, String content, BuildContext context) {

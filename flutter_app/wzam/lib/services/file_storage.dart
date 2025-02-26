@@ -142,21 +142,25 @@ class FileStorageService extends GetxService {
   }
 
   List<Report> convertFilesToReports(List<File> files) {
-    List<Report> reports = [];
-    for (File file in files) {
-      String reportJson = file.readAsStringSync();
-      Map<String, dynamic> reportMap = jsonDecode(reportJson);
+  List<Report> reports = [];
+  for (File file in files) {
+    String reportJson = file.readAsStringSync();
+    Map<String, dynamic> reportMap = jsonDecode(reportJson);
+
+    if (reportMap.containsKey('id')) {
+      ReportWithId report = ReportWithId.fromJson(reportMap);
+      reports.add(report);
+    } else {
       Report report = Report.fromJson(reportMap);
       reports.add(report);
     }
-    return reports;
   }
+  return reports;
+}
 
   Future<void> downloadReportsFromServer() async {
-    print("hi");
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports'); //<-- TODO: change so url is not hardcoded like this?
     final headers = {'Content-Type': 'application/json'};
-    print("bye");
     try {
       final response = await http.get(url, headers: headers);
       print("hello");
@@ -189,7 +193,7 @@ class FileStorageService extends GetxService {
     }
   }
 
-  Future saveReports(String responseBody) async{
+  Future saveReportsTwo(String responseBody) async{
     await deleteAllReports();
     List<dynamic> reportsJson = jsonDecode(responseBody);
     print(reportsJson[0].toString());
@@ -215,6 +219,17 @@ class FileStorageService extends GetxService {
     )).toList();
     print(reportsWithoutId.length);
     for (Report report in reportsWithoutId){
+      await saveReport(report, true);
+    }
+  }
+
+  Future saveReports(String responseBody) async{
+    await deleteAllReports();
+    List<dynamic> reportsJson = jsonDecode(responseBody);
+    print(reportsJson[0].toString());
+    List<ReportWithId> reports = reportsJson.map((report) => ReportWithId.fromJson(report)).toList();
+    List<Report> reportsTwo = reports;
+    for (Report report in reportsTwo){
       await saveReport(report, true);
     }
   }

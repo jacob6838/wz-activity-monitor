@@ -74,7 +74,9 @@ class ViewReports extends StatelessWidget {
                     ),
                   ],
                 )),
-              )
+              ),
+              Obx(() => controller.tryingToUpload.value ?
+                Center(child: CircularProgressIndicator()): Container()),
             ],
           ),
         );

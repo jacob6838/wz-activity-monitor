@@ -20,6 +20,7 @@ class ReportPageController extends GetxController {
   GeometryType geometryType = GeometryType.multipoint;
   String surfaceType = "";
   double lineWidth = 30.0;
+  RxBool waitingOnReportPost = false.obs;
 }
 
 //This is the report page where the user can generate a report
@@ -61,71 +62,70 @@ class ReportPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
-        child: Obx(() => ListView(children: [
-          /*ElevatedButton(
-            child: Text("test"),
-            onPressed: () {
-              postReport(null);
-            },
-          ),*/
-          verticalSpaceMedium,
-          _inputField("Project ID", projectIdController, isNumeric: true), //optional
-          verticalSpaceMedium,
-          _inputField("Segment ID", segmentIdController, isNumeric: true), //optional
-          verticalSpaceMedium,
-          _inputField("Area ID", areaIdController, isNumeric: true), //optional
-          verticalSpaceMedium,
-          _inputField("Report Name", reportNameController, isRequired: true),
-          Obx(() => Row(
-            children: [
-              const Text("Are Workers Present?"),
-              Checkbox(
-                value: areWorkersPresent.value,
-                onChanged: (value) {
-                  areWorkersPresent.value = value!;
-                },
-              ),
-            ],
-          )),
-          verticalSpaceMedium,
-          ...workTypeSegments,
-          ElevatedButton(
-            onPressed: () {
-              workTypeNameList.add(["",false]);
-              workTypeSegments = workTypeSegments + _workTypeSegment(context, workTypeNames, workTypeNameList.length - 1);
-            },
-            child: const Text("Add Another Type of Work"),
-          ),
-          verticalSpaceMedium,
-          _inputField("Start Date", startDateController, isDate: true, dateStorage: startDate, context: context), //optional
-          verticalSpaceMedium,
-          _inputField("End Date", endDateController, isDate: true, dateStorage: endDate, context: context), //optional
-          verticalSpaceMedium,
-          _inputField("Report Date", reportDateController, isDate: true, dateStorage: reportDate, isRequired: true, context: context), 
-          verticalSpaceMedium,
-          _dropdownField("Area Type", areaTypes, context, isAreaWorkType: true),
-          verticalSpaceMedium,
-          _inputField("Mobility Speed (MPH)", mobilitySpeedController, isDouble: true), //optional
-          verticalSpaceMedium,
-          //_dropdownField("Geometry Type", geometryTypes, context, isGeometryType: true), //TODO: Get rid of
-          //verticalSpaceMedium,
-          _dropdownField("Surface Type", surfaceType, context, isSurfaceType: true),
-          verticalSpaceMedium,
-          ElevatedButton(
-            onPressed: () {
-              Get.to(() => const ReportLocationSelection());
-            },
-            child: controller.points.isEmpty ? const Text("Select Activty Location") : Text("Change Activity Location"),
-          ),
-          verticalSpaceSmall,
-          Container(  
-            height: 3,
-            decoration: BoxDecoration(
-              color: Colors.black,
-          )),
-          verticalSpaceSmall,
-          _submitButton(),
-        ])),
+        child: Obx(() => Stack(
+          children: [
+            ListView(children: [
+            verticalSpaceMedium,
+            _inputField("Project ID", projectIdController, isNumeric: true), //optional
+            verticalSpaceMedium,
+            _inputField("Segment ID", segmentIdController, isNumeric: true), //optional
+            verticalSpaceMedium,
+            _inputField("Area ID", areaIdController, isNumeric: true), //optional
+            verticalSpaceMedium,
+            _inputField("Report Name", reportNameController, isRequired: true),
+            Obx(() => Row(
+              children: [
+                const Text("Are Workers Present?"),
+                Checkbox(
+                  value: areWorkersPresent.value,
+                  onChanged: (value) {
+                    areWorkersPresent.value = value!;
+                  },
+                ),
+              ],
+            )),
+            verticalSpaceMedium,
+            ...workTypeSegments,
+            ElevatedButton(
+              onPressed: () {
+                workTypeNameList.add(["",false]);
+                workTypeSegments = workTypeSegments + _workTypeSegment(context, workTypeNames, workTypeNameList.length - 1);
+              },
+              child: const Text("Add Another Type of Work"),
+            ),
+            verticalSpaceMedium,
+            _inputField("Start Date", startDateController, isDate: true, dateStorage: startDate, context: context), //optional
+            verticalSpaceMedium,
+            _inputField("End Date", endDateController, isDate: true, dateStorage: endDate, context: context), //optional
+            verticalSpaceMedium,
+            _inputField("Report Date", reportDateController, isDate: true, dateStorage: reportDate, isRequired: true, context: context), 
+            verticalSpaceMedium,
+            _dropdownField("Area Type", areaTypes, context, isAreaWorkType: true),
+            verticalSpaceMedium,
+            _inputField("Mobility Speed (MPH)", mobilitySpeedController, isDouble: true), //optional
+            verticalSpaceMedium,
+            //_dropdownField("Geometry Type", geometryTypes, context, isGeometryType: true), //TODO: Get rid of
+            //verticalSpaceMedium,
+            _dropdownField("Surface Type", surfaceType, context, isSurfaceType: true),
+            verticalSpaceMedium,
+            ElevatedButton(
+              onPressed: () {
+                Get.to(() => const ReportLocationSelection());
+              },
+              child: controller.points.isEmpty ? const Text("Select Activty Location") : Text("Change Activity Location"),
+            ),
+            verticalSpaceSmall,
+            Container(  
+              height: 3,
+              decoration: BoxDecoration(
+                color: Colors.black,
+            )),
+            verticalSpaceSmall,
+            _submitButton(),
+          ]),
+          if (controller.waitingOnReportPost.value) const Center(child: CircularProgressIndicator()),
+          ],
+        )),
       ));
   }
 
@@ -225,7 +225,7 @@ class ReportPage extends StatelessWidget {
         if (!_fieldsValid()) {
           return;
         }
-        _saveReport();
+        await _saveReport();
       },
       child: const Text("Submit Report"),
     );
@@ -437,7 +437,7 @@ class ReportPage extends StatelessWidget {
     return typesOfWork;
   }
 
-  void _saveReport() {
+  Future<void> _saveReport() async{
     List<TypeOfWork> typesOfWork = _getTypesOfWork();
 
     Report report = Report(
@@ -459,11 +459,13 @@ class ReportPage extends StatelessWidget {
       surface_type: _stringToSurfaceType(controller.surfaceType),
     );
     //fileStorageService.saveReport(report, false); //TODO try to upload. If successful, save to different folder
-    postReport(report);
+    controller.waitingOnReportPost.value = true;
+    await postReport(report);
+    controller.waitingOnReportPost.value = false;
     Get.back();
   }
 
-  void postReport(Report report) async {
+  Future<void> postReport(Report report) async {
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
     final headers = {'Content-Type': 'application/json'};
     try {
@@ -491,7 +493,27 @@ class ReportPage extends StatelessWidget {
       );
       if (response.statusCode == 200) {
         print('Report posted successfully');
-        fileStorageService.saveReport(report, true);
+        int reportId = json.decode(response.body)['id'];
+        ReportWithId reportWithId = ReportWithId(
+          id: reportId,
+          project_id: report.project_id,
+          segment_id: report.segment_id,
+          area_id: report.area_id,
+          report_name: report.report_name,
+          types_of_work: report.types_of_work,
+          workers_present: report.workers_present,
+          start_date: report.start_date,
+          end_date: report.end_date,
+          report_date: report.report_date,
+          area_type: report.area_type,
+          mobility_speed_mph: report.mobility_speed_mph,
+          geometry_type: report.geometry_type,
+          geometry: report.geometry,
+          geometry_line_width: report.geometry_line_width,
+          license_plate: report.license_plate,
+          surface_type: report.surface_type,
+        );
+        fileStorageService.saveReport(reportWithId, true);
       } else {
         print('Failed to post report: ${response.statusCode}');
         fileStorageService.saveReport(report, false);

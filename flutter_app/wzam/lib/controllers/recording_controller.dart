@@ -181,7 +181,7 @@ class RecordingController extends GetxController {
   }
 
   void startWorkZoneRecording() {
-    currentSpeedLimit.value = mobilitySpeedMPH!.toInt(); //TODO: Figure Out what this mobility speed thing is
+    currentSpeedLimit.value = mobilitySpeedMPH != null ? mobilitySpeedMPH!.toInt() : 25; //TODO: Figure Out what this mobility speed thing is
     inWorkZone.value = true;
     refPtNeedToMark = true;
   }

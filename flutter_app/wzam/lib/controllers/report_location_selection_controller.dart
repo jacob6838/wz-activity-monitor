@@ -21,7 +21,6 @@ class ReportLocationSelectionController extends GetxController {
   Rx<MarkerLayer> markerLayer = const MarkerLayer(markers: <Marker>[]).obs;
   Rx<PolylineLayer> polylineLayer = const PolylineLayer(polylines: <Polyline>[]).obs;
   Rx<PolygonLayer> polygonLayer = const PolygonLayer(polygons: <Polygon>[]).obs;
-  //late LatLng point; 
   late RxList<LatLng> points;
   late RxList<LatLng> borderPoints;
   Rx<GeometryType> geometryType = GeometryType.linestring.obs;
@@ -143,7 +142,6 @@ class ReportLocationSelectionController extends GetxController {
       color: primaryColor,
     );
     polylineLayer.value = PolylineLayer(polylines: <Polyline>[reportZonePolyline]);
-    print(points.length);
   }
 
   void _editPointInPolylineLayer(LatLng point) {
@@ -159,7 +157,7 @@ class ReportLocationSelectionController extends GetxController {
   }
 
   void _addPointToPolygonLayer(LatLng point) {
-    if (/*geometryType == GeometryType.linestring ||*/ geometryType == GeometryType.polygon) {
+    if (geometryType == GeometryType.polygon) {
       points.add(point);
       Polygon reportZonePolygon = Polygon(
         points: points,
@@ -170,18 +168,13 @@ class ReportLocationSelectionController extends GetxController {
       polygonLayer.value = PolygonLayer(polygons: <Polygon>[reportZonePolygon]);
     }
     if (geometryType == GeometryType.linestring) {
-      borderPoints = _generateLineBorderfromLatLngPoint(points, lineWidth.value).obs;
       List<Polygon> borderzones = _generateLineBorderShapeFromLatLngPoint(points, lineWidth.value);
-      /*Polygon reportZonePolygon = Polygon(
-        points: borderPoints,
-        color: primaryColor.withOpacity(0.5),
-      );*/
       polygonLayer.value = PolygonLayer(polygons: borderzones);
     }
   }
 
   void _editPointInPolygonLayer(LatLng point) {
-    if (/*geometryType == GeometryType.linestring ||*/ geometryType == GeometryType.polygon) {
+    if (geometryType == GeometryType.polygon) {
       points[selectedPoint.value] = point;
       Polygon reportZonePolygon = Polygon(
         points: points,
@@ -193,10 +186,6 @@ class ReportLocationSelectionController extends GetxController {
     }
     if (geometryType == GeometryType.linestring) {
       List<Polygon> borderzones = _generateLineBorderShapeFromLatLngPoint(points, lineWidth.value).obs;
-      /*Polygon reportZonePolygon = Polygon(
-        points: borderPoints,
-        color: primaryColor.withOpacity(0.5),
-      );*/
       polygonLayer.value = PolygonLayer(polygons: borderzones);
     }
   }
@@ -232,24 +221,12 @@ class ReportLocationSelectionController extends GetxController {
         polygonLayer.value = PolygonLayer(polygons: <Polygon>[reportZonePolygon]);
       }
       if (reportPageController.geometryType == GeometryType.linestring) {
-        //borderPoints = _generateLineBorderTwo(reportPageController.points, reportPageController.lineWidth).obs;
         List<Polygon> borderzones = _generateLineBorderShape(reportPageController.points);
-        /*Polygon reportZonePolygon = Polygon(
-          points: borderPoints,
-          color: primaryColor.withOpacity(0.5),
-        );*/
         polygonLayer.value = PolygonLayer(polygons: borderzones);
       }
     }
   }
 
-  List<LatLng> _generateLineBorderfromLatLngPoint(List<LatLng> points, double width) {
-    List<List<double>> pointsList = <List<double>>[];
-    for (LatLng point in points) {
-      pointsList.add([point.latitude, point.longitude]);
-    }
-    return _generateLineBorderTwo(pointsList, width);
-  }
 
   List<Polygon> _generateLineBorderShapeFromLatLngPoint(List<LatLng> points, double width) {
     List<List<double>> pointsList = <List<double>>[];
@@ -259,120 +236,12 @@ class ReportLocationSelectionController extends GetxController {
     return _generateLineBorderShape(pointsList);
   }
 
-  List<LatLng> _generateLineBorder(List<List<double>> points) {
-    print("went here");
-    //width = width / 1000000;
-
-    RxDouble width = (lineWidth.value /1000000).obs;
-    List<LatLng> borderPoints = <LatLng>[];
-    List<List<LatLng>> borderPointsList = <List<LatLng>>[];
-    for (int i = 0; i < points.length - 1; i++) {
-      double x1 = points[i][0];
-      double y1 = points[i][1];
-      double x2 = points[i + 1][0];
-      double y2 = points[i + 1][1];
-      double angle = (x1 == x2) ? 90.0 : (y1 == y2) ? 0.0 : atan((y2 - y1) / (x2 - x1));
-      double angle1 = angle + (3.14159265358979323846264338/2);
-      double angle2 = angle - (3.14159265358979323846264338/2);
-      double x3 = x1 + (width / 2) * cos(angle1);
-      double y3 = y1 + (width / 2) * sin(angle1);
-      double x4 = x1 + (width / 2) * cos(angle2);
-      double y4 = y1 + (width / 2) * sin(angle2);
-      //borderPoints.add(LatLng(x3, y3));
-      //borderPoints.add(LatLng(x4, y4));
-      borderPointsList.add([LatLng(x3, y3), LatLng(x4, y4)]);
-    }
-    if (points.length >= 2) {
-      double x1 = points[points.length-1][0];
-      double y1 = points[points.length - 1][1];
-      double x2 = points[points.length -2][0];
-      double y2 = points[points.length - 2][1];
-      double angle = (x1 == x2) ? 90.0 : (y1 == y2) ? 0.0 : atan((y2 - y1) / (x2 - x1));
-      double angle1 = angle + (3.14159265358979323846264338/2);
-      double angle2 = angle - (3.14159265358979323846264338/2);
-      double x3 = x1 + (width / 2) * cos(angle1);
-      double y3 = y1 + (width / 2) * sin(angle1);
-      double x4 = x1 + (width / 2) * cos(angle2);
-      double y4 = y1 + (width / 2) * sin(angle2);
-      borderPointsList.add([LatLng(x3, y3), LatLng(x4, y4)]);
-      print(borderPointsList.length);
-    }
-    for (int i = 0; i < borderPointsList.length; i++) {
-      print(i);
-      borderPoints.add(borderPointsList[i][0]);
-    }
-    for (int i = borderPointsList.length - 1; i >= 0; i--) {
-      print(i);
-      borderPoints.add(borderPointsList[i][1]);
-    }
-
-    return borderPoints;
-  }
-
-  List<LatLng> _generateLineBorderTwo(List<List<double>> points, double width) {
-    print("went here");
-    width = width / 1000000;
-    List<LatLng> borderPoints = <LatLng>[];
-    List<List<LatLng>> borderPointsList = <List<LatLng>>[];
-    for (int i = 0; i < points.length - 1; i++) {
-      double x1 = points[i][0];
-      double y1 = points[i][1];
-      double x2 = points[i + 1][0];
-      double y2 = points[i + 1][1];
-      double angle = (x1 == x2) ? 90.0 : (y1 == y2) ? 0.0 : atan((y2 - y1) / (x2 - x1));
-      double angle1 = angle + (3.14159265358979323846264338/2);
-      double angle2 = angle - (3.14159265358979323846264338/2);
-      double x3 = x1 + (width / 2) * cos(angle1);
-      double y3 = y1 + (width / 2) * sin(angle1);
-      double x4 = x1 + (width / 2) * cos(angle2);
-      double y4 = y1 + (width / 2) * sin(angle2);
-      double x5 = x3 + (x2 - x1);
-      double y5 = y3 + (y2 - y1);
-      double x6 = x4 + (x2 - x1);
-      double y6 = y4 + (y2 - y1);
-      //borderPoints.add(LatLng(x3, y3));
-      //borderPoints.add(LatLng(x4, y4));
-      borderPointsList.add([LatLng(x3, y3), LatLng(x4, y4), LatLng(x5, y5), LatLng(x6, y6)]);
-    }
-    /*if (points.length >= 2) {
-      double x1 = points[points.length-1][0];
-      double y1 = points[points.length - 1][1];
-      double x2 = points[points.length -2][0];
-      double y2 = points[points.length - 2][1];
-      double angle = (x1 == x2) ? 90.0 : (y1 == y2) ? 0.0 : atan((y2 - y1) / (x2 - x1));
-      double angle1 = angle + (3.14159265358979323846264338/2);
-      double angle2 = angle - (3.14159265358979323846264338/2);
-      double x3 = x1 + (width / 2) * cos(angle1);
-      double y3 = y1 + (width / 2) * sin(angle1);
-      double x4 = x1 + (width / 2) * cos(angle2);
-      double y4 = y1 + (width / 2) * sin(angle2);
-      borderPointsList.add([LatLng(x3, y3), LatLng(x4, y4)]);
-      print(borderPointsList.length);
-    }*/
-    for (int i = 0; i < borderPointsList.length; i++) {
-      print(i);
-      borderPoints.add(borderPointsList[i][0]);
-      borderPoints.add(borderPointsList[i][2]);
-    }
-    for (int i = borderPointsList.length - 1; i >= 0; i--) {
-      print(i);
-      borderPoints.add(borderPointsList[i][1]);
-      borderPoints.add(borderPointsList[i][3]);
-    }
-
-    return borderPoints;
-  }
-
+ 
   List<Polygon> _generateLineBorderShape(List<List<double>> points) {
-    print("went here");
-    //width = width / 1000000;
-    //RxDouble width = (lineWidth.value /1000000).obs;
     double widthInMeters = lineWidth.value;
     
     double widthInDegreesLat = widthInMeters / 111320.0; // Approximate conversion factor for latitude
     double widthInDegreesLon = widthInMeters / (111320.0 * cos(points[0][0] * (pi / 180.0))); // Approximate conversion factor for longitude
-    List<LatLng> borderPoints = <LatLng>[];
-    List<List<LatLng>> borderPointsList = <List<LatLng>>[];
     List<Polygon> borderZones = <Polygon>[];
     for (int i = 0; i < points.length - 1; i++) {
       double x1 = points[i][0];
@@ -382,8 +251,8 @@ class ReportLocationSelectionController extends GetxController {
       double angle = (x1 == x2) ? pi/2 : (y1 == y2) ? 0.0 : atan((y2 - y1) / (x2 - x1));
       double angle1 = angle + (pi/2);
       double angle2 = angle - (pi/2);
-      double offsetX = widthInDegreesLat; //* cos(angle1);
-      double offsetY = widthInDegreesLon; //* sin(angle1);
+      double offsetX = widthInDegreesLat; 
+      double offsetY = widthInDegreesLon; 
       double x3 = x1 + (offsetX / 2) * cos(angle1);
       double y3 = y1 + (offsetY / 2) * sin(angle1);
       double x4 = x1 + (offsetX / 2) * cos(angle2);
@@ -392,38 +261,19 @@ class ReportLocationSelectionController extends GetxController {
       double y5 = y3 + (y2 - y1);
       double x6 = x4 + (x2 - x1);
       double y6 = y4 + (y2 - y1);
-      //borderPoints.add(LatLng(x3, y3));
-      //borderPoints.add(LatLng(x4, y4));
-      //borderPointsList.add([LatLng(x3, y3), LatLng(x4, y4), LatLng(x5, y5), LatLng(x6, y6)]);
       Polygon reportZonePolygon = Polygon(
         points: [LatLng(x3, y3), LatLng(x5, y5), LatLng(x6, y6), LatLng(x4, y4)],
         color: primaryColor.withOpacity(0.5),
       );
       borderZones.add(reportZonePolygon);
     }
-    /*for (int i = 0; i < borderPointsList.length; i++) {
-      print(i);
-      borderPoints.add(borderPointsList[i][0]);
-      borderPoints.add(borderPointsList[i][2]);
-    }
-    for (int i = borderPointsList.length - 1; i >= 0; i--) {
-      print(i);
-      borderPoints.add(borderPointsList[i][1]);
-      borderPoints.add(borderPointsList[i][3]);
-    }*/
-
     return borderZones;
   }
 
   void updateBorderZone(double width) {
     lineWidth.value = width;
     if (geometryType == GeometryType.linestring) {
-      borderPoints = _generateLineBorderfromLatLngPoint(points, width).obs;
       List<Polygon> borderzones = _generateLineBorderShapeFromLatLngPoint(points, width);
-      /*Polygon reportZonePolygon = Polygon(
-        points: borderPoints,
-        color: primaryColor.withOpacity(0.5),
-      );*/
       polygonLayer.value = PolygonLayer(polygons: borderzones);
     }
   }
@@ -455,7 +305,6 @@ class ReportLocationSelectionController extends GetxController {
     }
     reportPageController.geometryType = geometryType.value;
     geometryType.value == GeometryType.linestring ? reportPageController.lineWidth = lineWidth.value : null;
-    //reportPageController.point.add(point.longitude);
     Get.back();
   }
  

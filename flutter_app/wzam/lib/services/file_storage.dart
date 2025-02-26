@@ -76,9 +76,7 @@ class FileStorageService extends GetxService {
     File file = File(filePath);
     if (!await file.exists()) {
       await file.create(recursive: true);
-    } else{
-      print("booooooooo");
-    }
+    } 
     return fileNameLocal;
   }
 
@@ -163,13 +161,11 @@ class FileStorageService extends GetxService {
     final headers = {'Content-Type': 'application/json'};
     try {
       final response = await http.get(url, headers: headers);
-      print("hello");
       if (response.statusCode == 200) {
         print('Report gathered successfully');
         await saveReports(response.body);
       } else {
         print('Failed to get report: ${response.statusCode}');
-        print(response.body);
       }
     } catch (e) {
       print('Error getting report: $e');
@@ -186,7 +182,6 @@ class FileStorageService extends GetxService {
         await saveRecordings(response.body);
       } else {
         print('Failed to post report: ${response.statusCode}');
-        print(response.body);
       }
     } catch (e) {
       print('Error posting report: $e');
@@ -196,7 +191,6 @@ class FileStorageService extends GetxService {
   Future saveReportsTwo(String responseBody) async{
     await deleteAllReports();
     List<dynamic> reportsJson = jsonDecode(responseBody);
-    print(reportsJson[0].toString());
     List<ReportWithId> reports = reportsJson.map((report) => ReportWithId.fromJson(report)).toList();
     List<Report> reportsWithoutId = reports.map((report) => Report(
       project_id: report.project_id,
@@ -217,7 +211,6 @@ class FileStorageService extends GetxService {
       surface_type: report.surface_type,
       //point: report.point
     )).toList();
-    print(reportsWithoutId.length);
     for (Report report in reportsWithoutId){
       await saveReport(report, true);
     }
@@ -226,7 +219,6 @@ class FileStorageService extends GetxService {
   Future saveReports(String responseBody) async{
     await deleteAllReports();
     List<dynamic> reportsJson = jsonDecode(responseBody);
-    print(reportsJson[0].toString());
     List<ReportWithId> reports = reportsJson.map((report) => ReportWithId.fromJson(report)).toList();
     List<Report> reportsTwo = reports;
     for (Report report in reportsTwo){
@@ -236,9 +228,7 @@ class FileStorageService extends GetxService {
 
   Future saveRecordings(String responseBody) async{
     await deleteAllRecordings();
-    print(responseBody);
     List<dynamic> recordingsJson = jsonDecode(responseBody);
-    print(recordingsJson[0].toString());
     List<RecordingWithId> recordings = recordingsJson.map((recording) => RecordingWithId.fromJson(recording)).toList();
     List<Recording> recordingsWithoutId = recordings.map((report) => Recording(
       project_id: report.project_id,

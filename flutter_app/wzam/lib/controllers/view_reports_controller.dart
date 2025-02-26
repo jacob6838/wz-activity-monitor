@@ -59,12 +59,10 @@ class ViewReportsController extends GetxController {
   }
 
   _updatePolylineLayer() {
-    print(reportPolylines.length);
     polylineLayer.value = PolylineLayer(polylines: reportPolylines);
   }
 
   _updatePolygonLayer() {
-    print(reportPolygons.length);
     polygonLayer.value = PolygonLayer(polygons: reportPolygons);
   }
 
@@ -170,13 +168,11 @@ class ViewReportsController extends GetxController {
         for (List<double> point in report.geometry) {
           points.add(LatLng(point[0], point[1]));
         }
-        print("points: $points");
         polylines.add(Polyline(
           points: points,
           strokeWidth: 5.0,
           color: status == 'active' ? activeColor : status == 'pending' ? pendingColor : recentlyCompletedColor,
         ));
-        print("polyline length: ${polylines.length}");
       }
       if (report.geometry_type == GeometryType.polygon) {
         List<LatLng> points = <LatLng>[];
@@ -489,7 +485,6 @@ class ViewReportsController extends GetxController {
         license_plate: report.license_plate,
         surface_type: report.surface_type,
       );
-      print("1");
       tryingToUpload = true.obs;
       await _editReport(newReport, reportId, Get.find<FileStorageService>());
       tryingToUpload = false.obs;
@@ -499,7 +494,6 @@ class ViewReportsController extends GetxController {
   Future<void> _editReport(Report report, int reportId, FileStorageService fileService) async {
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
     final headers = {'Content-Type': 'application/json'};
-    print("2");
     try {
       final response = await http.post(url, 
         headers: headers, 

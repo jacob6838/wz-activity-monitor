@@ -1,0 +1,738 @@
+{
+  "recording_name": "Innovation Drive Recording",
+  "types_of_work": [
+    { "type_name": "maintenance", "is_architectural_change": false }
+  ],
+  "recording_date": 1629412785,
+  "area_type": "moving",
+  "points": [
+    {
+      "date": 1629412785,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.955268000000004,
+      "longitude": -77.150057,
+      "altitude": 76.8,
+      "speed": 4.99577,
+      "heading": 128.85,
+      "num_lanes": 2,
+      "markings": [
+        {
+          "ref_pt": null,
+          "lane_closed": null,
+          "lane_opened": null,
+          "workers_present": null,
+          "speed_limit_mph": null
+        }
+      ]
+    },
+    {
+      "date": 1629412786,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.955268000000004,
+      "longitude": -77.150057,
+      "altitude": 76.9,
+      "speed": 4.99577,
+      "heading": 128.85,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412787,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95524083333334,
+      "longitude": -77.15001016666666,
+      "altitude": 76.9,
+      "speed": 5.0425844444444445,
+      "heading": 125.95,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412788,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.955217,
+      "longitude": -77.149961,
+      "altitude": 76.9,
+      "speed": 4.895967777777778,
+      "heading": 120.58,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412789,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.955194,
+      "longitude": -77.14990983333334,
+      "altitude": 76.9,
+      "speed": 5.166051111111112,
+      "heading": 119.62,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412790,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95517183333333,
+      "longitude": -77.14985566666665,
+      "altitude": 76.8,
+      "speed": 5.32913,
+      "heading": 117.37,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412791,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.955151,
+      "longitude": -77.1498,
+      "altitude": 77.0,
+      "speed": 5.261737777777778,
+      "heading": 114.67,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412792,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95513166666667,
+      "longitude": -77.149744,
+      "altitude": 77.0,
+      "speed": 5.238073333333334,
+      "heading": 113.4,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412793,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95511416666667,
+      "longitude": -77.14968816666666,
+      "altitude": 77.1,
+      "speed": 5.249391111111112,
+      "heading": 111.77,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412794,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.955099000000004,
+      "longitude": -77.14963416666666,
+      "altitude": 77.7,
+      "speed": 4.965932222222222,
+      "heading": 109.72,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412795,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.955082999999995,
+      "longitude": -77.14957833333332,
+      "altitude": 77.8,
+      "speed": 5.06522,
+      "heading": 110.26,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412796,
+      "num_satellites": 12,
+      "accuracy": 0.81,
+      "latitude": 38.95506683333333,
+      "longitude": -77.14952383333333,
+      "altitude": 77.9,
+      "speed": 4.978278888888889,
+      "heading": 109.73,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412797,
+      "num_satellites": 12,
+      "accuracy": 0.81,
+      "latitude": 38.95505133333334,
+      "longitude": -77.14946966666666,
+      "altitude": 77.9,
+      "speed": 4.827032222222222,
+      "heading": 108.52,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412798,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95503816666667,
+      "longitude": -77.149417,
+      "altitude": 77.8,
+      "speed": 4.649034444444445,
+      "heading": 107.56,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412799,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95502633333333,
+      "longitude": -77.14936633333333,
+      "altitude": 77.9,
+      "speed": 4.512192222222223,
+      "heading": 106.01,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412800,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95501616666666,
+      "longitude": -77.14931700000001,
+      "altitude": 77.8,
+      "speed": 4.314131111111111,
+      "heading": 104.74,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412801,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.9550075,
+      "longitude": -77.14927016666667,
+      "altitude": 77.8,
+      "speed": 4.095492222222223,
+      "heading": 104.52,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412802,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95499766666667,
+      "longitude": -77.1492235,
+      "altitude": 77.8,
+      "speed": 4.127387777777778,
+      "heading": 103.64,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412803,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954988666666665,
+      "longitude": -77.14917650000001,
+      "altitude": 77.9,
+      "speed": 4.107324444444445,
+      "heading": 102.35,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412804,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95498216666667,
+      "longitude": -77.14912866666667,
+      "altitude": 77.9,
+      "speed": 4.198381111111111,
+      "heading": 100.28,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412805,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954976,
+      "longitude": -77.14908033333333,
+      "altitude": 77.8,
+      "speed": 4.29303888888889,
+      "heading": 99.91,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412806,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954968666666666,
+      "longitude": -77.14903083333334,
+      "altitude": 77.7,
+      "speed": 4.248796666666667,
+      "heading": 98.82,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412807,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954962333333334,
+      "longitude": -77.14898316666667,
+      "altitude": 77.8,
+      "speed": 4.06514,
+      "heading": 97.97,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412808,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.9549575,
+      "longitude": -77.14893666666667,
+      "altitude": 78.0,
+      "speed": 4.073885555555556,
+      "heading": 98.06,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412809,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954952000000006,
+      "longitude": -77.14888983333334,
+      "altitude": 78.0,
+      "speed": 4.085203333333333,
+      "heading": 96.98,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412810,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954947833333335,
+      "longitude": -77.14884183333334,
+      "altitude": 78.1,
+      "speed": 4.1814044444444445,
+      "heading": 95.74,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412811,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95494433333333,
+      "longitude": -77.14879283333333,
+      "altitude": 78.1,
+      "speed": 4.282235555555555,
+      "heading": 94.62,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412812,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954941500000004,
+      "longitude": -77.148742,
+      "altitude": 78.2,
+      "speed": 4.444285555555555,
+      "heading": 94.04,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412813,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954938999999996,
+      "longitude": -77.1486905,
+      "altitude": 78.3,
+      "speed": 4.4926433333333335,
+      "heading": 93.42,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412814,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95493716666667,
+      "longitude": -77.14863733333333,
+      "altitude": 78.5,
+      "speed": 4.67167,
+      "heading": 92.13,
+      "num_lanes": 2,
+      "markings": [
+        {
+          "ref_pt": true,
+          "lane_closed": null,
+          "lane_opened": null,
+          "workers_present": null,
+          "speed_limit_mph": null
+        }
+      ]
+    },
+    {
+      "date": 1629412815,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95493583333334,
+      "longitude": -77.1485825,
+      "altitude": 78.6,
+      "speed": 4.793078888888889,
+      "heading": 91.3,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412816,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95493583333334,
+      "longitude": -77.14852766666667,
+      "altitude": 78.6,
+      "speed": 4.684531111111111,
+      "heading": 89.64,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412817,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954936833333335,
+      "longitude": -77.14847283333333,
+      "altitude": 78.7,
+      "speed": 4.776102222222223,
+      "heading": 88.58,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412818,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954938,
+      "longitude": -77.14841633333334,
+      "altitude": 78.7,
+      "speed": 4.925291111111111,
+      "heading": 88.47,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412819,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.9549395,
+      "longitude": -77.148358,
+      "altitude": 78.8,
+      "speed": 5.095572222222223,
+      "heading": 87.71,
+      "num_lanes": 2,
+      "markings": [
+        {
+          "ref_pt": null,
+          "lane_closed": null,
+          "lane_opened": null,
+          "workers_present": true,
+          "speed_limit_mph": null
+        }
+      ]
+    },
+    {
+      "date": 1629412820,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95494266666667,
+      "longitude": -77.14829816666666,
+      "altitude": 78.8,
+      "speed": 5.238587777777778,
+      "heading": 85.7,
+      "num_lanes": 2,
+      "markings": [
+        {
+          "ref_pt": null,
+          "lane_closed": 2,
+          "lane_opened": null,
+          "workers_present": null,
+          "speed_limit_mph": null
+        }
+      ]
+    },
+    {
+      "date": 1629412821,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95494683333333,
+      "longitude": -77.14823750000001,
+      "altitude": 78.8,
+      "speed": 5.252992222222223,
+      "heading": 84.83,
+      "num_lanes": 2,
+      "markings": [
+        {
+          "ref_pt": null,
+          "lane_closed": null,
+          "lane_opened": 2,
+          "workers_present": null,
+          "speed_limit_mph": null
+        }
+      ]
+    },
+    {
+      "date": 1629412822,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95495183333333,
+      "longitude": -77.14817716666667,
+      "altitude": 78.8,
+      "speed": 5.260194444444445,
+      "heading": 83.38,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412823,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954958000000005,
+      "longitude": -77.14811616666665,
+      "altitude": 78.9,
+      "speed": 5.349193333333334,
+      "heading": 82.39,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412824,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95496516666666,
+      "longitude": -77.1480535,
+      "altitude": 78.9,
+      "speed": 5.540566666666667,
+      "heading": 81.19,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412825,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954973333333335,
+      "longitude": -77.14798816666666,
+      "altitude": 78.9,
+      "speed": 5.806534444444445,
+      "heading": 80.64,
+      "num_lanes": 2,
+      "markings": [
+        {
+          "ref_pt": null,
+          "lane_closed": null,
+          "lane_opened": null,
+          "workers_present": false,
+          "speed_limit_mph": null
+        }
+      ]
+    },
+    {
+      "date": 1629412826,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.954981833333335,
+      "longitude": -77.14792083333333,
+      "altitude": 78.9,
+      "speed": 5.980931111111111,
+      "heading": 80.59,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412827,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.9549915,
+      "longitude": -77.14785116666667,
+      "altitude": 78.9,
+      "speed": 6.178992222222222,
+      "heading": 79.61,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412828,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.955002,
+      "longitude": -77.1477805,
+      "altitude": 78.8,
+      "speed": 6.243812222222223,
+      "heading": 79.01,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412829,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.955013,
+      "longitude": -77.14771066666667,
+      "altitude": 78.8,
+      "speed": 6.131663333333334,
+      "heading": 78.54,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412830,
+      "num_satellites": 11,
+      "accuracy": 0.78,
+      "latitude": 38.955024333333334,
+      "longitude": -77.14764116666667,
+      "altitude": 78.6,
+      "speed": 6.145553333333334,
+      "heading": 77.78,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412831,
+      "num_satellites": 11,
+      "accuracy": 0.93,
+      "latitude": 38.95503566666666,
+      "longitude": -77.14757066666667,
+      "altitude": 78.4,
+      "speed": 6.264390000000001,
+      "heading": 78.38,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412832,
+      "num_satellites": 12,
+      "accuracy": 0.93,
+      "latitude": 38.955046833333334,
+      "longitude": -77.14750033333333,
+      "altitude": 78.3,
+      "speed": 6.174876666666667,
+      "heading": 78.21,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412833,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95505766666667,
+      "longitude": -77.14743100000001,
+      "altitude": 78.2,
+      "speed": 6.100282222222223,
+      "heading": 78.51,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412834,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95506783333334,
+      "longitude": -77.14736533333333,
+      "altitude": 78.0,
+      "speed": 5.667634444444444,
+      "heading": 78.79,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412835,
+      "num_satellites": 11,
+      "accuracy": 0.78,
+      "latitude": 38.95507716666667,
+      "longitude": -77.14730366666666,
+      "altitude": 77.8,
+      "speed": 5.322956666666667,
+      "heading": 78.69,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412836,
+      "num_satellites": 11,
+      "accuracy": 0.93,
+      "latitude": 38.95508733333334,
+      "longitude": -77.14724433333335,
+      "altitude": 77.6,
+      "speed": 5.228298888888889,
+      "heading": 76.98,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412837,
+      "num_satellites": 12,
+      "accuracy": 0.93,
+      "latitude": 38.9550985,
+      "longitude": -77.14718516666667,
+      "altitude": 77.5,
+      "speed": 5.290546666666668,
+      "heading": 76.2,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412838,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.95511166666667,
+      "longitude": -77.14712716666666,
+      "altitude": 77.4,
+      "speed": 5.205148888888889,
+      "heading": 73.24,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412839,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.955126,
+      "longitude": -77.1470725,
+      "altitude": 77.5,
+      "speed": 4.938666666666667,
+      "heading": 70.61,
+      "num_lanes": 2,
+      "markings": null
+    },
+    {
+      "date": 1629412839,
+      "num_satellites": 12,
+      "accuracy": 0.78,
+      "latitude": 38.955142,
+      "longitude": -77.14702216666666,
+      "altitude": 77.5,
+      "speed": 4.619711111111112,
+      "heading": 67.01,
+      "num_lanes": 2,
+      "markings": [
+        {
+          "ref_pt": null,
+          "lane_closed": null,
+          "lane_opened": null,
+          "workers_present": null,
+          "speed_limit_mph": null
+        }
+      ]
+    }
+  ]
+}

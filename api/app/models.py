@@ -131,7 +131,10 @@ class Report(BaseModel):
     area_type: wzdx_models.WorkZoneType
     mobility_speed_mph: Optional[float] = None
     geometry_type: GeometryType
-    point: list[float]
+    geometry: list[list[float]]
+    geometry_line_width: Optional[float] = None # Required if geometry_type is linestring
+    license_plate: Optional[str] = None
+    surface_type: Optional[RoadSegmentSurfaceType] = None
 
 
 class ReportWithId(Report):
@@ -143,6 +146,8 @@ class RecordingMarking(BaseModel):
     lane_closed: Optional[int] = None
     lane_opened: Optional[int] = None
     workers_present: Optional[bool] = None
+    speed_limit_mph: Optional[float] = None
+    surface_type: Optional[RoadSegmentSurfaceType] = None
 
 
 class RecordingPoint(BaseModel):
@@ -154,11 +159,11 @@ class RecordingPoint(BaseModel):
     altitude: float
     speed: float
     heading: float
+    num_lanes: int
     markings: Optional[list[RecordingMarking]] = None
 
 
 class Recording(BaseModel):
-    id: Optional[int] = None
     project_id: Optional[int] = None
     segment_id: Optional[int] = None
     area_id: Optional[int] = None
@@ -169,10 +174,27 @@ class Recording(BaseModel):
     recording_date: int
     area_type: wzdx_models.WorkZoneType
     mobility_speed_mph: Optional[float] = None
+    surface_type: Optional[RoadSegmentSurfaceType] = None
     points: list[RecordingPoint]
 
 
 class RecordingWithId(Recording):
+    id: int
+
+
+class WzdxRecording(BaseModel):
+    project_id: Optional[int] = None
+    segment_id: Optional[int] = None
+    area_id: Optional[int] = None
+    features: list[dict]
+    types_of_work: list[wzdx_models.TypeOfWork]
+    start_date: Optional[int] = None
+    end_date: Optional[int] = None
+    creation_date: int
+    area_type: wzdx_models.WorkZoneType
+
+
+class WzdxRecordingWithId(WzdxRecording):
     id: int
 
 

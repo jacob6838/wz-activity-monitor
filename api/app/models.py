@@ -24,6 +24,8 @@ class Project(BaseModel):
     emergency_contact: str
     contractor: str
     selected_towns: list[str]
+    geometry: list[list[float]]
+    bbox: Optional[list[list[float]]] = None
 
 
 class ProjectWithId(Project):
@@ -135,6 +137,9 @@ class Report(BaseModel):
     geometry_line_width: Optional[float] = None # Required if geometry_type is linestring
     license_plate: Optional[str] = None
     surface_type: Optional[RoadSegmentSurfaceType] = None
+
+# if start date is not provided, the event is not active until it is set as active
+# if 
 
 
 class ReportWithId(Report):

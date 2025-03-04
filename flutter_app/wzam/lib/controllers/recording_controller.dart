@@ -7,6 +7,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:get/get.dart';
+import 'package:wzam/controllers/view_recordings_controller.dart';
 import 'package:wzam/models/recording.dart';
 import 'package:wzam/models/wzdx_models.dart';
 import 'package:wzam/services/file_storage.dart';
@@ -300,13 +301,13 @@ class RecordingController extends GetxController {
             "area_id": recording.area_id,
             "recording_name": recording.recording_name,
             "types_of_work": recording.types_of_work.map((e) => e.toJson()).toList(),
-            "start_date": 0,
-            "end_date": 0,
-            "recording_date": 0,
+            "start_date": recording.start_date,
+            "end_date": recording.end_date,
+            "recording_date": recording.recording_date,
             "area_type": recording.area_type.toString().split('.').last,
             "mobility_speed_mph": recording.mobility_speed_mph,
             "surface_type": recording.surface_type.toString().split('.').last,
-            "points": [
+            /*"points": [
               {
                 "date": 0,
                 "num_satellites": 0,
@@ -328,19 +329,19 @@ class RecordingController extends GetxController {
                   }
                 ]
               }
-            ],
-            /*'points': recording.points.map((point) => {
-              'date': point.date,
-              'num_satellites': point.num_satellites,
-              'accuracy': point.accuracy,
-              'latitude': point.latitude,
-              'longitude': point.longitude,
-              'altitude': point.altitude,
-              'speed': point.speed,
-              'heading': point.heading,
-              'num_lanes': point.num_lanes,
-              'markings': point.markings?.map((marking) => marking.toJson()).toList(),
-            }).toList(),*/
+            ],*/
+            "points": recording.points.map((point) => {
+              "date": point.date,
+              "num_satellites": point.num_satellites,
+              "accuracy": point.accuracy,
+              "latitude": point.latitude,
+              "longitude": point.longitude,
+              "altitude": point.altitude,
+              "speed": point.speed,
+              "heading": point.heading,
+              "num_lanes": point.num_lanes,
+              "markings": point.markings?.map((marking) => marking.toJson()).toList(),
+            }).toList(),
           }
         )
       );
@@ -350,6 +351,8 @@ class RecordingController extends GetxController {
       } else {
         print('Failed to post recording: ${response.statusCode}');
         fileStorageService.saveRecording(recording, false);
+        ViewRecordingsController viewRecordingsController = Get.find<ViewRecordingsController>();
+        viewRecordingsController.areThereLocalRecordings.value = true;
       }
     } catch (e) {
       print('Error posting recording: $e');

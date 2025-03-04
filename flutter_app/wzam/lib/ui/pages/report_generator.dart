@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wzam/controllers/notification_controller.dart';
+import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/models/report.dart';
 import 'package:wzam/models/wzdx_models.dart';
 import 'package:wzam/services/file_storage.dart';
@@ -44,7 +45,7 @@ class ReportPage extends StatelessWidget {
   final TextEditingController endDate = TextEditingController();
   final TextEditingController reportDate = TextEditingController();
 
-  final TextEditingController license_plate = TextEditingController();
+  final TextEditingController licensePlate = TextEditingController();
   
   ReportPage({super.key});
   @override
@@ -110,7 +111,8 @@ class ReportPage extends StatelessWidget {
             //verticalSpaceMedium,
             _dropdownField("Surface Type", surfaceType, context, isSurfaceType: true),
             verticalSpaceMedium,
-            _inputField("License Plate", license_plate),
+            _inputField("License Plate", licensePlate),
+            verticalSpaceMedium,
             ElevatedButton(
               onPressed: () {
                 Get.to(() => const ReportLocationSelection());
@@ -458,7 +460,7 @@ class ReportPage extends StatelessWidget {
       geometry_type: controller.geometryType,
       geometry: controller.points,
       geometry_line_width: controller.geometryType == GeometryType.linestring ? controller.lineWidth : null,
-      license_plate: license_plate.text != "" ? license_plate.text : null, //optional field
+      license_plate: licensePlate.text != "" ? licensePlate.text : null, //optional field
       surface_type: _stringToSurfaceType(controller.surfaceType),
     );
     controller.waitingOnReportPost.value = true;
@@ -468,6 +470,7 @@ class ReportPage extends StatelessWidget {
   }
 
   Future<void> postReport(Report report) async {
+    ViewReportsController viewReportsController = Get.find<ViewReportsController>();
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
     final headers = {'Content-Type': 'application/json'};
     try {
@@ -519,6 +522,8 @@ class ReportPage extends StatelessWidget {
       } else {
         print('Failed to post report: ${response.statusCode}');
         fileStorageService.saveReport(report, false);
+        viewReportsController.areThereLocalReports.value = true;
+
       }
     } catch (e) {
       print('Error posting report: $e');

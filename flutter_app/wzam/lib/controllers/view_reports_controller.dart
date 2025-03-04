@@ -34,9 +34,9 @@ class ViewReportsController extends GetxController {
   final recentlyCompletedColor = Color.fromARGB(255, 168, 0, 0).withOpacity(0.6);
   RxBool tryingToUpload = false.obs;
 
-  Future<void> initialize(BuildContext context) async {
+  Future<void> initialize() async {
     currentPosition = locationService.currentPosition;
-    reportMarkers = await _getReportMarkers(context);
+    reportMarkers = await _getReportMarkers();
     while (currentPosition.value == null) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
@@ -104,7 +104,7 @@ class ViewReportsController extends GetxController {
     );
   }
 
-  Future<List<Marker>> _getReportMarkers(BuildContext context) async {
+  Future<List<Marker>> _getReportMarkers() async {
     FileStorageService fileService = Get.find<FileStorageService>();
     List<Report> reports = await fileService.getReportFiles('reports');
     List<Marker> markers = <Marker>[];
@@ -196,7 +196,7 @@ class ViewReportsController extends GetxController {
       await postReport(report, fileService);
       tryingToUpload.value = false;
     }
-    reportMarkers = await _getReportMarkers(Get.context!);
+    reportMarkers = await _getReportMarkers();
     _updateMarkerLayer();
   }
 
@@ -249,7 +249,7 @@ class ViewReportsController extends GetxController {
   Future<void> downloadReportsFromServer() async {
     FileStorageService fileService = Get.find<FileStorageService>();
     await fileService.downloadReportsFromServer();
-    reportMarkers = await _getReportMarkers(Get.context!);
+    reportMarkers = await _getReportMarkers();
     _updateMarkerLayer();
     _updatePolylineLayer();
     _updatePolygonLayer();

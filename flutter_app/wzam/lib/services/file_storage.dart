@@ -131,12 +131,14 @@ class FileStorageService extends GetxService {
     final String directoryPath = await _getDownloadsDirectory(subdirectory: subdirectory) ?? "";
     final dir = Directory(directoryPath);
     if (!await dir.exists()) {
-      throw Exception("Directory does not exist");
+      //throw Exception("Directory does not exist");
+    } else{
+      final List<FileSystemEntity> entities = await dir.list().toList();
+      final List<File> files = entities.whereType<File>().toList();
+      List<Recording> recordings = convertFilesToRecordings(files);
+      return recordings;
     }
-    final List<FileSystemEntity> entities = await dir.list().toList();
-    final List<File> files = entities.whereType<File>().toList();
-    List<Recording> recordings = convertFilesToRecordings(files);
-    return recordings;
+    return [];
   }
 
   List<Report> convertFilesToReports(List<File> files) {
@@ -181,10 +183,10 @@ class FileStorageService extends GetxService {
         print('Recording gathered successfully');
         await saveRecordings(response.body);
       } else {
-        print('Failed to post report: ${response.statusCode}');
+        print('Failed to get recording: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error posting report: $e');
+      print('Error getting recording: $e');
     }
   }
 
@@ -221,6 +223,7 @@ class FileStorageService extends GetxService {
     List<dynamic> reportsJson = jsonDecode(responseBody);
     List<ReportWithId> reports = reportsJson.map((report) => ReportWithId.fromJson(report)).toList();
     List<Report> reportsTwo = reports;
+    print(reportsTwo.length);
     for (Report report in reportsTwo){
       await saveReport(report, true);
     }

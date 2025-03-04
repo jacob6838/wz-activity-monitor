@@ -43,6 +43,8 @@ class ReportPage extends StatelessWidget {
   final TextEditingController startDate = TextEditingController();
   final TextEditingController endDate = TextEditingController();
   final TextEditingController reportDate = TextEditingController();
+
+  final TextEditingController license_plate = TextEditingController();
   
   ReportPage({super.key});
   @override
@@ -108,6 +110,7 @@ class ReportPage extends StatelessWidget {
             //verticalSpaceMedium,
             _dropdownField("Surface Type", surfaceType, context, isSurfaceType: true),
             verticalSpaceMedium,
+            _inputField("License Plate", license_plate),
             ElevatedButton(
               onPressed: () {
                 Get.to(() => const ReportLocationSelection());
@@ -455,10 +458,9 @@ class ReportPage extends StatelessWidget {
       geometry_type: controller.geometryType,
       geometry: controller.points,
       geometry_line_width: controller.geometryType == GeometryType.linestring ? controller.lineWidth : null,
-      license_plate: null,
+      license_plate: license_plate.text != "" ? license_plate.text : null, //optional field
       surface_type: _stringToSurfaceType(controller.surfaceType),
     );
-    //fileStorageService.saveReport(report, false); //TODO try to upload. If successful, save to different folder
     controller.waitingOnReportPost.value = true;
     await postReport(report);
     controller.waitingOnReportPost.value = false;

@@ -4,6 +4,7 @@
     "csvfile",
     "frontchannel",
     "HDOP",
+    "millis",
     "userinfo",
     "wydot"
   ]

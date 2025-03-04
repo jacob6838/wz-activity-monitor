@@ -196,6 +196,147 @@ async def auth_get_well_known():
     return keycloakClient.get_well_known()
 
 
+@app.get("/projects", description="Get all projects")
+async def get_projects(
+    project_id: int = Query(None, description="Project ID to filter for"),
+    start_date: int = Query(None, description="Start date to filter for active projects, in milliseconds since epoch"),
+    end_date: int = Query(None, description="End date to filter for active projects, in milliseconds since epoch"),
+) -> models.ProjectWithId | list[models.ProjectWithId]:
+    logger.debug(
+        f"Received GET request to /projects at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    if project_id is not None:
+        project = db_adapter.get_project(project_id)
+        if not project:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Project with ID {project_id} not found",
+            )
+        return project.model_dump()
+    else:
+        return [o.model_dump() for o in db_adapter.get_projects(start_date, end_date)]
+
+
+@app.post("/projects", description="Create a new project")
+async def create_project(project: models.Project) -> models.ProjectWithId:
+    logger.debug(
+        f"Received POST request to /projects at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    # Insert the project into the database
+    project_id = db_adapter.insert_project(project)
+    # db_adapter.close()
+
+    # Retrieve the inserted project to return it
+    inserted_project = db_adapter.get_project(project_id)
+    return inserted_project.model_dump()
+
+
+@app.delete("/projects/{projectid}", description="Delete a project")
+async def remove_project(project_id: int) -> None:
+    logger.debug(
+        f"Received DELETE request to /projects at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    db_adapter.remove_project(project_id)
+    # db_adapter.close()
+
+
+@app.get("/road_sections", description="Get all road sections")
+async def get_road_sections(
+    road_section_id: int = Query(None, description="Road section ID to filter for"),
+    start_date: int = Query(None, description="Start date to filter for active road sections, in milliseconds since epoch"),
+    end_date: int = Query(None, description="End date to filter for active road sections, in milliseconds since epoch"),
+) -> models.RoadSectionWithId | list[models.RoadSectionWithId]:
+    logger.debug(
+        f"Received GET request to /road_sections at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    if road_section_id is not None:
+        road_section = db_adapter.get_road_section(road_section_id)
+        if not road_section:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Road section with ID {road_section_id} not found",
+            )
+        return road_section.model_dump()
+    else:
+        return [o.model_dump() for o in db_adapter.get_road_sections(start_date, end_date)]
+
+
+@app.post("/road_sections", description="Create a new road_section")
+async def create_road_section(road_section: models.RoadSection) -> models.RoadSectionWithId:
+    logger.debug(
+        f"Received POST request to /road_sections at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    # Insert the road_section into the database
+    road_section_id = db_adapter.insert_road_section(road_section)
+    # db_adapter.close()
+
+    # Retrieve the inserted road_section to return it
+    inserted_road_section = db_adapter.get_road_section(road_section_id)
+    return inserted_road_section.model_dump()
+
+
+@app.delete("/road_sections/{road_section_id}", description="Delete a road_section")
+async def remove_road_section(road_section_id: int) -> None:
+    logger.debug(
+        f"Received DELETE request to /road_sections at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    db_adapter.remove_road_section(road_section_id)
+    # db_adapter.close()
+
+
+@app.get("/activity_areas", description="Get all activity areas")
+async def get_activity_areas(
+    activity_area_id: int = Query(None, description="Activity area ID to filter for"),
+    start_date: int = Query(None, description="Start date to filter for active activity areas, in milliseconds since epoch"),
+    end_date: int = Query(None, description="End date to filter for active activity areas, in milliseconds since epoch"),
+) -> models.ActivityAreaWithId | list[models.ActivityAreaWithId]:
+    logger.debug(
+        f"Received GET request to /activity_areas at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    if activity_area_id is not None:
+        activity_area = db_adapter.get_activity_area(activity_area_id)
+        if not activity_area:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Report with ID {activity_area_id} not found",
+            )
+        return activity_area.model_dump()
+    else:
+        return [o.model_dump() for o in db_adapter.get_activity_areas(start_date, end_date)]
+
+
+@app.post("/activity_areas", description="Create a new activity_area")
+async def create_activity_area(activity_area: models.ActivityArea) -> models.ActivityAreaWithId:
+    logger.debug(
+        f"Received POST request to /activity_areas at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    # Insert the activity_area into the database
+    activity_area_id = db_adapter.insert_activity_area(activity_area)
+    # db_adapter.close()
+
+    # Retrieve the inserted activity_area to return it
+    inserted_activity_area = db_adapter.get_activity_area(activity_area_id)
+    return inserted_activity_area.model_dump()
+
+
+@app.delete("/activity_areas/{activity_areaid}", description="Delete a activity_area")
+async def remove_activity_area(activity_area_id: int) -> None:
+    logger.debug(
+        f"Received DELETE request to /activity_areas at {datetime.datetime.now(pytz.utc).strftime(ISO_8601_FORMAT_STRING)}"
+    )
+
+    db_adapter.remove_activity_area(activity_area_id)
+    # db_adapter.close()
+
+
 @app.get("/reports", description="Get all reports")
 async def get_reports(
     report_id: int = Query(None, description="Report ID to filter for"),

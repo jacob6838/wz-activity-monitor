@@ -5,7 +5,7 @@ services:
     image: wzam_api:latest
     restart: always
     ports:
-      - '8080:8080'
+      - "8080:8080"
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -13,7 +13,7 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASS}
 
-      KEYCLOAK_ENDPOINT: http://${KEYCLOAK_DOMAIN}:8084/
+      KEYCLOAK_ENDPOINT: http://${KEYCLOAK_DOMAIN}:8084
       KEYCLOAK_REALM: ${KEYCLOAK_REALM}
       KEYCLOAK_CLIENT_NAME: ${KEYCLOAK_API_CLIENT_ID}
       KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_API_CLIENT_SECRET_KEY}
@@ -21,14 +21,14 @@ services:
       LOGGING_LEVEL: ${API_LOGGING_LEVEL}
     logging:
       options:
-        max-size: '10m'
-        max-file: '5'
+        max-size: "10m"
+        max-file: "5"
 
   wzam_postgres:
     image: postgis/postgis:15-master
     restart: always
     ports:
-      - '5432:5432'
+      - "5432:5432"
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
@@ -37,7 +37,7 @@ services:
       - ./resources/sql_scripts:/docker-entrypoint-initdb.d
     logging:
       options:
-        max-size: '10m'
+        max-size: "10m"
 
   wzam_keycloak:
     image: wzam_keycloak:latest

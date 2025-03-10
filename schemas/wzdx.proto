@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package datahub;
+package datahub.v1;
 
 message Restriction {
     RestrictionType type = 1;

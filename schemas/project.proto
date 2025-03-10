@@ -1,8 +1,9 @@
 syntax = "proto3";
 
-package datahub;
+package datahub.v1;
 
-import "datahub_common.proto";
+import "common.proto";
+import "wzdx.proto";
 
 message Project {
     int32 project_id = 1;

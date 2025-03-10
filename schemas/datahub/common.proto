@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package datahub;
-
-message Timestamp {
-    int64 millis_since_epoch = 1;
-}

@@ -1,6 +1,9 @@
 syntax = "proto3";
 
-package datahub;
+package datahub.v1;
+
+import "common.proto";
+import "wzdx.proto";
 
 message ActivityArea {
     int32 activity_area_id = 1;

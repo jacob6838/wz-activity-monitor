@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package datahub.v1;
+
+message Timestamp {
+    int64 milliseconds_since_epoch = 1;
+}

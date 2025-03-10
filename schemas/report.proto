@@ -1,6 +1,10 @@
 syntax = "proto3";
 
-package datahub;
+package datahub.v1;
+
+import "common.proto";
+import "wzdx.proto";
+import "road_section.proto";
 
 message Report {
     int32 report_id = 1;

@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package datahub;
+
+message RoadSection {
+    int32 road_section_id = 1;
+    int32 project_id = 2;
+    string segment_name = 3;
+    RoadSectionType reference_type = 4;
+    string roadway_common_name = 5;
+    int32 beginning_milepost = 6;
+    int32 ending_milepost = 7;
+    RoadSegmentDirection direction = 8;
+    RoadSegmentSurfaceType surface_type = 9;
+    Timestamp creation_date = 10;
+    Timestamp update_date = 11;
+    Timestamp start_date = 12;
+    Timestamp end_date = 13;
+    bool start_date_verified = 9;
+    bool end_date_verified = 10;
+    WorkZoneType area_type = 11;
+    LocationMethod location_method = 12;
+    VehicleImpact vehicle_impact = 13;
+    repeated string impacted_cds_curb_zones = 14;
+    repeated Lane lanes = 15;
+    string beginning_cross_street = 16;
+    string ending_cross_street = 17;
+    RoadSegmentArmedStatus armed_status = 14;
+    repeated Point geometry = 15;
+    repeated Point bbox = 16;
+
+    enum RoadSectionType {
+        ROAD_SECTION_TYPE_HIGHWAY = 0;
+        ROAD_SECTION_TYPE_COUNTY_ROAD = 1;
+        ROAD_SECTION_TYPE_LRS = 2;
+    }
+
+    enum RoadSegmentDirection {
+        ROAD_SEGMENT_DIRECTION_BOTH = 0;
+        ROAD_SEGMENT_DIRECTION_NORTHBOUND = 1;
+        ROAD_SEGMENT_DIRECTION_SOUTHBOUND = 2;
+        ROAD_SEGMENT_DIRECTION_EASTBOUND = 3;
+        ROAD_SEGMENT_DIRECTION_WESTBOUND = 4;
+    }
+
+    enum RoadSegmentSurfaceType {
+        ROAD_SEGMENT_SURFACE_TYPE_PAVED = 0;
+        ROAD_SEGMENT_SURFACE_TYPE_GRAVEL = 1;
+        ROAD_SEGMENT_SURFACE_TYPE_DIRT = 2;
+        ROAD_SEGMENT_SURFACE_TYPE_GROOVED = 3;
+    }
+    
+    enum RoadSegmentArmedStatus {
+        ROAD_SEGMENT_ARMED_STATUS_ARMED = 0;
+        ROAD_SEGMENT_ARMED_STATUS_DISARMED = 1;
+    }
+}

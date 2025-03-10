@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package datahub;
+
+import "datahub_common.proto";
+
+message Project {
+    int32 project_id = 1;
+    string name = 2;
+    string description = 3;
+    string tmc_notes = 4;
+    ProjectStatus active_status = 5;
+    string hyperlink = 6;
+    Timestamp creation_date = 7;
+    Timestamp update_date = 8;
+    Timestamp start_date = 9;
+    Timestamp end_date = 10;
+    repeated string districts = 11;
+    string wydot_contact = 12;
+    string project_update_contact = 13;
+    string traffic_control_contact = 14;
+    string emergency_contact = 15;
+    string contractor_name = 16;
+    repeated string selected_towns = 17;
+    repeated Point geometry = 18;
+    repeated Point bbox = 19;
+
+    enum ProjectStatus {
+        PROJECT_STATUS_ACTIVE = 0;
+        PROJECT_STATUS_SUSPENDED = 1;
+    }
+}

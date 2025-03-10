@@ -7,12 +7,12 @@ import "road_section.proto";
 import "wzdx.proto";
 
 message RecordingMarking {
-    bool ref_pt = 1;
-    uint32 lane_closed = 2;
-    uint32 lane_opened = 3;
-    bool workers_present = 4;
-    float speed_limit_mph = 5;
-    RoadSegmentSurfaceType surface_type = 6;
+    optional bool ref_pt = 1;
+    optional uint32 lane_closed = 2;
+    optional uint32 lane_opened = 3;
+    optional bool workers_present = 4;
+    optional float speed_limit_mph = 5;
+    optional RoadSegmentSurfaceType surface_type = 6;
 }
 
 message RecordingPoint {
@@ -31,15 +31,16 @@ message RecordingPoint {
 message Recording {
     uint64 recording_id = 1;
     uint64 project_id = 2;
-    uint64 segment_id = 3;
-    uint64 area_id = 4;
+    optional uint64 segment_id = 3;
+    optional uint64 area_id = 4;
     string recording_name = 5;
     repeated TypeOfWork types_of_work = 6;
-    Timestamp start_date = 7;
-    Timestamp end_date = 8;
-    Timestamp recording_date = 9;
-    WorkZoneType area_type = 10;
-    float mobility_speed_mph = 11;
-    RoadSegmentSurfaceType surface_type = 12;
-    repeated RecordingPoint points = 13;
+    Timestamp creation_date = 7;
+    Timestamp update_date = 8;
+    optional Timestamp start_date = 9;
+    optional Timestamp end_date = 10;
+    WorkZoneType area_type = 11;
+    optional float mobility_speed_mph = 12;
+    optional RoadSegmentSurfaceType surface_type = 13;
+    repeated RecordingPoint points = 14;
 }

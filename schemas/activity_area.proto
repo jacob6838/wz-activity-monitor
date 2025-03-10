@@ -13,7 +13,7 @@ message ActivityArea {
     Timestamp creation_date = 5;
     Timestamp update_date = 6;
     Timestamp start_date = 7;
-    Timestamp end_date = 8;
+    optional Timestamp end_date = 8;
     bool start_date_verified = 9;
     bool end_date_verified = 10;
     WorkZoneType area_type = 11;

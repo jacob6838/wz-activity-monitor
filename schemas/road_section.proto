@@ -18,7 +18,7 @@ message RoadSection {
     Timestamp creation_date = 10;
     Timestamp update_date = 11;
     Timestamp start_date = 12;
-    Timestamp end_date = 13;
+    optional Timestamp end_date = 13;
     bool start_date_verified = 14;
     bool end_date_verified = 15;
     WorkZoneType area_type = 16;

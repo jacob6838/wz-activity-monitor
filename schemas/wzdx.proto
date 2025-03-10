@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package datahub.v1;
 
+import "common.proto";
+
 message Restriction {
     RestrictionType type = 1;
     float value = 2;
@@ -9,7 +11,7 @@ message Restriction {
 }
 
 message Lane {
-    int32 lane_order = 1;
+    uint32 lane_order = 1;
     LaneType type = 2;
     LaneStatus status = 3;
     repeated Restriction restrictions = 4;
@@ -24,7 +26,7 @@ message WorkerPresence {
     bool are_workers_present = 1;
     WorkerPresenceDefinition definition = 2;
     WorkerPresenceMethod method = 3;
-    int64 worker_presence_last_confirmed_date = 4;
+    Timestamp worker_presence_last_confirmed_date = 4;
     WorkerPresenceConfidence confidence = 5;
 }
 
@@ -147,15 +149,4 @@ enum WorkerPresenceConfidence {
     WORKER_PRESENCE_CONFIDENCE_LOW = 0;
     WORKER_PRESENCE_CONFIDENCE_MEDIUM = 1;
     WORKER_PRESENCE_CONFIDENCE_HIGH = 2;
-}
-
-enum GeometryType {
-    GEOMETRY_TYPE_MULTIPOINT = 0;
-    GEOMETRY_TYPE_LINESTRING = 1;
-    GEOMETRY_TYPE_POLYGON = 2;
-}
-
-message Point {
-    double latitude = 1;
-    double longitude = 2;
 }

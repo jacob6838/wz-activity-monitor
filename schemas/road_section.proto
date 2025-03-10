@@ -6,13 +6,13 @@ import "common.proto";
 import "wzdx.proto";
 
 message RoadSection {
-    int32 road_section_id = 1;
-    int32 project_id = 2;
+    uint64 road_section_id = 1;
+    uint64 project_id = 2;
     string segment_name = 3;
     RoadSectionType reference_type = 4;
     string roadway_common_name = 5;
-    int32 beginning_milepost = 6;
-    int32 ending_milepost = 7;
+    uint32 beginning_milepost = 6;
+    uint32 ending_milepost = 7;
     RoadSegmentDirection direction = 8;
     RoadSegmentSurfaceType surface_type = 9;
     Timestamp creation_date = 10;
@@ -24,13 +24,12 @@ message RoadSection {
     WorkZoneType area_type = 16;
     LocationMethod location_method = 17;
     VehicleImpact vehicle_impact = 18;
-    repeated string impacted_cds_curb_zones = 19;
-    repeated Lane lanes = 20;
-    string beginning_cross_street = 21;
-    string ending_cross_street = 22;
-    RoadSegmentArmedStatus armed_status = 23;
-    repeated Point geometry = 24;
-    repeated Point bbox = 25;
+    repeated Lane lanes = 19;
+    string beginning_cross_street = 20;
+    string ending_cross_street = 21;
+    RoadSegmentArmedStatus armed_status = 22;
+    repeated Point geometry = 23;
+    repeated Point bbox = 24;
 
     enum RoadSectionType {
         ROAD_SECTION_TYPE_HIGHWAY = 0;

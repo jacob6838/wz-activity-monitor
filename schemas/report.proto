@@ -3,14 +3,14 @@ syntax = "proto3";
 package datahub.v1;
 
 import "common.proto";
-import "wzdx.proto";
 import "road_section.proto";
+import "wzdx.proto";
 
 message Report {
-    int32 report_id = 1;
-    int32 project_id = 2;
-    int32 segment_id = 3;
-    int32 area_id = 4;
+    uint64 report_id = 1;
+    uint64 project_id = 2;
+    uint64 segment_id = 3;
+    uint64 area_id = 4;
     string report_name = 5;
     repeated TypeOfWork types_of_work = 6;
     bool workers_present = 7;
@@ -20,8 +20,17 @@ message Report {
     WorkZoneType area_type = 11;
     float mobility_speed_mph = 12;
     GeometryType geometry_type = 13;
-    repeated Point geometry = 14;
+    ReportGeometry geometry = 14; // must align with the value of geometry_type
     float geometry_line_width = 15;
     string license_plate = 16;
     RoadSegmentSurfaceType surface_type = 17;
+
+    message ReportGeometry {
+        oneof geometry {
+            Point point = 1;
+            PointArray multi_point = 2;
+            PointArray line_string = 3;
+            PointArray polygon = 4;
+        }
+    }
 }

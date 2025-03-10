@@ -3,36 +3,36 @@ syntax = "proto3";
 package datahub.v1;
 
 import "common.proto";
-import "wzdx.proto";
 import "road_section.proto";
+import "wzdx.proto";
 
 message RecordingMarking {
     bool ref_pt = 1;
-    int32 lane_closed = 2;
-    int32 lane_opened = 3;
+    uint32 lane_closed = 2;
+    uint32 lane_opened = 3;
     bool workers_present = 4;
     float speed_limit_mph = 5;
     RoadSegmentSurfaceType surface_type = 6;
 }
 
 message RecordingPoint {
-    int64 date = 1;
-    int32 num_satellites = 2;
+    Timestamp date = 1;
+    uint32 num_satellites = 2;
     float accuracy = 3;
     float latitude = 4;
     float longitude = 5;
     float altitude = 6;
     float speed = 7;
     float heading = 8;
-    int32 num_lanes = 9;
+    uint32 num_lanes = 9;
     repeated RecordingMarking markings = 10;
 }
 
 message Recording {
-    int32 recording_id = 1;
-    int32 project_id = 2;
-    int32 segment_id = 3;
-    int32 area_id = 4;
+    uint64 recording_id = 1;
+    uint64 project_id = 2;
+    uint64 segment_id = 3;
+    uint64 area_id = 4;
     string recording_name = 5;
     repeated TypeOfWork types_of_work = 6;
     Timestamp start_date = 7;

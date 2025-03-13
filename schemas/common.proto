@@ -6,6 +6,19 @@ message Timestamp {
     uint64 milliseconds_since_epoch = 1;
 }
 
+message TimeOfDay {
+    uint32 hours = 1;
+    uint32 minutes = 2;
+    uint32 seconds = 3;
+    uint32 milliseconds = 4;
+}
+
+message Date {
+    uint32 year = 1;
+    uint32 month = 2;
+    uint32 day = 3;
+}
+
 // ------------ GeoJSON Types ------------
 message PolygonGeometry {
     string type = 1; // must be "Polygon"
@@ -37,4 +50,11 @@ message Point {
     double latitude = 1;
     double longitude = 2;
     optional double altitude = 3;
+}
+
+enum RoadSurfaceType {
+    ROAD_SURFACE_TYPE_PAVED = 0;
+    ROAD_SURFACE_TYPE_GRAVEL = 1;
+    ROAD_SURFACE_TYPE_DIRT = 2;
+    ROAD_SURFACE_TYPE_GROOVED = 3;
 }

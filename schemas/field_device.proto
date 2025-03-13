@@ -1,0 +1,197 @@
+syntax = "proto3";
+
+package datahub.v1;
+
+import "common.proto";
+import "wzdx.proto";
+
+message FieldDevice {
+    oneof Device {
+        ArrowBoard arrow_board = 1;
+        Camera camera = 2;
+        DynamicMessageSign dynamic_message_sign = 3;
+        FlashingBeacon flashing_beacon = 4;
+        HybridSign hybrid_sign = 5;
+        LocationMarker location_marker = 6;
+        TrafficSensor traffic_sensor = 7;
+        TrafficSignal traffic_signal = 8;
+    }
+    
+    repeated Point geometry = 9;
+    repeated Point bbox = 10;
+
+    enum FieldDeviceStatus {
+        FIELD_DEVICE_STATUS_OK = 0;
+        FIELD_DEVICE_STATUS_WARNING = 1;
+        FIELD_DEVICE_STATUS_ERROR = 2;
+        FIELD_DEVICE_STATUS_UNKNOWN = 3;
+    }
+
+    message FieldDeviceCoreDetails {
+        FieldDeviceStatus device_status = 1;
+        bool has_automatic_location = 2;
+        optional RoadwayDirection road_direction = 3;
+        repeated string road_names = 4;
+        optional string name = 5;
+        optional string description = 6;
+        repeated string status_messages = 7; // error or warning messages
+        optional bool is_moving = 8;
+        repeated uint64 project_ids = 9;
+        repeated uint64 road_segment_ids = 10;
+        repeated uint64 activity_area_ids = 11;
+        optional uint32 milepost = 12;
+        optional string make = 13;
+        optional string model = 14;
+        optional string serial_number = 15;
+        optional string firmware_version = 16;
+        optional double velocity_kph = 17;
+    }
+
+    message ArrowBoard {
+        FieldDeviceCoreDetails core_details = 1;
+        ArrowBoardPattern pattern = 2;
+        optional bool is_in_transport_position = 3; // true if stowed, false if deployed/upright
+
+        // https://github.com/usdot-jpo-ode/wzdx/blob/develop/spec-content/enumerated-types/ArrowBoardPattern.md
+        enum ArrowBoardPattern { 
+            ARROW_BOARD_PATTERN_BLANK = 0;
+            ARROW_BOARD_PATTERN_RIGHT_ARROW_STATIC = 1;
+            ARROW_BOARD_PATTERN_RIGHT_ARROW_FLASHING = 2;
+            ARROW_BOARD_PATTERN_RIGHT_ARROW_SEQUENTIAL = 3;
+            ARROW_BOARD_PATTERN_RIGHT_CHEVRON_STATIC = 4;
+            ARROW_BOARD_PATTERN_RIGHT_CHEVRON_FLASHING = 5;
+            ARROW_BOARD_PATTERN_RIGHT_CHEVRON_SEQUENTIAL = 6;
+            ARROW_BOARD_PATTERN_LEFT_ARROW_STATIC = 7;
+            ARROW_BOARD_PATTERN_LEFT_ARROW_FLASHING = 8;
+            ARROW_BOARD_PATTERN_LEFT_ARROW_SEQUENTIAL = 9;
+            ARROW_BOARD_PATTERN_LEFT_CHEVRON_STATIC = 10;
+            ARROW_BOARD_PATTERN_LEFT_CHEVRON_FLASHING = 11;
+            ARROW_BOARD_PATTERN_LEFT_CHEVRON_SEQUENTIAL = 12;
+            ARROW_BOARD_PATTERN_BIDIRECTIONAL_ARROW_STATIC = 13;
+            ARROW_BOARD_PATTERN_BIDIRECTIONAL_ARROW_FLASHING = 14;
+            ARROW_BOARD_PATTERN_LINE_FLASHING = 15;
+            ARROW_BOARD_PATTERN_DIAMONDS_ALTERNATING = 16;
+            ARROW_BOARD_PATTERN_FOUR_CORNERS_FLASHING = 17;
+            ARROW_BOARD_PATTERN_UNKNOWN = 18;
+        }
+    }
+
+    message Camera {
+        FieldDeviceCoreDetails core_details = 1;
+        optional string image_url = 2;
+        optional Timestamp image_timestamp = 3;
+    }
+
+    message DynamicMessageSign {
+        FieldDeviceCoreDetails core_details = 1;
+
+        // The MULTI (Mark-Up Language for Transportation Information, see NTCIP 1203 v03) formatted string describing the message currently posted to the sign.
+        string message_multi_string = 2;
+    }
+
+    message FlashingBeacon {
+        FieldDeviceCoreDetails core_details = 1;
+        FlashingBeaconFunction function = 2;
+        optional bool is_flashing = 3;
+        optional string sign_text = 4;
+
+        enum FlashingBeaconFunction {
+            FLASHING_BEACON_FUNCTION_VEHICLE_ENTERING = 0;
+            FLASHING_BEACON_FUNCTION_QUEUE_WARNING = 1;
+            FLASHING_BEACON_FUNCTION_REDUCED_SPEED = 2;
+            FLASHING_BEACON_FUNCTION_WORKERS_PRESENT = 3;
+        }
+    }
+
+    message HybridSign {
+        FieldDeviceCoreDetails core_details = 1;
+        HybridSignDynamicMessageFunction dynamic_message_function = 2;
+        optional string dynamic_message_text = 3;
+        optional string static_sign_text = 4;
+
+        enum HybridSignDynamicMessageFunction {
+            HYBRID_SIGN_DYNAMIC_MESSAGE_FUNCTION_SPEED_LIMIT = 0;
+            HYBRID_SIGN_DYNAMIC_MESSAGE_FUNCTION_TRAVEL_TIME = 1;
+            HYBRID_SIGN_DYNAMIC_MESSAGE_FUNCTION_OTHER = 2;
+        }
+    }
+
+    message LocationMarker {
+        FieldDeviceCoreDetails core_details = 1;
+        repeated MarkedLocation marked_locations = 2;
+
+        message MarkedLocation {
+            MarkedLocationType type = 1;
+            oneof EventId {
+                uint64 road_segment_id = 2;
+                uint64 activity_area_id = 3;
+            }
+
+            // https://github.com/usdot-jpo-ode/wzdx/blob/develop/spec-content/enumerated-types/MarkedLocationType.md
+            enum MarkedLocationType {
+                MARKED_LOCATION_TYPE_AFAD = 0;
+                MARKED_LOCATION_TYPE_DELINEATOR = 1;
+                MARKED_LOCATION_TYPE_FLAGGER = 2;
+                MARKED_LOCATION_TYPE_LANE_SHIFT = 3;
+                MARKED_LOCATION_TYPE_LANE_CLOSURE = 4;
+                MARKED_LOCATION_TYPE_PERSONAL_DEVICE = 5;
+                MARKED_LOCATION_TYPE_RAMP_CLOSURE = 6;
+                MARKED_LOCATION_TYPE_ROAD_CLOSURE = 7;
+                MARKED_LOCATION_TYPE_ROAD_EVENT_START = 8;
+                MARKED_LOCATION_TYPE_ROAD_EVENT_END = 9;
+                MARKED_LOCATION_TYPE_WORK_TRUCK_WITH_LIGHTS_FLASHING = 10;
+                MARKED_LOCATION_TYPE_WORK_ZONE_START = 11;
+                MARKED_LOCATION_TYPE_WORK_ZONE_END = 12;
+            }
+        }
+    }
+
+    message TrafficSensor {
+        FieldDeviceCoreDetails core_details = 1;
+        Timestamp collection_interval_start_date = 2;
+        Timestamp collection_interval_end_date = 3;
+        optional double average_speed_kph = 4;
+        optional double volume_kph = 5;
+        optional double occupancy_percent = 6;
+        repeated TrafficSensorLaneData lane_data = 7;
+
+        message TrafficSensorLaneData {
+            uint32 lane_order = 1;
+            oneof EventId {
+                uint64 road_segment_id = 2;
+                uint64 activity_area_id = 3;
+            }
+            double average_speed_kph = 4;
+            double volume_kph = 5;
+            double occupancy_percent = 6;
+        }
+    }
+
+    message TrafficSignal {
+        FieldDeviceCoreDetails core_details = 1;
+        TrafficSignalMode mode = 2;
+
+        enum TrafficSignalMode {
+            TRAFFIC_SIGNAL_MODE_BLANK = 0;
+            TRAFFIC_SIGNAL_MODE_FLASHING_RED = 1;
+            TRAFFIC_SIGNAL_MODE_FLASHING_YELLOW = 2;
+            TRAFFIC_SIGNAL_MODE_FULLY_ACTUATED = 3;
+            TRAFFIC_SIGNAL_MODE_MANUAL = 4;
+            TRAFFIC_SIGNAL_MODE_PRE_TIMED = 5;
+            TRAFFIC_SIGNAL_MODE_SEMI_ACTUATED = 6;
+            TRAFFIC_SIGNAL_MODE_UNKNOWN = 7;
+        }
+    }
+}
+
+message FieldDeviceCreated {
+    uint64 id = 1;
+    FieldDevice field_device = 2;
+    Timestamp created_time = 3;
+}
+
+message FieldDeviceUpdated {
+    uint64 id = 1;
+    FieldDevice field_device = 2;
+    Timestamp updated_time = 3;
+}

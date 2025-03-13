@@ -3,28 +3,26 @@ syntax = "proto3";
 package datahub.v1;
 
 import "common.proto";
-import "road_section.proto";
 import "wzdx.proto";
 
 message Report {
-    uint64 report_id = 1;
-    uint64 project_id = 2;
-    optional uint64 segment_id = 3;
-    optional uint64 area_id = 4;
-    string report_name = 5;
-    repeated TypeOfWork types_of_work = 6;
-    bool workers_present = 7;
-    Timestamp creation_date = 8;
-    Timestamp update_date = 9;
-    optional Timestamp start_date = 10;
-    optional Timestamp end_date = 11;
-    WorkZoneType area_type = 12;
-    optional float mobility_speed_mph = 13;
-    GeometryType geometry_type = 14;
-    ReportGeometry geometry = 15; // must align with the value of geometry_type
-    optional float geometry_line_width = 16;
-    optional string license_plate = 17;
-    optional RoadSegmentSurfaceType surface_type = 18;
+    uint64 project_id = 1;
+    optional uint64 segment_id = 2;
+    optional uint64 area_id = 3;
+    string report_name = 4;
+    repeated TypeOfWork types_of_work = 5;
+    bool workers_present = 6;
+    Timestamp creation_date = 7;
+    Timestamp update_date = 8;
+    optional Timestamp start_date = 9;
+    optional Timestamp end_date = 10;
+    WorkZoneType area_type = 11;
+    optional float mobility_speed_mph = 12;
+    GeometryType geometry_type = 13;
+    ReportGeometry geometry = 14; // must align with the value of geometry_type
+    optional float geometry_line_width = 15;
+    optional string license_plate = 16;
+    optional RoadSurfaceType surface_type = 17;
 
     message ReportGeometry {
         oneof geometry {
@@ -34,4 +32,16 @@ message Report {
             PointArray polygon = 4;
         }
     }
+}
+
+message ReportCreated {
+    uint64 id = 1;
+    Report report = 2;
+    Timestamp created_time = 3;
+}
+
+message ReportUpdated {
+    uint64 id = 1;
+    Report report = 2;
+    Timestamp updated_time = 3;
 }

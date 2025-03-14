@@ -4,6 +4,7 @@ package datahub.v1;
 
 import "common.proto";
 import "wzdx.proto";
+import "google/protobuf/timestamp.proto";
 
 message RecordingMarking {
     optional bool ref_pt = 1;
@@ -15,7 +16,7 @@ message RecordingMarking {
 }
 
 message RecordingPoint {
-    Timestamp date = 1;
+    google.protobuf.Timestamp date = 1;
     uint32 num_satellites = 2;
     float accuracy = 3;
     float latitude = 4;
@@ -33,24 +34,22 @@ message Recording {
     optional uint64 area_id = 3;
     string recording_name = 4;
     repeated TypeOfWork types_of_work = 5;
-    Timestamp creation_date = 6;
-    Timestamp update_date = 7;
-    optional Timestamp start_date = 8;
-    optional Timestamp end_date = 9;
-    WorkZoneType area_type = 10;
-    optional float mobility_speed_mph = 11;
-    optional RoadSurfaceType surface_type = 12;
-    repeated RecordingPoint points = 13;
+    optional google.protobuf.Timestamp start_date = 6;
+    optional google.protobuf.Timestamp end_date = 7;
+    WorkZoneType area_type = 8;
+    optional float mobility_speed_mph = 9;
+    optional RoadSurfaceType surface_type = 10;
+    repeated RecordingPoint points = 11;
 }
 
 message RecordingCreated {
     uint64 id = 1;
     Recording recording = 2;
-    Timestamp created_time = 3;
+    google.protobuf.Timestamp created_time = 3;
 }
 
 message RecordingUpdated {
     uint64 id = 1;
     Recording recording = 2;
-    Timestamp updated_time = 3;
+    google.protobuf.Timestamp updated_time = 3;
 }

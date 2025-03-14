@@ -4,10 +4,6 @@ package datahub.v1;
 
 import "google/type/latlng.proto";
 
-message Timestamp {
-    uint64 milliseconds_since_epoch = 1;
-}
-
 // ------------ GeoJSON Types ------------
 message Geometry {
     oneof geometry {

@@ -4,14 +4,15 @@ package datahub.v1;
 
 import "common.proto";
 import "wzdx.proto";
+import "google/protobuf/timestamp.proto";
 
 message Project {
     string name = 1;
     string description = 2;
     ProjectStatus active_status = 3;
-    Timestamp creation_date = 4;
-    Timestamp start_date = 5;
-    Timestamp end_date = 6;
+    google.protobuf.Timestamp creation_date = 4;
+    google.protobuf.Timestamp start_date = 5;
+    google.protobuf.Timestamp end_date = 6;
     WorkZoneType area_type = 7;
     oneof Geometry {
         MultiLineStringGeometry line_strings = 8;
@@ -33,11 +34,11 @@ message Project {
 message ProjectCreated {
     uint64 id = 1;
     Project project = 2;
-    Timestamp created_date = 3;
+    google.protobuf.Timestamp created_date = 3;
 }
 
 message ProjectUpdated {
     uint64 id = 1;
     Project project = 2;
-    Timestamp updated_date = 3;
+    google.protobuf.Timestamp updated_date = 3;
 }

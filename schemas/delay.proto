@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package datahub.v1;
 
-import "common.proto";
 import "wzdx.proto";
+import "google/protobuf/timestamp.proto";
 
 message Delay {
     uint64 road_segment_id = 1;
@@ -15,11 +15,11 @@ message Delay {
 message DelayCreated {
     uint64 id = 1;
     Delay delay = 2;
-    Timestamp created_time = 3;
+    google.protobuf.Timestamp created_time = 3;
 }
 
 message DelayUpdated {
     uint64 id = 1;
     Delay delay = 2;
-    Timestamp updated_time = 3;
+    google.protobuf.Timestamp updated_time = 3;
 }

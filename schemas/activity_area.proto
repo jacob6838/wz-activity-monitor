@@ -6,14 +6,15 @@ import "common.proto";
 import "wzdx.proto";
 import "google/type/timeofday.proto";
 import "google/type/date.proto";
+import "google/protobuf/timestamp.proto";
 
 message ActivityArea {
     uint64 segment_id = 1;
     string name = 2;
     string description = 3;
     ActivityAreaActiveStatus status = 4;
-    Timestamp start_date = 5;
-    optional Timestamp end_date = 6;
+    google.protobuf.Timestamp start_date = 5;
+    optional google.protobuf.Timestamp end_date = 6;
     WorkZoneType area_type = 7;
     repeated Lane lanes = 8;
     uint32 beginning_cross_street = 9;
@@ -55,14 +56,13 @@ message ActivityArea {
 }
 
 message ActivityAreaCreated {
-    // idempotency key
     uint64 id = 1;
     ActivityArea activity_area = 2;
-    Timestamp created_time = 3;
+    google.protobuf.Timestamp created_time = 3;
 }
 
 message ActivityAreaUpdated {
     uint64 id = 1;
     ActivityArea activity_area = 2;
-    Timestamp updated_time = 3;
+    google.protobuf.Timestamp updated_time = 3;
 }

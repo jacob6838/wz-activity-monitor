@@ -4,6 +4,7 @@ package datahub.v1;
 
 import "common.proto";
 import "wzdx.proto";
+import "google/protobuf/timestamp.proto";
 
 message FieldDevice {
     oneof Device {
@@ -79,7 +80,7 @@ message FieldDevice {
     message Camera {
         FieldDeviceCoreDetails core_details = 1;
         optional string image_url = 2;
-        optional Timestamp image_timestamp = 3;
+        optional google.protobuf.Timestamp image_timestamp = 3;
     }
 
     message DynamicMessageSign {
@@ -148,8 +149,8 @@ message FieldDevice {
 
     message TrafficSensor {
         FieldDeviceCoreDetails core_details = 1;
-        Timestamp collection_interval_start_date = 2;
-        Timestamp collection_interval_end_date = 3;
+        google.protobuf.Timestamp collection_interval_start_date = 2;
+        google.protobuf.Timestamp collection_interval_end_date = 3;
         optional double average_speed_kph = 4;
         optional double volume_kph = 5;
         optional double occupancy_percent = 6;
@@ -187,11 +188,11 @@ message FieldDevice {
 message FieldDeviceCreated {
     uint64 id = 1;
     FieldDevice field_device = 2;
-    Timestamp created_time = 3;
+    google.protobuf.Timestamp created_time = 3;
 }
 
 message FieldDeviceUpdated {
     uint64 id = 1;
     FieldDevice field_device = 2;
-    Timestamp updated_time = 3;
+    google.protobuf.Timestamp updated_time = 3;
 }

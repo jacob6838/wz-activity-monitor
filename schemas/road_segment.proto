@@ -4,6 +4,7 @@ package datahub.v1;
 
 import "common.proto";
 import "wzdx.proto";
+import "google/protobuf/timestamp.proto";
 
 message RoadSegment {
     uint64 project_id = 1;
@@ -11,8 +12,8 @@ message RoadSegment {
     string name = 3;
     string description = 4;
     RoadSegmentActiveStatus armed_status = 5;
-    Timestamp start_date = 6;
-    optional Timestamp end_date = 7;
+    google.protobuf.Timestamp start_date = 6;
+    optional google.protobuf.Timestamp end_date = 7;
     WorkZoneType area_type = 8;
     repeated string road_names = 9;
     uint32 beginning_cross_street = 10;
@@ -44,11 +45,11 @@ message RoadSegmentCreated {
     // idempotency key
     uint64 id = 1;
     RoadSegment road_segment = 2;
-    Timestamp created_time = 3;
+    google.protobuf.Timestamp created_time = 3;
 }
 
 message RoadSegmentUpdated {
     uint64 id = 1;
     RoadSegment road_segment = 2;
-    Timestamp updated_time = 3;
+    google.protobuf.Timestamp updated_time = 3;
 }

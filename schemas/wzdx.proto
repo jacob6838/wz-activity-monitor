@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package datahub.v1;
 
-import "common.proto";
+import "google/protobuf/timestamp.proto";
 
 message Restriction {
     RestrictionType type = 1;
@@ -26,7 +26,7 @@ message WorkerPresence {
     bool are_workers_present = 1;
     WorkerPresenceDefinition definition = 2;
     WorkerPresenceMethod method = 3;
-    Timestamp worker_presence_last_confirmed_date = 4;
+    google.protobuf.Timestamp worker_presence_last_confirmed_date = 4;
     WorkerPresenceConfidence confidence = 5;
 }
 

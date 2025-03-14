@@ -27,10 +27,11 @@ message ActivityArea {
     repeated Restriction restrictions = 16;
     repeated EventRecurrence schedule = 17;
     oneof Geometry {
-        LineStringGeometry line_string = 18;
-        PolygonGeometry polygon = 19;
+        PointGeometry point = 18;
+        LineStringGeometry line_string = 19;
+        PolygonGeometry polygon = 20;
     }
-    BoundingBox bbox = 20;
+    BoundingBox bbox = 21;
     
     enum ActivityAreaActiveStatus {
         ACTIVITY_AREA_ACTIVE_STATUS_ACTIVE = 0;

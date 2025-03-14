@@ -28,7 +28,7 @@ message RecordingPoint {
 }
 
 message Recording {
-    uint64 project_id = 1;
+    optional uint64 project_id = 1;
     optional uint64 segment_id = 2;
     optional uint64 area_id = 3;
     string recording_name = 4;

@@ -17,8 +17,8 @@ message FieldDevice {
         TrafficSignal traffic_signal = 8;
     }
     
-    repeated Point geometry = 9;
-    repeated Point bbox = 10;
+    repeated PointGeometry geometry = 9;
+    repeated BoundingBox bbox = 10;
 
     enum FieldDeviceStatus {
         FIELD_DEVICE_STATUS_OK = 0;

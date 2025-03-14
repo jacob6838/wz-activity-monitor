@@ -2,54 +2,54 @@ syntax = "proto3";
 
 package datahub.v1;
 
+import "google/type/latlng.proto";
+
 message Timestamp {
     uint64 milliseconds_since_epoch = 1;
 }
 
-message TimeOfDay {
-    uint32 hours = 1;
-    uint32 minutes = 2;
-    uint32 seconds = 3;
-    uint32 milliseconds = 4;
-}
-
-message Date {
-    uint32 year = 1;
-    uint32 month = 2;
-    uint32 day = 3;
-}
-
 // ------------ GeoJSON Types ------------
+message Geometry {
+    oneof geometry {
+        google.type.LatLng point = 1;
+        MultiPointGeometry multi_point = 2;
+        MultiLineStringGeometry line_strings = 3;
+        MultiPolygonGeometry polygons = 4;
+    }
+}
+
+message PointGeometry {
+    google.type.LatLng coordinates = 1;
+}
+
+message MultiPolygonGeometry {
+    repeated PolygonGeometry polygons = 1;
+}
+
 message PolygonGeometry {
-    string type = 1; // must be "Polygon"
-    repeated PointArray coordinates = 2;
+    PointArray coordinates = 1;
+}
+
+message MultiLineStringGeometry {
+    repeated LineStringGeometry line_strings = 1;
 }
 
 message LineStringGeometry {
-    string type = 1; // must be "Polygon"
-    repeated PointArray coordinates = 2;
+    PointArray coordinates = 1;
+    optional float line_width_m = 2;
 }
 
 message MultiPointGeometry {
-    string type = 1; // must be "Polygon"
-    repeated Point coordinates = 2;
+    repeated google.type.LatLng coordinates = 1;
 }
 
 message PointArray {
-    repeated Point coordinates = 1;
+    repeated google.type.LatLng coordinates = 1;
 }
 
-enum GeometryType {
-    GEOMETRY_TYPE_POINT = 0;
-    GEOMETRY_TYPE_MULTIPOINT = 1;
-    GEOMETRY_TYPE_LINESTRING = 2;
-    GEOMETRY_TYPE_POLYGON = 3;
-}
-
-message Point {
-    double latitude = 1;
-    double longitude = 2;
-    optional double altitude = 3;
+message BoundingBox {
+    google.type.LatLng lower_left = 1;
+    google.type.LatLng upper_right = 2;
 }
 
 enum RoadSurfaceType {

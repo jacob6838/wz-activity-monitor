@@ -4,12 +4,14 @@ package datahub.v1;
 
 import "common.proto";
 import "wzdx.proto";
+import "google/type/timeofday.proto";
+import "google/type/date.proto";
 
 message ActivityArea {
     uint64 segment_id = 1;
     string name = 2;
     string description = 3;
-    ActivityAreaStatus status = 4;
+    ActivityAreaActiveStatus status = 4;
     Timestamp start_date = 5;
     optional Timestamp end_date = 6;
     WorkZoneType area_type = 7;
@@ -23,19 +25,22 @@ message ActivityArea {
     float reduced_speed_limit_kph = 15;
     repeated Restriction restrictions = 16;
     repeated EventRecurrence schedule = 17;
-    repeated Point geometry = 18;
-    repeated Point bbox = 19;
+    oneof Geometry {
+        LineStringGeometry line_string = 18;
+        PolygonGeometry polygon = 19;
+    }
+    BoundingBox bbox = 20;
     
-    enum ActivityAreaStatus {
-        ACTIVITY_AREA_ACTIVE = 0;
-        ACTIVITY_AREA_INACTIVE = 1;
+    enum ActivityAreaActiveStatus {
+        ACTIVITY_AREA_ACTIVE_STATUS_ACTIVE = 0;
+        ACTIVITY_AREA_ACTIVE_STATUS_INACTIVE = 1;
     }
 
     message EventRecurrence {
-        TimeOfDay start_time = 1;
-        TimeOfDay end_time = 2;
-        Date start_date = 3;
-        Date end_date = 4;
+        google.type.TimeOfDay start_time = 1;
+        google.type.TimeOfDay end_time = 2;
+        google.type.Date start_date = 3;
+        google.type.Date end_date = 4;
 
         bool monday = 5;
         bool tuesday = 6;

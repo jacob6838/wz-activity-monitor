@@ -10,7 +10,7 @@ message RoadSegment {
     RoadwayDirection direction = 2;
     string name = 3;
     string description = 4;
-    RoadSegmentArmedStatus armed_status = 5;
+    RoadSegmentActiveStatus armed_status = 5;
     Timestamp start_date = 6;
     optional Timestamp end_date = 7;
     WorkZoneType area_type = 8;
@@ -20,8 +20,11 @@ message RoadSegment {
     uint32 beginning_milepost = 12;
     uint32 ending_milepost = 13;
     RoadSurfaceType surface_type = 14;
-    repeated Point geometry = 15;
-    repeated Point bbox = 16;
+    oneof Geometry {
+        LineStringGeometry line_string = 18;
+        PolygonGeometry polygon = 19;
+    }
+    repeated BoundingBox bbox = 16;
 
     enum RoadDirection {
         ROAD_SEGMENT_DIRECTION_BOTH = 0;
@@ -31,9 +34,9 @@ message RoadSegment {
         ROAD_SEGMENT_DIRECTION_WESTBOUND = 4;
     }
     
-    enum RoadSegmentArmedStatus {
-        ROAD_SEGMENT_ARMED_STATUS_ARMED = 0;
-        ROAD_SEGMENT_ARMED_STATUS_DISARMED = 1;
+    enum RoadSegmentActiveStatus {
+        ROAD_SEGMENT_ACTIVE_STATUS_ACTIVE = 0;
+        ROAD_SEGMENT_ACTIVE_STATUS_INACTIVE = 1;
     }
 }
 

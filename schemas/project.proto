@@ -13,8 +13,16 @@ message Project {
     Timestamp start_date = 5;
     Timestamp end_date = 6;
     WorkZoneType area_type = 7;
-    repeated Point geometry = 8;
-    repeated Point bbox = 9;
+    oneof Geometry {
+        MultiLineStringGeometry line_strings = 8;
+        MultiPolygonGeometry polygons = 9;
+    }
+    BoundingBox bbox = 10;
+    
+    enum ProjectActiveStatus {
+        PROJECT_ACTIVE_STATUS_ACTIVE = 0;
+        PROJECT_ACTIVE_STATUS_INACTIVE = 1;
+    }
 
     enum ProjectStatus {
         PROJECT_STATUS_ACTIVE = 0;

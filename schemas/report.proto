@@ -6,7 +6,7 @@ import "common.proto";
 import "wzdx.proto";
 
 message Report {
-    uint64 project_id = 1;
+    optional uint64 project_id = 1;
     optional uint64 segment_id = 2;
     optional uint64 area_id = 3;
     string report_name = 4;
@@ -18,20 +18,13 @@ message Report {
     optional Timestamp end_date = 10;
     WorkZoneType area_type = 11;
     optional float mobility_speed_mph = 12;
-    GeometryType geometry_type = 13;
-    ReportGeometry geometry = 14; // must align with the value of geometry_type
-    optional float geometry_line_width = 15;
+    oneof Geometry {
+        PointGeometry point = 13;
+        LineStringGeometry line_string = 14;
+        PolygonGeometry polygon = 15;
+    }
     optional string license_plate = 16;
     optional RoadSurfaceType surface_type = 17;
-
-    message ReportGeometry {
-        oneof geometry {
-            Point point = 1;
-            PointArray multi_point = 2;
-            PointArray line_string = 3;
-            PointArray polygon = 4;
-        }
-    }
 }
 
 message ReportCreated {

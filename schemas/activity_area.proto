@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package datahub.v1;
+
+import "common.proto";
+import "wzdx.proto";
+import "google/type/timeofday.proto";
+import "google/type/date.proto";
+import "google/protobuf/timestamp.proto";
+
+message ActivityArea {
+    uint64 segment_id = 1;
+    string name = 2;
+    string description = 3;
+    ActivityAreaActiveStatus status = 4;
+    google.protobuf.Timestamp start_date = 5;
+    optional google.protobuf.Timestamp end_date = 6;
+    WorkZoneType area_type = 7;
+    repeated Lane lanes = 8;
+    uint32 beginning_cross_street = 9;
+    uint32 ending_cross_street = 10;
+    uint32 beginning_milepost = 11;
+    uint32 ending_milepost = 12;
+    repeated TypeOfWork types_of_work = 13;
+    WorkerPresence worker_presence = 14;
+    float reduced_speed_limit_kph = 15;
+    repeated Restriction restrictions = 16;
+    repeated EventRecurrence schedule = 17;
+    oneof Geometry {
+        PointGeometry point = 18;
+        LineStringGeometry line_string = 19;
+        PolygonGeometry polygon = 20;
+    }
+    BoundingBox bbox = 21;
+    
+    enum ActivityAreaActiveStatus {
+        ACTIVITY_AREA_ACTIVE_STATUS_ACTIVE = 0;
+        ACTIVITY_AREA_ACTIVE_STATUS_INACTIVE = 1;
+    }
+
+    message EventRecurrence {
+        google.type.TimeOfDay start_time = 1;
+        google.type.TimeOfDay end_time = 2;
+        google.type.Date start_date = 3;
+        google.type.Date end_date = 4;
+
+        bool monday = 5;
+        bool tuesday = 6;
+        bool wednesday = 7;
+        bool thursday = 8;
+        bool friday = 9;
+        bool saturday = 10;
+        bool sunday = 11;
+
+        bool exclusion = 12; // If true, time span is excluded from the recurrence
+    }
+}
+
+message ActivityAreaCreated {
+    uint64 id = 1;
+    ActivityArea activity_area = 2;
+    google.protobuf.Timestamp created_time = 3;
+}
+
+message ActivityAreaUpdated {
+    uint64 id = 1;
+    ActivityArea activity_area = 2;
+    google.protobuf.Timestamp updated_time = 3;
+}

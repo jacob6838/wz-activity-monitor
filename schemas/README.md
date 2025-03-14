@@ -9,3 +9,7 @@ This directory contains Protobuf schema definitions for DataHub messages. The fi
 5. [activity_area.proto](activity_area.proto): defines the Activity Area object, representing a position within a road section where workers are present
 6. [report.proto](report.proto): defines the Report object, representing a user-provided report of ongoing or upcoming work
 7. [recording.proto](recording.proto): defines the Recording object, representing a user-driven annotated path through a work zone
+
+## Imports
+
+This project uses downloaded versions of the google/type proto files. These files are located in the google/type subdirectory, and were sourced from [googleapis](https://github.com/googleapis/googleapis/tree/master/google/type)

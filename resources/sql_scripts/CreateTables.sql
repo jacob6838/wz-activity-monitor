@@ -24,6 +24,8 @@ CREATE TABLE IF NOT EXISTS public.projects (
     emergency_contact VARCHAR(255),
     contractor VARCHAR(255),
     selected_towns TEXT[],
+    geometry GEOMETRY(LineString, 4326) NOT NULL, -- Storing as LineString
+    bbox FLOAT8[][],
     CONSTRAINT project_pkey PRIMARY KEY (id)
 );
 

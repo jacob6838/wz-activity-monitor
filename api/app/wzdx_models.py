@@ -164,3 +164,13 @@ class WorkerPresence(BaseModel):
     method: WorkerPresenceMethod
     worker_presence_last_confirmed_date: int
     confidence: WorkerPresenceConfidence
+
+
+# https://github.com/usdot-jpo-ode/wzdx/blob/develop/spec-content/enumerated-types/EventStatus.md
+# This enum is deprecated by the WZDx schemas
+class EventStatus(str, Enum):
+    planned = "planned"
+    pending = "pending"
+    active = "active"
+    canceled = "canceled"
+    completed = "completed"

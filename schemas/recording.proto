@@ -41,15 +41,3 @@ message Recording {
     optional RoadSurfaceType surface_type = 10;
     repeated RecordingPoint points = 11;
 }
-
-message RecordingCreated {
-    uint64 id = 1;
-    Recording recording = 2;
-    google.protobuf.Timestamp created_time = 3;
-}
-
-message RecordingUpdated {
-    uint64 id = 1;
-    Recording recording = 2;
-    google.protobuf.Timestamp updated_time = 3;
-}

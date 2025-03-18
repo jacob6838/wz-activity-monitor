@@ -30,15 +30,3 @@ message Project {
         PROJECT_STATUS_SUSPENDED = 1;
     }
 }
-
-message ProjectCreated {
-    uint64 id = 1;
-    Project project = 2;
-    google.protobuf.Timestamp created_date = 3;
-}
-
-message ProjectUpdated {
-    uint64 id = 1;
-    Project project = 2;
-    google.protobuf.Timestamp updated_date = 3;
-}

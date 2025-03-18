@@ -25,15 +25,3 @@ message Report {
     optional string license_plate = 14;
     optional RoadSurfaceType surface_type = 15;
 }
-
-message ReportCreated {
-    uint64 id = 1;
-    Report report = 2;
-    google.protobuf.Timestamp created_time = 3;
-}
-
-message ReportUpdated {
-    uint64 id = 1;
-    Report report = 2;
-    google.protobuf.Timestamp updated_time = 3;
-}

@@ -55,15 +55,3 @@ message ActivityArea {
         bool exclusion = 12; // If true, time span is excluded from the recurrence
     }
 }
-
-message ActivityAreaCreated {
-    uint64 id = 1;
-    ActivityArea activity_area = 2;
-    google.protobuf.Timestamp created_time = 3;
-}
-
-message ActivityAreaUpdated {
-    uint64 id = 1;
-    ActivityArea activity_area = 2;
-    google.protobuf.Timestamp updated_time = 3;
-}

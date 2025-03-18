@@ -18,8 +18,11 @@ message FieldDevice {
         TrafficSignal traffic_signal = 8;
     }
     
-    repeated PointGeometry geometry = 9;
-    repeated BoundingBox bbox = 10;
+    optional uint64 project_id = 9;
+    optional uint64 segment_id = 10;
+    optional uint64 area_id = 11;
+    repeated PointGeometry geometry = 12;
+    repeated BoundingBox bbox = 13;
 
     enum FieldDeviceStatus {
         FIELD_DEVICE_STATUS_OK = 0;
@@ -183,16 +186,4 @@ message FieldDevice {
             TRAFFIC_SIGNAL_MODE_UNKNOWN = 7;
         }
     }
-}
-
-message FieldDeviceCreated {
-    uint64 id = 1;
-    FieldDevice field_device = 2;
-    google.protobuf.Timestamp created_time = 3;
-}
-
-message FieldDeviceUpdated {
-    uint64 id = 1;
-    FieldDevice field_device = 2;
-    google.protobuf.Timestamp updated_time = 3;
 }

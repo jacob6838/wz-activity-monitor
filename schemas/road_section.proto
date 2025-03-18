@@ -6,7 +6,7 @@ import "common.proto";
 import "wzdx.proto";
 import "google/protobuf/timestamp.proto";
 
-message RoadSegment {
+message RoadSection {
     uint64 project_id = 1;
     RoadwayDirection direction = 2;
     string name = 3;
@@ -39,17 +39,4 @@ message RoadSegment {
         ROAD_SEGMENT_ACTIVE_STATUS_ACTIVE = 0;
         ROAD_SEGMENT_ACTIVE_STATUS_INACTIVE = 1;
     }
-}
-
-message RoadSegmentCreated {
-    // idempotency key
-    uint64 id = 1;
-    RoadSegment road_segment = 2;
-    google.protobuf.Timestamp created_time = 3;
-}
-
-message RoadSegmentUpdated {
-    uint64 id = 1;
-    RoadSegment road_segment = 2;
-    google.protobuf.Timestamp updated_time = 3;
 }

@@ -7,7 +7,6 @@ import "field_device.proto";
 import "activity_area.proto";
 import "delay.proto";
 import "road_section.proto";
-import "recording.proto";
 import "google/protobuf/timestamp.proto";
 
 message VehicleLocationUpdated {

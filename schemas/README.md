@@ -13,3 +13,5 @@ This directory contains Protobuf schema definitions for DataHub messages. The fi
 ## Imports
 
 This project uses downloaded versions of the google/type proto files. These files are located in the google/type subdirectory, and were sourced from [Google APIs Repository](https://github.com/googleapis/googleapis/tree/master/google/type)
+
+This project also uses downloaded versions of the google/protobuf proto files, sourced from the [Protocol Buffers Repository](https://github.com/protocolbuffers/protobuf/tree/main/src/google/protobuf)

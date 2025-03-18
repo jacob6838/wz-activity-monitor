@@ -1,0 +1,24 @@
+
+syntax = "proto3";
+
+package datahub.v1;
+
+import "report.proto";
+import "recording.proto";
+import "google/protobuf/timestamp.proto";
+
+message ReportCreated {
+    Report report = 1;
+    google.protobuf.Timestamp created_time = 2;
+}
+
+message ReportUpdated {
+    uint64 id = 1;
+    Report report = 2;
+    google.protobuf.Timestamp updated_time = 3;
+}
+
+message RecordingCreated {
+    Recording recording = 1;
+    google.protobuf.Timestamp created_time = 2;
+}

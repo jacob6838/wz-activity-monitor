@@ -89,11 +89,6 @@ message ReportSummary {
     string contact_phone = 6;
 }
 
-message RecordingMarkingSummary {
-    uint32 path_index = 1;
-    repeated RecordingMarking markings = 2;
-}
-
 message RecordingSummary {
     uint64 id = 1;
     string name = 2;
@@ -101,7 +96,6 @@ message RecordingSummary {
     google.protobuf.Timestamp report_date = 4;
     double length_meters = 5;
     double position_accuracy_meters = 6;
-    LineStringGeometry path = 7;
 }
 
 message FieldDeviceSummaryArray {

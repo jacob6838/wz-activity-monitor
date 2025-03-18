@@ -11,7 +11,7 @@ message RoadSection {
     RoadwayDirection direction = 2;
     string name = 3;
     string description = 4;
-    RoadSegmentActiveStatus armed_status = 5;
+    RoadSectionActiveStatus armed_status = 5;
     google.protobuf.Timestamp start_date = 6;
     optional google.protobuf.Timestamp end_date = 7;
     WorkZoneType area_type = 8;
@@ -28,15 +28,15 @@ message RoadSection {
     repeated BoundingBox bbox = 17;
 
     enum RoadDirection {
-        ROAD_SEGMENT_DIRECTION_BOTH = 0;
-        ROAD_SEGMENT_DIRECTION_NORTHBOUND = 1;
-        ROAD_SEGMENT_DIRECTION_SOUTHBOUND = 2;
-        ROAD_SEGMENT_DIRECTION_EASTBOUND = 3;
-        ROAD_SEGMENT_DIRECTION_WESTBOUND = 4;
+        ROAD_DIRECTION_BOTH = 0;
+        ROAD_DIRECTION_NORTHBOUND = 1;
+        ROAD_DIRECTION_SOUTHBOUND = 2;
+        ROAD_DIRECTION_EASTBOUND = 3;
+        ROAD_DIRECTION_WESTBOUND = 4;
     }
     
-    enum RoadSegmentActiveStatus {
-        ROAD_SEGMENT_ACTIVE_STATUS_ACTIVE = 0;
-        ROAD_SEGMENT_ACTIVE_STATUS_INACTIVE = 1;
+    enum RoadSectionActiveStatus {
+        ROAD_SECTION_ACTIVE_STATUS_ACTIVE = 0;
+        ROAD_SECTION_ACTIVE_STATUS_INACTIVE = 1;
     }
 }

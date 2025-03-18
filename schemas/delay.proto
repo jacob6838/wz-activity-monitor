@@ -6,10 +6,11 @@ import "wzdx.proto";
 import "google/protobuf/timestamp.proto";
 
 message Delay {
-    uint64 road_segment_id = 1;
-    repeated Lane lanes = 2;
-    float reduced_speed_limit_kph = 3;
-    repeated Restriction restrictions = 4;
+    uint64 project_id = 1;
+    uint64 road_section_id = 2;
+    repeated Lane lanes = 3;
+    float reduced_speed_limit_kph = 4;
+    repeated Restriction restrictions = 5;
 }
 
 message DelayCreated {

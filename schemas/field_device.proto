@@ -18,9 +18,9 @@ message FieldDevice {
         TrafficSignal traffic_signal = 8;
     }
     
-    optional uint64 project_id = 9;
-    optional uint64 segment_id = 10;
-    optional uint64 area_id = 11;
+    uint64 project_id = 9;
+    uint64 road_section_id = 10;
+    uint64 activity_area_id = 11;
     repeated PointGeometry geometry = 12;
     repeated BoundingBox bbox = 13;
 
@@ -40,9 +40,6 @@ message FieldDevice {
         optional string description = 6;
         repeated string status_messages = 7; // error or warning messages
         optional bool is_moving = 8;
-        repeated uint64 project_ids = 9;
-        repeated uint64 road_segment_ids = 10;
-        repeated uint64 activity_area_ids = 11;
         optional uint32 milepost = 12;
         optional string make = 13;
         optional string model = 14;
@@ -127,7 +124,7 @@ message FieldDevice {
         message MarkedLocation {
             MarkedLocationType type = 1;
             oneof EventId {
-                uint64 road_segment_id = 2;
+                uint64 road_section_id = 2;
                 uint64 activity_area_id = 3;
             }
 
@@ -162,7 +159,7 @@ message FieldDevice {
         message TrafficSensorLaneData {
             uint32 lane_order = 1;
             oneof EventId {
-                uint64 road_segment_id = 2;
+                uint64 road_section_id = 2;
                 uint64 activity_area_id = 3;
             }
             double average_speed_kph = 4;

@@ -11,7 +11,7 @@ import "google/protobuf/timestamp.proto";
 message FieldDeviceAssociationChanged {
     uint64 id = 1;
     optional uint64 project_id = 2;
-    optional uint64 segment_id = 3;
+    optional uint64 road_section_id = 3;
     optional uint64 area_id = 4;
     FieldDevice field_device = 5;
     google.protobuf.Timestamp updated_time = 6;
@@ -37,17 +37,17 @@ message ProjectUpdated {
     google.protobuf.Timestamp updated_time = 4;
 }
 
-message RoadSegmentCreated {
+message RoadSectionCreated {
     uint64 id = 1;
     optional uint64 request_id = 2;
-    RoadSection road_segment = 3;
+    RoadSection road_section = 3;
     google.protobuf.Timestamp created_time = 4;
 }
 
-message RoadSegmentUpdated {
+message RoadSectionUpdated {
     uint64 id = 1;
     optional uint64 request_id = 2;
-    RoadSection road_segment = 3;
+    RoadSection road_section = 3;
     google.protobuf.Timestamp updated_time = 4;
 }
 

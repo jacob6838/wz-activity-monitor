@@ -9,29 +9,30 @@ import "google/type/date.proto";
 import "google/protobuf/timestamp.proto";
 
 message ActivityArea {
-    uint64 segment_id = 1;
-    string name = 2;
-    string description = 3;
-    ActivityAreaActiveStatus status = 4;
-    google.protobuf.Timestamp start_date = 5;
-    optional google.protobuf.Timestamp end_date = 6;
-    WorkZoneType area_type = 7;
-    repeated Lane lanes = 8;
-    uint32 beginning_cross_street = 9;
-    uint32 ending_cross_street = 10;
-    uint32 beginning_milepost = 11;
-    uint32 ending_milepost = 12;
-    repeated TypeOfWork types_of_work = 13;
-    WorkerPresence worker_presence = 14;
-    float reduced_speed_limit_kph = 15;
-    repeated Restriction restrictions = 16;
-    repeated EventRecurrence schedule = 17;
+    uint64 project_id = 1;
+    uint64 road_section_id = 2;
+    string name = 3;
+    string description = 4;
+    ActivityAreaActiveStatus status = 5;
+    google.protobuf.Timestamp start_date = 6;
+    optional google.protobuf.Timestamp end_date = 7;
+    WorkZoneType area_type = 8;
+    repeated Lane lanes = 9;
+    uint32 beginning_cross_street = 10;
+    uint32 ending_cross_street = 11;
+    uint32 beginning_milepost = 12;
+    uint32 ending_milepost = 13;
+    repeated TypeOfWork types_of_work = 14;
+    WorkerPresence worker_presence = 15;
+    float reduced_speed_limit_kph = 16;
+    repeated Restriction restrictions = 17;
+    repeated EventRecurrence schedule = 18;
     oneof Geometry {
-        PointGeometry point = 18;
-        LineStringGeometry line_string = 19;
-        PolygonGeometry polygon = 20;
+        PointGeometry point = 19;
+        LineStringGeometry line_string = 20;
+        PolygonGeometry polygon = 21;
     }
-    BoundingBox bbox = 21;
+    BoundingBox bbox = 22;
     
     enum ActivityAreaActiveStatus {
         ACTIVITY_AREA_ACTIVE_STATUS_ACTIVE = 0;

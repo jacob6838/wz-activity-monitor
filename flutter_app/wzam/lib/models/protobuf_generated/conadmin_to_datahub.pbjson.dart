@@ -19,14 +19,14 @@ const FieldDeviceAssociationChanged$json = {
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 4, '10': 'id'},
     {'1': 'project_id', '3': 2, '4': 1, '5': 4, '9': 0, '10': 'projectId', '17': true},
-    {'1': 'segment_id', '3': 3, '4': 1, '5': 4, '9': 1, '10': 'segmentId', '17': true},
+    {'1': 'road_section_id', '3': 3, '4': 1, '5': 4, '9': 1, '10': 'roadSectionId', '17': true},
     {'1': 'area_id', '3': 4, '4': 1, '5': 4, '9': 2, '10': 'areaId', '17': true},
     {'1': 'field_device', '3': 5, '4': 1, '5': 11, '6': '.datahub.v1.FieldDevice', '10': 'fieldDevice'},
     {'1': 'updated_time', '3': 6, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '10': 'updatedTime'},
   ],
   '8': [
     {'1': '_project_id'},
-    {'1': '_segment_id'},
+    {'1': '_road_section_id'},
     {'1': '_area_id'},
   ],
 };
@@ -34,11 +34,11 @@ const FieldDeviceAssociationChanged$json = {
 /// Descriptor for `FieldDeviceAssociationChanged`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List fieldDeviceAssociationChangedDescriptor = $convert.base64Decode(
     'Ch1GaWVsZERldmljZUFzc29jaWF0aW9uQ2hhbmdlZBIOCgJpZBgBIAEoBFICaWQSIgoKcHJvam'
-    'VjdF9pZBgCIAEoBEgAUglwcm9qZWN0SWSIAQESIgoKc2VnbWVudF9pZBgDIAEoBEgBUglzZWdt'
-    'ZW50SWSIAQESHAoHYXJlYV9pZBgEIAEoBEgCUgZhcmVhSWSIAQESOgoMZmllbGRfZGV2aWNlGA'
-    'UgASgLMhcuZGF0YWh1Yi52MS5GaWVsZERldmljZVILZmllbGREZXZpY2USPQoMdXBkYXRlZF90'
-    'aW1lGAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFILdXBkYXRlZFRpbWVCDQoLX3'
-    'Byb2plY3RfaWRCDQoLX3NlZ21lbnRfaWRCCgoIX2FyZWFfaWQ=');
+    'VjdF9pZBgCIAEoBEgAUglwcm9qZWN0SWSIAQESKwoPcm9hZF9zZWN0aW9uX2lkGAMgASgESAFS'
+    'DXJvYWRTZWN0aW9uSWSIAQESHAoHYXJlYV9pZBgEIAEoBEgCUgZhcmVhSWSIAQESOgoMZmllbG'
+    'RfZGV2aWNlGAUgASgLMhcuZGF0YWh1Yi52MS5GaWVsZERldmljZVILZmllbGREZXZpY2USPQoM'
+    'dXBkYXRlZF90aW1lGAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFILdXBkYXRlZF'
+    'RpbWVCDQoLX3Byb2plY3RfaWRCEgoQX3JvYWRfc2VjdGlvbl9pZEIKCghfYXJlYV9pZA==');
 
 @$core.Deprecated('Use requestRejectedDescriptor instead')
 const RequestRejected$json = {
@@ -98,13 +98,13 @@ final $typed_data.Uint8List projectUpdatedDescriptor = $convert.base64Decode(
     'amVjdBI9Cgx1cGRhdGVkX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wUg'
     't1cGRhdGVkVGltZUINCgtfcmVxdWVzdF9pZA==');
 
-@$core.Deprecated('Use roadSegmentCreatedDescriptor instead')
-const RoadSegmentCreated$json = {
-  '1': 'RoadSegmentCreated',
+@$core.Deprecated('Use roadSectionCreatedDescriptor instead')
+const RoadSectionCreated$json = {
+  '1': 'RoadSectionCreated',
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 4, '10': 'id'},
     {'1': 'request_id', '3': 2, '4': 1, '5': 4, '9': 0, '10': 'requestId', '17': true},
-    {'1': 'road_segment', '3': 3, '4': 1, '5': 11, '6': '.datahub.v1.RoadSection', '10': 'roadSegment'},
+    {'1': 'road_section', '3': 3, '4': 1, '5': 11, '6': '.datahub.v1.RoadSection', '10': 'roadSection'},
     {'1': 'created_time', '3': 4, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '10': 'createdTime'},
   ],
   '8': [
@@ -112,20 +112,20 @@ const RoadSegmentCreated$json = {
   ],
 };
 
-/// Descriptor for `RoadSegmentCreated`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List roadSegmentCreatedDescriptor = $convert.base64Decode(
-    'ChJSb2FkU2VnbWVudENyZWF0ZWQSDgoCaWQYASABKARSAmlkEiIKCnJlcXVlc3RfaWQYAiABKA'
-    'RIAFIJcmVxdWVzdElkiAEBEjoKDHJvYWRfc2VnbWVudBgDIAEoCzIXLmRhdGFodWIudjEuUm9h'
-    'ZFNlY3Rpb25SC3JvYWRTZWdtZW50Ej0KDGNyZWF0ZWRfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm'
+/// Descriptor for `RoadSectionCreated`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List roadSectionCreatedDescriptor = $convert.base64Decode(
+    'ChJSb2FkU2VjdGlvbkNyZWF0ZWQSDgoCaWQYASABKARSAmlkEiIKCnJlcXVlc3RfaWQYAiABKA'
+    'RIAFIJcmVxdWVzdElkiAEBEjoKDHJvYWRfc2VjdGlvbhgDIAEoCzIXLmRhdGFodWIudjEuUm9h'
+    'ZFNlY3Rpb25SC3JvYWRTZWN0aW9uEj0KDGNyZWF0ZWRfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm'
     '90b2J1Zi5UaW1lc3RhbXBSC2NyZWF0ZWRUaW1lQg0KC19yZXF1ZXN0X2lk');
 
-@$core.Deprecated('Use roadSegmentUpdatedDescriptor instead')
-const RoadSegmentUpdated$json = {
-  '1': 'RoadSegmentUpdated',
+@$core.Deprecated('Use roadSectionUpdatedDescriptor instead')
+const RoadSectionUpdated$json = {
+  '1': 'RoadSectionUpdated',
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 4, '10': 'id'},
     {'1': 'request_id', '3': 2, '4': 1, '5': 4, '9': 0, '10': 'requestId', '17': true},
-    {'1': 'road_segment', '3': 3, '4': 1, '5': 11, '6': '.datahub.v1.RoadSection', '10': 'roadSegment'},
+    {'1': 'road_section', '3': 3, '4': 1, '5': 11, '6': '.datahub.v1.RoadSection', '10': 'roadSection'},
     {'1': 'updated_time', '3': 4, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '10': 'updatedTime'},
   ],
   '8': [
@@ -133,11 +133,11 @@ const RoadSegmentUpdated$json = {
   ],
 };
 
-/// Descriptor for `RoadSegmentUpdated`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List roadSegmentUpdatedDescriptor = $convert.base64Decode(
-    'ChJSb2FkU2VnbWVudFVwZGF0ZWQSDgoCaWQYASABKARSAmlkEiIKCnJlcXVlc3RfaWQYAiABKA'
-    'RIAFIJcmVxdWVzdElkiAEBEjoKDHJvYWRfc2VnbWVudBgDIAEoCzIXLmRhdGFodWIudjEuUm9h'
-    'ZFNlY3Rpb25SC3JvYWRTZWdtZW50Ej0KDHVwZGF0ZWRfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm'
+/// Descriptor for `RoadSectionUpdated`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List roadSectionUpdatedDescriptor = $convert.base64Decode(
+    'ChJSb2FkU2VjdGlvblVwZGF0ZWQSDgoCaWQYASABKARSAmlkEiIKCnJlcXVlc3RfaWQYAiABKA'
+    'RIAFIJcmVxdWVzdElkiAEBEjoKDHJvYWRfc2VjdGlvbhgDIAEoCzIXLmRhdGFodWIudjEuUm9h'
+    'ZFNlY3Rpb25SC3JvYWRTZWN0aW9uEj0KDHVwZGF0ZWRfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm'
     '90b2J1Zi5UaW1lc3RhbXBSC3VwZGF0ZWRUaW1lQg0KC19yZXF1ZXN0X2lk');
 
 @$core.Deprecated('Use activityAreaCreatedDescriptor instead')

@@ -34,7 +34,7 @@ class RoadSection extends $pb.GeneratedMessage {
     $2.RoadwayDirection? direction,
     $core.String? name,
     $core.String? description,
-    RoadSection_RoadSegmentActiveStatus? armedStatus,
+    RoadSection_RoadSectionActiveStatus? armedStatus,
     $1.Timestamp? startDate,
     $1.Timestamp? endDate,
     $2.WorkZoneType? areaType,
@@ -117,7 +117,7 @@ class RoadSection extends $pb.GeneratedMessage {
     ..e<$2.RoadwayDirection>(2, _omitFieldNames ? '' : 'direction', $pb.PbFieldType.OE, defaultOrMaker: $2.RoadwayDirection.ROADWAY_DIRECTION_NORTHBOUND, valueOf: $2.RoadwayDirection.valueOf, enumValues: $2.RoadwayDirection.values)
     ..aOS(3, _omitFieldNames ? '' : 'name')
     ..aOS(4, _omitFieldNames ? '' : 'description')
-    ..e<RoadSection_RoadSegmentActiveStatus>(5, _omitFieldNames ? '' : 'armedStatus', $pb.PbFieldType.OE, defaultOrMaker: RoadSection_RoadSegmentActiveStatus.ROAD_SEGMENT_ACTIVE_STATUS_ACTIVE, valueOf: RoadSection_RoadSegmentActiveStatus.valueOf, enumValues: RoadSection_RoadSegmentActiveStatus.values)
+    ..e<RoadSection_RoadSectionActiveStatus>(5, _omitFieldNames ? '' : 'armedStatus', $pb.PbFieldType.OE, defaultOrMaker: RoadSection_RoadSectionActiveStatus.ROAD_SECTION_ACTIVE_STATUS_ACTIVE, valueOf: RoadSection_RoadSectionActiveStatus.valueOf, enumValues: RoadSection_RoadSectionActiveStatus.values)
     ..aOM<$1.Timestamp>(6, _omitFieldNames ? '' : 'startDate', subBuilder: $1.Timestamp.create)
     ..aOM<$1.Timestamp>(7, _omitFieldNames ? '' : 'endDate', subBuilder: $1.Timestamp.create)
     ..e<$2.WorkZoneType>(8, _omitFieldNames ? '' : 'areaType', $pb.PbFieldType.OE, defaultOrMaker: $2.WorkZoneType.WORK_ZONE_TYPE_STATIC, valueOf: $2.WorkZoneType.valueOf, enumValues: $2.WorkZoneType.values)
@@ -194,9 +194,9 @@ class RoadSection extends $pb.GeneratedMessage {
   void clearDescription() => clearField(4);
 
   @$pb.TagNumber(5)
-  RoadSection_RoadSegmentActiveStatus get armedStatus => $_getN(4);
+  RoadSection_RoadSectionActiveStatus get armedStatus => $_getN(4);
   @$pb.TagNumber(5)
-  set armedStatus(RoadSection_RoadSegmentActiveStatus v) { setField(5, v); }
+  set armedStatus(RoadSection_RoadSectionActiveStatus v) { setField(5, v); }
   @$pb.TagNumber(5)
   $core.bool hasArmedStatus() => $_has(4);
   @$pb.TagNumber(5)

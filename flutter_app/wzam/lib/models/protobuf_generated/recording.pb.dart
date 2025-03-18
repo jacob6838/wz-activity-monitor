@@ -314,7 +314,7 @@ class RecordingPoint extends $pb.GeneratedMessage {
 class Recording extends $pb.GeneratedMessage {
   factory Recording({
     $fixnum.Int64? projectId,
-    $fixnum.Int64? segmentId,
+    $fixnum.Int64? roadSectionId,
     $fixnum.Int64? areaId,
     $core.String? recordingName,
     $core.Iterable<$2.TypeOfWork>? typesOfWork,
@@ -329,8 +329,8 @@ class Recording extends $pb.GeneratedMessage {
     if (projectId != null) {
       $result.projectId = projectId;
     }
-    if (segmentId != null) {
-      $result.segmentId = segmentId;
+    if (roadSectionId != null) {
+      $result.roadSectionId = roadSectionId;
     }
     if (areaId != null) {
       $result.areaId = areaId;
@@ -367,7 +367,7 @@ class Recording extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Recording', package: const $pb.PackageName(_omitMessageNames ? '' : 'datahub.v1'), createEmptyInstance: create)
     ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'projectId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'segmentId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'roadSectionId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..a<$fixnum.Int64>(3, _omitFieldNames ? '' : 'areaId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..aOS(4, _omitFieldNames ? '' : 'recordingName')
     ..pc<$2.TypeOfWork>(5, _omitFieldNames ? '' : 'typesOfWork', $pb.PbFieldType.PM, subBuilder: $2.TypeOfWork.create)
@@ -411,13 +411,13 @@ class Recording extends $pb.GeneratedMessage {
   void clearProjectId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $fixnum.Int64 get segmentId => $_getI64(1);
+  $fixnum.Int64 get roadSectionId => $_getI64(1);
   @$pb.TagNumber(2)
-  set segmentId($fixnum.Int64 v) { $_setInt64(1, v); }
+  set roadSectionId($fixnum.Int64 v) { $_setInt64(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasSegmentId() => $_has(1);
+  $core.bool hasRoadSectionId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearSegmentId() => clearField(2);
+  void clearRoadSectionId() => clearField(2);
 
   @$pb.TagNumber(3)
   $fixnum.Int64 get areaId => $_getI64(2);

@@ -245,7 +245,8 @@ enum ActivityArea_Geometry {
 
 class ActivityArea extends $pb.GeneratedMessage {
   factory ActivityArea({
-    $fixnum.Int64? segmentId,
+    $fixnum.Int64? projectId,
+    $fixnum.Int64? roadSectionId,
     $core.String? name,
     $core.String? description,
     ActivityArea_ActivityAreaActiveStatus? status,
@@ -268,8 +269,11 @@ class ActivityArea extends $pb.GeneratedMessage {
     $3.BoundingBox? bbox,
   }) {
     final $result = create();
-    if (segmentId != null) {
-      $result.segmentId = segmentId;
+    if (projectId != null) {
+      $result.projectId = projectId;
+    }
+    if (roadSectionId != null) {
+      $result.roadSectionId = roadSectionId;
     }
     if (name != null) {
       $result.name = name;
@@ -338,34 +342,35 @@ class ActivityArea extends $pb.GeneratedMessage {
   factory ActivityArea.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static const $core.Map<$core.int, ActivityArea_Geometry> _ActivityArea_GeometryByTag = {
-    18 : ActivityArea_Geometry.point,
-    19 : ActivityArea_Geometry.lineString,
-    20 : ActivityArea_Geometry.polygon,
+    19 : ActivityArea_Geometry.point,
+    20 : ActivityArea_Geometry.lineString,
+    21 : ActivityArea_Geometry.polygon,
     0 : ActivityArea_Geometry.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ActivityArea', package: const $pb.PackageName(_omitMessageNames ? '' : 'datahub.v1'), createEmptyInstance: create)
-    ..oo(0, [18, 19, 20])
-    ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'segmentId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOS(3, _omitFieldNames ? '' : 'description')
-    ..e<ActivityArea_ActivityAreaActiveStatus>(4, _omitFieldNames ? '' : 'status', $pb.PbFieldType.OE, defaultOrMaker: ActivityArea_ActivityAreaActiveStatus.ACTIVITY_AREA_ACTIVE_STATUS_ACTIVE, valueOf: ActivityArea_ActivityAreaActiveStatus.valueOf, enumValues: ActivityArea_ActivityAreaActiveStatus.values)
-    ..aOM<$1.Timestamp>(5, _omitFieldNames ? '' : 'startDate', subBuilder: $1.Timestamp.create)
-    ..aOM<$1.Timestamp>(6, _omitFieldNames ? '' : 'endDate', subBuilder: $1.Timestamp.create)
-    ..e<$2.WorkZoneType>(7, _omitFieldNames ? '' : 'areaType', $pb.PbFieldType.OE, defaultOrMaker: $2.WorkZoneType.WORK_ZONE_TYPE_STATIC, valueOf: $2.WorkZoneType.valueOf, enumValues: $2.WorkZoneType.values)
-    ..pc<$2.Lane>(8, _omitFieldNames ? '' : 'lanes', $pb.PbFieldType.PM, subBuilder: $2.Lane.create)
-    ..a<$core.int>(9, _omitFieldNames ? '' : 'beginningCrossStreet', $pb.PbFieldType.OU3)
-    ..a<$core.int>(10, _omitFieldNames ? '' : 'endingCrossStreet', $pb.PbFieldType.OU3)
-    ..a<$core.int>(11, _omitFieldNames ? '' : 'beginningMilepost', $pb.PbFieldType.OU3)
-    ..a<$core.int>(12, _omitFieldNames ? '' : 'endingMilepost', $pb.PbFieldType.OU3)
-    ..pc<$2.TypeOfWork>(13, _omitFieldNames ? '' : 'typesOfWork', $pb.PbFieldType.PM, subBuilder: $2.TypeOfWork.create)
-    ..aOM<$2.WorkerPresence>(14, _omitFieldNames ? '' : 'workerPresence', subBuilder: $2.WorkerPresence.create)
-    ..a<$core.double>(15, _omitFieldNames ? '' : 'reducedSpeedLimitKph', $pb.PbFieldType.OF)
-    ..pc<$2.Restriction>(16, _omitFieldNames ? '' : 'restrictions', $pb.PbFieldType.PM, subBuilder: $2.Restriction.create)
-    ..pc<ActivityArea_EventRecurrence>(17, _omitFieldNames ? '' : 'schedule', $pb.PbFieldType.PM, subBuilder: ActivityArea_EventRecurrence.create)
-    ..aOM<$3.PointGeometry>(18, _omitFieldNames ? '' : 'point', subBuilder: $3.PointGeometry.create)
-    ..aOM<$3.LineStringGeometry>(19, _omitFieldNames ? '' : 'lineString', subBuilder: $3.LineStringGeometry.create)
-    ..aOM<$3.PolygonGeometry>(20, _omitFieldNames ? '' : 'polygon', subBuilder: $3.PolygonGeometry.create)
-    ..aOM<$3.BoundingBox>(21, _omitFieldNames ? '' : 'bbox', subBuilder: $3.BoundingBox.create)
+    ..oo(0, [19, 20, 21])
+    ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'projectId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'roadSectionId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..aOS(3, _omitFieldNames ? '' : 'name')
+    ..aOS(4, _omitFieldNames ? '' : 'description')
+    ..e<ActivityArea_ActivityAreaActiveStatus>(5, _omitFieldNames ? '' : 'status', $pb.PbFieldType.OE, defaultOrMaker: ActivityArea_ActivityAreaActiveStatus.ACTIVITY_AREA_ACTIVE_STATUS_ACTIVE, valueOf: ActivityArea_ActivityAreaActiveStatus.valueOf, enumValues: ActivityArea_ActivityAreaActiveStatus.values)
+    ..aOM<$1.Timestamp>(6, _omitFieldNames ? '' : 'startDate', subBuilder: $1.Timestamp.create)
+    ..aOM<$1.Timestamp>(7, _omitFieldNames ? '' : 'endDate', subBuilder: $1.Timestamp.create)
+    ..e<$2.WorkZoneType>(8, _omitFieldNames ? '' : 'areaType', $pb.PbFieldType.OE, defaultOrMaker: $2.WorkZoneType.WORK_ZONE_TYPE_STATIC, valueOf: $2.WorkZoneType.valueOf, enumValues: $2.WorkZoneType.values)
+    ..pc<$2.Lane>(9, _omitFieldNames ? '' : 'lanes', $pb.PbFieldType.PM, subBuilder: $2.Lane.create)
+    ..a<$core.int>(10, _omitFieldNames ? '' : 'beginningCrossStreet', $pb.PbFieldType.OU3)
+    ..a<$core.int>(11, _omitFieldNames ? '' : 'endingCrossStreet', $pb.PbFieldType.OU3)
+    ..a<$core.int>(12, _omitFieldNames ? '' : 'beginningMilepost', $pb.PbFieldType.OU3)
+    ..a<$core.int>(13, _omitFieldNames ? '' : 'endingMilepost', $pb.PbFieldType.OU3)
+    ..pc<$2.TypeOfWork>(14, _omitFieldNames ? '' : 'typesOfWork', $pb.PbFieldType.PM, subBuilder: $2.TypeOfWork.create)
+    ..aOM<$2.WorkerPresence>(15, _omitFieldNames ? '' : 'workerPresence', subBuilder: $2.WorkerPresence.create)
+    ..a<$core.double>(16, _omitFieldNames ? '' : 'reducedSpeedLimitKph', $pb.PbFieldType.OF)
+    ..pc<$2.Restriction>(17, _omitFieldNames ? '' : 'restrictions', $pb.PbFieldType.PM, subBuilder: $2.Restriction.create)
+    ..pc<ActivityArea_EventRecurrence>(18, _omitFieldNames ? '' : 'schedule', $pb.PbFieldType.PM, subBuilder: ActivityArea_EventRecurrence.create)
+    ..aOM<$3.PointGeometry>(19, _omitFieldNames ? '' : 'point', subBuilder: $3.PointGeometry.create)
+    ..aOM<$3.LineStringGeometry>(20, _omitFieldNames ? '' : 'lineString', subBuilder: $3.LineStringGeometry.create)
+    ..aOM<$3.PolygonGeometry>(21, _omitFieldNames ? '' : 'polygon', subBuilder: $3.PolygonGeometry.create)
+    ..aOM<$3.BoundingBox>(22, _omitFieldNames ? '' : 'bbox', subBuilder: $3.BoundingBox.create)
     ..hasRequiredFields = false
   ;
 
@@ -394,183 +399,192 @@ class ActivityArea extends $pb.GeneratedMessage {
   void clearGeometry() => clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
-  $fixnum.Int64 get segmentId => $_getI64(0);
+  $fixnum.Int64 get projectId => $_getI64(0);
   @$pb.TagNumber(1)
-  set segmentId($fixnum.Int64 v) { $_setInt64(0, v); }
+  set projectId($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasSegmentId() => $_has(0);
+  $core.bool hasProjectId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearSegmentId() => clearField(1);
+  void clearProjectId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get name => $_getSZ(1);
+  $fixnum.Int64 get roadSectionId => $_getI64(1);
   @$pb.TagNumber(2)
-  set name($core.String v) { $_setString(1, v); }
+  set roadSectionId($fixnum.Int64 v) { $_setInt64(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasName() => $_has(1);
+  $core.bool hasRoadSectionId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearName() => clearField(2);
+  void clearRoadSectionId() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get description => $_getSZ(2);
+  $core.String get name => $_getSZ(2);
   @$pb.TagNumber(3)
-  set description($core.String v) { $_setString(2, v); }
+  set name($core.String v) { $_setString(2, v); }
   @$pb.TagNumber(3)
-  $core.bool hasDescription() => $_has(2);
+  $core.bool hasName() => $_has(2);
   @$pb.TagNumber(3)
-  void clearDescription() => clearField(3);
+  void clearName() => clearField(3);
 
   @$pb.TagNumber(4)
-  ActivityArea_ActivityAreaActiveStatus get status => $_getN(3);
+  $core.String get description => $_getSZ(3);
   @$pb.TagNumber(4)
-  set status(ActivityArea_ActivityAreaActiveStatus v) { setField(4, v); }
+  set description($core.String v) { $_setString(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasStatus() => $_has(3);
+  $core.bool hasDescription() => $_has(3);
   @$pb.TagNumber(4)
-  void clearStatus() => clearField(4);
+  void clearDescription() => clearField(4);
 
   @$pb.TagNumber(5)
-  $1.Timestamp get startDate => $_getN(4);
+  ActivityArea_ActivityAreaActiveStatus get status => $_getN(4);
   @$pb.TagNumber(5)
-  set startDate($1.Timestamp v) { setField(5, v); }
+  set status(ActivityArea_ActivityAreaActiveStatus v) { setField(5, v); }
   @$pb.TagNumber(5)
-  $core.bool hasStartDate() => $_has(4);
+  $core.bool hasStatus() => $_has(4);
   @$pb.TagNumber(5)
-  void clearStartDate() => clearField(5);
-  @$pb.TagNumber(5)
-  $1.Timestamp ensureStartDate() => $_ensure(4);
+  void clearStatus() => clearField(5);
 
   @$pb.TagNumber(6)
-  $1.Timestamp get endDate => $_getN(5);
+  $1.Timestamp get startDate => $_getN(5);
   @$pb.TagNumber(6)
-  set endDate($1.Timestamp v) { setField(6, v); }
+  set startDate($1.Timestamp v) { setField(6, v); }
   @$pb.TagNumber(6)
-  $core.bool hasEndDate() => $_has(5);
+  $core.bool hasStartDate() => $_has(5);
   @$pb.TagNumber(6)
-  void clearEndDate() => clearField(6);
+  void clearStartDate() => clearField(6);
   @$pb.TagNumber(6)
-  $1.Timestamp ensureEndDate() => $_ensure(5);
+  $1.Timestamp ensureStartDate() => $_ensure(5);
 
   @$pb.TagNumber(7)
-  $2.WorkZoneType get areaType => $_getN(6);
+  $1.Timestamp get endDate => $_getN(6);
   @$pb.TagNumber(7)
-  set areaType($2.WorkZoneType v) { setField(7, v); }
+  set endDate($1.Timestamp v) { setField(7, v); }
   @$pb.TagNumber(7)
-  $core.bool hasAreaType() => $_has(6);
+  $core.bool hasEndDate() => $_has(6);
   @$pb.TagNumber(7)
-  void clearAreaType() => clearField(7);
+  void clearEndDate() => clearField(7);
+  @$pb.TagNumber(7)
+  $1.Timestamp ensureEndDate() => $_ensure(6);
 
   @$pb.TagNumber(8)
-  $core.List<$2.Lane> get lanes => $_getList(7);
+  $2.WorkZoneType get areaType => $_getN(7);
+  @$pb.TagNumber(8)
+  set areaType($2.WorkZoneType v) { setField(8, v); }
+  @$pb.TagNumber(8)
+  $core.bool hasAreaType() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearAreaType() => clearField(8);
 
   @$pb.TagNumber(9)
-  $core.int get beginningCrossStreet => $_getIZ(8);
-  @$pb.TagNumber(9)
-  set beginningCrossStreet($core.int v) { $_setUnsignedInt32(8, v); }
-  @$pb.TagNumber(9)
-  $core.bool hasBeginningCrossStreet() => $_has(8);
-  @$pb.TagNumber(9)
-  void clearBeginningCrossStreet() => clearField(9);
+  $core.List<$2.Lane> get lanes => $_getList(8);
 
   @$pb.TagNumber(10)
-  $core.int get endingCrossStreet => $_getIZ(9);
+  $core.int get beginningCrossStreet => $_getIZ(9);
   @$pb.TagNumber(10)
-  set endingCrossStreet($core.int v) { $_setUnsignedInt32(9, v); }
+  set beginningCrossStreet($core.int v) { $_setUnsignedInt32(9, v); }
   @$pb.TagNumber(10)
-  $core.bool hasEndingCrossStreet() => $_has(9);
+  $core.bool hasBeginningCrossStreet() => $_has(9);
   @$pb.TagNumber(10)
-  void clearEndingCrossStreet() => clearField(10);
+  void clearBeginningCrossStreet() => clearField(10);
 
   @$pb.TagNumber(11)
-  $core.int get beginningMilepost => $_getIZ(10);
+  $core.int get endingCrossStreet => $_getIZ(10);
   @$pb.TagNumber(11)
-  set beginningMilepost($core.int v) { $_setUnsignedInt32(10, v); }
+  set endingCrossStreet($core.int v) { $_setUnsignedInt32(10, v); }
   @$pb.TagNumber(11)
-  $core.bool hasBeginningMilepost() => $_has(10);
+  $core.bool hasEndingCrossStreet() => $_has(10);
   @$pb.TagNumber(11)
-  void clearBeginningMilepost() => clearField(11);
+  void clearEndingCrossStreet() => clearField(11);
 
   @$pb.TagNumber(12)
-  $core.int get endingMilepost => $_getIZ(11);
+  $core.int get beginningMilepost => $_getIZ(11);
   @$pb.TagNumber(12)
-  set endingMilepost($core.int v) { $_setUnsignedInt32(11, v); }
+  set beginningMilepost($core.int v) { $_setUnsignedInt32(11, v); }
   @$pb.TagNumber(12)
-  $core.bool hasEndingMilepost() => $_has(11);
+  $core.bool hasBeginningMilepost() => $_has(11);
   @$pb.TagNumber(12)
-  void clearEndingMilepost() => clearField(12);
+  void clearBeginningMilepost() => clearField(12);
 
   @$pb.TagNumber(13)
-  $core.List<$2.TypeOfWork> get typesOfWork => $_getList(12);
+  $core.int get endingMilepost => $_getIZ(12);
+  @$pb.TagNumber(13)
+  set endingMilepost($core.int v) { $_setUnsignedInt32(12, v); }
+  @$pb.TagNumber(13)
+  $core.bool hasEndingMilepost() => $_has(12);
+  @$pb.TagNumber(13)
+  void clearEndingMilepost() => clearField(13);
 
   @$pb.TagNumber(14)
-  $2.WorkerPresence get workerPresence => $_getN(13);
-  @$pb.TagNumber(14)
-  set workerPresence($2.WorkerPresence v) { setField(14, v); }
-  @$pb.TagNumber(14)
-  $core.bool hasWorkerPresence() => $_has(13);
-  @$pb.TagNumber(14)
-  void clearWorkerPresence() => clearField(14);
-  @$pb.TagNumber(14)
-  $2.WorkerPresence ensureWorkerPresence() => $_ensure(13);
+  $core.List<$2.TypeOfWork> get typesOfWork => $_getList(13);
 
   @$pb.TagNumber(15)
-  $core.double get reducedSpeedLimitKph => $_getN(14);
+  $2.WorkerPresence get workerPresence => $_getN(14);
   @$pb.TagNumber(15)
-  set reducedSpeedLimitKph($core.double v) { $_setFloat(14, v); }
+  set workerPresence($2.WorkerPresence v) { setField(15, v); }
   @$pb.TagNumber(15)
-  $core.bool hasReducedSpeedLimitKph() => $_has(14);
+  $core.bool hasWorkerPresence() => $_has(14);
   @$pb.TagNumber(15)
-  void clearReducedSpeedLimitKph() => clearField(15);
+  void clearWorkerPresence() => clearField(15);
+  @$pb.TagNumber(15)
+  $2.WorkerPresence ensureWorkerPresence() => $_ensure(14);
 
   @$pb.TagNumber(16)
-  $core.List<$2.Restriction> get restrictions => $_getList(15);
+  $core.double get reducedSpeedLimitKph => $_getN(15);
+  @$pb.TagNumber(16)
+  set reducedSpeedLimitKph($core.double v) { $_setFloat(15, v); }
+  @$pb.TagNumber(16)
+  $core.bool hasReducedSpeedLimitKph() => $_has(15);
+  @$pb.TagNumber(16)
+  void clearReducedSpeedLimitKph() => clearField(16);
 
   @$pb.TagNumber(17)
-  $core.List<ActivityArea_EventRecurrence> get schedule => $_getList(16);
+  $core.List<$2.Restriction> get restrictions => $_getList(16);
 
   @$pb.TagNumber(18)
-  $3.PointGeometry get point => $_getN(17);
-  @$pb.TagNumber(18)
-  set point($3.PointGeometry v) { setField(18, v); }
-  @$pb.TagNumber(18)
-  $core.bool hasPoint() => $_has(17);
-  @$pb.TagNumber(18)
-  void clearPoint() => clearField(18);
-  @$pb.TagNumber(18)
-  $3.PointGeometry ensurePoint() => $_ensure(17);
+  $core.List<ActivityArea_EventRecurrence> get schedule => $_getList(17);
 
   @$pb.TagNumber(19)
-  $3.LineStringGeometry get lineString => $_getN(18);
+  $3.PointGeometry get point => $_getN(18);
   @$pb.TagNumber(19)
-  set lineString($3.LineStringGeometry v) { setField(19, v); }
+  set point($3.PointGeometry v) { setField(19, v); }
   @$pb.TagNumber(19)
-  $core.bool hasLineString() => $_has(18);
+  $core.bool hasPoint() => $_has(18);
   @$pb.TagNumber(19)
-  void clearLineString() => clearField(19);
+  void clearPoint() => clearField(19);
   @$pb.TagNumber(19)
-  $3.LineStringGeometry ensureLineString() => $_ensure(18);
+  $3.PointGeometry ensurePoint() => $_ensure(18);
 
   @$pb.TagNumber(20)
-  $3.PolygonGeometry get polygon => $_getN(19);
+  $3.LineStringGeometry get lineString => $_getN(19);
   @$pb.TagNumber(20)
-  set polygon($3.PolygonGeometry v) { setField(20, v); }
+  set lineString($3.LineStringGeometry v) { setField(20, v); }
   @$pb.TagNumber(20)
-  $core.bool hasPolygon() => $_has(19);
+  $core.bool hasLineString() => $_has(19);
   @$pb.TagNumber(20)
-  void clearPolygon() => clearField(20);
+  void clearLineString() => clearField(20);
   @$pb.TagNumber(20)
-  $3.PolygonGeometry ensurePolygon() => $_ensure(19);
+  $3.LineStringGeometry ensureLineString() => $_ensure(19);
 
   @$pb.TagNumber(21)
-  $3.BoundingBox get bbox => $_getN(20);
+  $3.PolygonGeometry get polygon => $_getN(20);
   @$pb.TagNumber(21)
-  set bbox($3.BoundingBox v) { setField(21, v); }
+  set polygon($3.PolygonGeometry v) { setField(21, v); }
   @$pb.TagNumber(21)
-  $core.bool hasBbox() => $_has(20);
+  $core.bool hasPolygon() => $_has(20);
   @$pb.TagNumber(21)
-  void clearBbox() => clearField(21);
+  void clearPolygon() => clearField(21);
   @$pb.TagNumber(21)
-  $3.BoundingBox ensureBbox() => $_ensure(20);
+  $3.PolygonGeometry ensurePolygon() => $_ensure(20);
+
+  @$pb.TagNumber(22)
+  $3.BoundingBox get bbox => $_getN(21);
+  @$pb.TagNumber(22)
+  set bbox($3.BoundingBox v) { setField(22, v); }
+  @$pb.TagNumber(22)
+  $core.bool hasBbox() => $_has(21);
+  @$pb.TagNumber(22)
+  void clearBbox() => clearField(22);
+  @$pb.TagNumber(22)
+  $3.BoundingBox ensureBbox() => $_ensure(21);
 }
 
 

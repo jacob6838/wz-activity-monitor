@@ -17,19 +17,21 @@ import 'dart:typed_data' as $typed_data;
 const Delay$json = {
   '1': 'Delay',
   '2': [
-    {'1': 'road_segment_id', '3': 1, '4': 1, '5': 4, '10': 'roadSegmentId'},
-    {'1': 'lanes', '3': 2, '4': 3, '5': 11, '6': '.datahub.v1.Lane', '10': 'lanes'},
-    {'1': 'reduced_speed_limit_kph', '3': 3, '4': 1, '5': 2, '10': 'reducedSpeedLimitKph'},
-    {'1': 'restrictions', '3': 4, '4': 3, '5': 11, '6': '.datahub.v1.Restriction', '10': 'restrictions'},
+    {'1': 'project_id', '3': 1, '4': 1, '5': 4, '10': 'projectId'},
+    {'1': 'road_section_id', '3': 2, '4': 1, '5': 4, '10': 'roadSectionId'},
+    {'1': 'lanes', '3': 3, '4': 3, '5': 11, '6': '.datahub.v1.Lane', '10': 'lanes'},
+    {'1': 'reduced_speed_limit_kph', '3': 4, '4': 1, '5': 2, '10': 'reducedSpeedLimitKph'},
+    {'1': 'restrictions', '3': 5, '4': 3, '5': 11, '6': '.datahub.v1.Restriction', '10': 'restrictions'},
   ],
 };
 
 /// Descriptor for `Delay`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List delayDescriptor = $convert.base64Decode(
-    'CgVEZWxheRImCg9yb2FkX3NlZ21lbnRfaWQYASABKARSDXJvYWRTZWdtZW50SWQSJgoFbGFuZX'
-    'MYAiADKAsyEC5kYXRhaHViLnYxLkxhbmVSBWxhbmVzEjUKF3JlZHVjZWRfc3BlZWRfbGltaXRf'
-    'a3BoGAMgASgCUhRyZWR1Y2VkU3BlZWRMaW1pdEtwaBI7CgxyZXN0cmljdGlvbnMYBCADKAsyFy'
-    '5kYXRhaHViLnYxLlJlc3RyaWN0aW9uUgxyZXN0cmljdGlvbnM=');
+    'CgVEZWxheRIdCgpwcm9qZWN0X2lkGAEgASgEUglwcm9qZWN0SWQSJgoPcm9hZF9zZWN0aW9uX2'
+    'lkGAIgASgEUg1yb2FkU2VjdGlvbklkEiYKBWxhbmVzGAMgAygLMhAuZGF0YWh1Yi52MS5MYW5l'
+    'UgVsYW5lcxI1ChdyZWR1Y2VkX3NwZWVkX2xpbWl0X2twaBgEIAEoAlIUcmVkdWNlZFNwZWVkTG'
+    'ltaXRLcGgSOwoMcmVzdHJpY3Rpb25zGAUgAygLMhcuZGF0YWh1Yi52MS5SZXN0cmljdGlvblIM'
+    'cmVzdHJpY3Rpb25z');
 
 @$core.Deprecated('Use delayCreatedDescriptor instead')
 const DelayCreated$json = {

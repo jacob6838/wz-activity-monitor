@@ -31,9 +31,6 @@ class FieldDevice_FieldDeviceCoreDetails extends $pb.GeneratedMessage {
     $core.String? description,
     $core.Iterable<$core.String>? statusMessages,
     $core.bool? isMoving,
-    $core.Iterable<$fixnum.Int64>? projectIds,
-    $core.Iterable<$fixnum.Int64>? roadSegmentIds,
-    $core.Iterable<$fixnum.Int64>? activityAreaIds,
     $core.int? milepost,
     $core.String? make,
     $core.String? model,
@@ -65,15 +62,6 @@ class FieldDevice_FieldDeviceCoreDetails extends $pb.GeneratedMessage {
     }
     if (isMoving != null) {
       $result.isMoving = isMoving;
-    }
-    if (projectIds != null) {
-      $result.projectIds.addAll(projectIds);
-    }
-    if (roadSegmentIds != null) {
-      $result.roadSegmentIds.addAll(roadSegmentIds);
-    }
-    if (activityAreaIds != null) {
-      $result.activityAreaIds.addAll(activityAreaIds);
     }
     if (milepost != null) {
       $result.milepost = milepost;
@@ -108,9 +96,6 @@ class FieldDevice_FieldDeviceCoreDetails extends $pb.GeneratedMessage {
     ..aOS(6, _omitFieldNames ? '' : 'description')
     ..pPS(7, _omitFieldNames ? '' : 'statusMessages')
     ..aOB(8, _omitFieldNames ? '' : 'isMoving')
-    ..p<$fixnum.Int64>(9, _omitFieldNames ? '' : 'projectIds', $pb.PbFieldType.KU6)
-    ..p<$fixnum.Int64>(10, _omitFieldNames ? '' : 'roadSegmentIds', $pb.PbFieldType.KU6)
-    ..p<$fixnum.Int64>(11, _omitFieldNames ? '' : 'activityAreaIds', $pb.PbFieldType.KU6)
     ..a<$core.int>(12, _omitFieldNames ? '' : 'milepost', $pb.PbFieldType.OU3)
     ..aOS(13, _omitFieldNames ? '' : 'make')
     ..aOS(14, _omitFieldNames ? '' : 'model')
@@ -201,66 +186,57 @@ class FieldDevice_FieldDeviceCoreDetails extends $pb.GeneratedMessage {
   @$pb.TagNumber(8)
   void clearIsMoving() => clearField(8);
 
-  @$pb.TagNumber(9)
-  $core.List<$fixnum.Int64> get projectIds => $_getList(8);
-
-  @$pb.TagNumber(10)
-  $core.List<$fixnum.Int64> get roadSegmentIds => $_getList(9);
-
-  @$pb.TagNumber(11)
-  $core.List<$fixnum.Int64> get activityAreaIds => $_getList(10);
-
   @$pb.TagNumber(12)
-  $core.int get milepost => $_getIZ(11);
+  $core.int get milepost => $_getIZ(8);
   @$pb.TagNumber(12)
-  set milepost($core.int v) { $_setUnsignedInt32(11, v); }
+  set milepost($core.int v) { $_setUnsignedInt32(8, v); }
   @$pb.TagNumber(12)
-  $core.bool hasMilepost() => $_has(11);
+  $core.bool hasMilepost() => $_has(8);
   @$pb.TagNumber(12)
   void clearMilepost() => clearField(12);
 
   @$pb.TagNumber(13)
-  $core.String get make => $_getSZ(12);
+  $core.String get make => $_getSZ(9);
   @$pb.TagNumber(13)
-  set make($core.String v) { $_setString(12, v); }
+  set make($core.String v) { $_setString(9, v); }
   @$pb.TagNumber(13)
-  $core.bool hasMake() => $_has(12);
+  $core.bool hasMake() => $_has(9);
   @$pb.TagNumber(13)
   void clearMake() => clearField(13);
 
   @$pb.TagNumber(14)
-  $core.String get model => $_getSZ(13);
+  $core.String get model => $_getSZ(10);
   @$pb.TagNumber(14)
-  set model($core.String v) { $_setString(13, v); }
+  set model($core.String v) { $_setString(10, v); }
   @$pb.TagNumber(14)
-  $core.bool hasModel() => $_has(13);
+  $core.bool hasModel() => $_has(10);
   @$pb.TagNumber(14)
   void clearModel() => clearField(14);
 
   @$pb.TagNumber(15)
-  $core.String get serialNumber => $_getSZ(14);
+  $core.String get serialNumber => $_getSZ(11);
   @$pb.TagNumber(15)
-  set serialNumber($core.String v) { $_setString(14, v); }
+  set serialNumber($core.String v) { $_setString(11, v); }
   @$pb.TagNumber(15)
-  $core.bool hasSerialNumber() => $_has(14);
+  $core.bool hasSerialNumber() => $_has(11);
   @$pb.TagNumber(15)
   void clearSerialNumber() => clearField(15);
 
   @$pb.TagNumber(16)
-  $core.String get firmwareVersion => $_getSZ(15);
+  $core.String get firmwareVersion => $_getSZ(12);
   @$pb.TagNumber(16)
-  set firmwareVersion($core.String v) { $_setString(15, v); }
+  set firmwareVersion($core.String v) { $_setString(12, v); }
   @$pb.TagNumber(16)
-  $core.bool hasFirmwareVersion() => $_has(15);
+  $core.bool hasFirmwareVersion() => $_has(12);
   @$pb.TagNumber(16)
   void clearFirmwareVersion() => clearField(16);
 
   @$pb.TagNumber(17)
-  $core.double get velocityKph => $_getN(16);
+  $core.double get velocityKph => $_getN(13);
   @$pb.TagNumber(17)
-  set velocityKph($core.double v) { $_setDouble(16, v); }
+  set velocityKph($core.double v) { $_setDouble(13, v); }
   @$pb.TagNumber(17)
-  $core.bool hasVelocityKph() => $_has(16);
+  $core.bool hasVelocityKph() => $_has(13);
   @$pb.TagNumber(17)
   void clearVelocityKph() => clearField(17);
 }
@@ -683,7 +659,7 @@ class FieldDevice_HybridSign extends $pb.GeneratedMessage {
 }
 
 enum FieldDevice_LocationMarker_MarkedLocation_EventId {
-  roadSegmentId, 
+  roadSectionId, 
   activityAreaId, 
   notSet
 }
@@ -691,15 +667,15 @@ enum FieldDevice_LocationMarker_MarkedLocation_EventId {
 class FieldDevice_LocationMarker_MarkedLocation extends $pb.GeneratedMessage {
   factory FieldDevice_LocationMarker_MarkedLocation({
     FieldDevice_LocationMarker_MarkedLocation_MarkedLocationType? type,
-    $fixnum.Int64? roadSegmentId,
+    $fixnum.Int64? roadSectionId,
     $fixnum.Int64? activityAreaId,
   }) {
     final $result = create();
     if (type != null) {
       $result.type = type;
     }
-    if (roadSegmentId != null) {
-      $result.roadSegmentId = roadSegmentId;
+    if (roadSectionId != null) {
+      $result.roadSectionId = roadSectionId;
     }
     if (activityAreaId != null) {
       $result.activityAreaId = activityAreaId;
@@ -711,14 +687,14 @@ class FieldDevice_LocationMarker_MarkedLocation extends $pb.GeneratedMessage {
   factory FieldDevice_LocationMarker_MarkedLocation.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static const $core.Map<$core.int, FieldDevice_LocationMarker_MarkedLocation_EventId> _FieldDevice_LocationMarker_MarkedLocation_EventIdByTag = {
-    2 : FieldDevice_LocationMarker_MarkedLocation_EventId.roadSegmentId,
+    2 : FieldDevice_LocationMarker_MarkedLocation_EventId.roadSectionId,
     3 : FieldDevice_LocationMarker_MarkedLocation_EventId.activityAreaId,
     0 : FieldDevice_LocationMarker_MarkedLocation_EventId.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'FieldDevice.LocationMarker.MarkedLocation', package: const $pb.PackageName(_omitMessageNames ? '' : 'datahub.v1'), createEmptyInstance: create)
     ..oo(0, [2, 3])
     ..e<FieldDevice_LocationMarker_MarkedLocation_MarkedLocationType>(1, _omitFieldNames ? '' : 'type', $pb.PbFieldType.OE, defaultOrMaker: FieldDevice_LocationMarker_MarkedLocation_MarkedLocationType.MARKED_LOCATION_TYPE_AFAD, valueOf: FieldDevice_LocationMarker_MarkedLocation_MarkedLocationType.valueOf, enumValues: FieldDevice_LocationMarker_MarkedLocation_MarkedLocationType.values)
-    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'roadSegmentId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'roadSectionId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..a<$fixnum.Int64>(3, _omitFieldNames ? '' : 'activityAreaId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..hasRequiredFields = false
   ;
@@ -757,13 +733,13 @@ class FieldDevice_LocationMarker_MarkedLocation extends $pb.GeneratedMessage {
   void clearType() => clearField(1);
 
   @$pb.TagNumber(2)
-  $fixnum.Int64 get roadSegmentId => $_getI64(1);
+  $fixnum.Int64 get roadSectionId => $_getI64(1);
   @$pb.TagNumber(2)
-  set roadSegmentId($fixnum.Int64 v) { $_setInt64(1, v); }
+  set roadSectionId($fixnum.Int64 v) { $_setInt64(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasRoadSegmentId() => $_has(1);
+  $core.bool hasRoadSectionId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearRoadSegmentId() => clearField(2);
+  void clearRoadSectionId() => clearField(2);
 
   @$pb.TagNumber(3)
   $fixnum.Int64 get activityAreaId => $_getI64(2);
@@ -836,7 +812,7 @@ class FieldDevice_LocationMarker extends $pb.GeneratedMessage {
 }
 
 enum FieldDevice_TrafficSensor_TrafficSensorLaneData_EventId {
-  roadSegmentId, 
+  roadSectionId, 
   activityAreaId, 
   notSet
 }
@@ -844,7 +820,7 @@ enum FieldDevice_TrafficSensor_TrafficSensorLaneData_EventId {
 class FieldDevice_TrafficSensor_TrafficSensorLaneData extends $pb.GeneratedMessage {
   factory FieldDevice_TrafficSensor_TrafficSensorLaneData({
     $core.int? laneOrder,
-    $fixnum.Int64? roadSegmentId,
+    $fixnum.Int64? roadSectionId,
     $fixnum.Int64? activityAreaId,
     $core.double? averageSpeedKph,
     $core.double? volumeKph,
@@ -854,8 +830,8 @@ class FieldDevice_TrafficSensor_TrafficSensorLaneData extends $pb.GeneratedMessa
     if (laneOrder != null) {
       $result.laneOrder = laneOrder;
     }
-    if (roadSegmentId != null) {
-      $result.roadSegmentId = roadSegmentId;
+    if (roadSectionId != null) {
+      $result.roadSectionId = roadSectionId;
     }
     if (activityAreaId != null) {
       $result.activityAreaId = activityAreaId;
@@ -876,14 +852,14 @@ class FieldDevice_TrafficSensor_TrafficSensorLaneData extends $pb.GeneratedMessa
   factory FieldDevice_TrafficSensor_TrafficSensorLaneData.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static const $core.Map<$core.int, FieldDevice_TrafficSensor_TrafficSensorLaneData_EventId> _FieldDevice_TrafficSensor_TrafficSensorLaneData_EventIdByTag = {
-    2 : FieldDevice_TrafficSensor_TrafficSensorLaneData_EventId.roadSegmentId,
+    2 : FieldDevice_TrafficSensor_TrafficSensorLaneData_EventId.roadSectionId,
     3 : FieldDevice_TrafficSensor_TrafficSensorLaneData_EventId.activityAreaId,
     0 : FieldDevice_TrafficSensor_TrafficSensorLaneData_EventId.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'FieldDevice.TrafficSensor.TrafficSensorLaneData', package: const $pb.PackageName(_omitMessageNames ? '' : 'datahub.v1'), createEmptyInstance: create)
     ..oo(0, [2, 3])
     ..a<$core.int>(1, _omitFieldNames ? '' : 'laneOrder', $pb.PbFieldType.OU3)
-    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'roadSegmentId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'roadSectionId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..a<$fixnum.Int64>(3, _omitFieldNames ? '' : 'activityAreaId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..a<$core.double>(4, _omitFieldNames ? '' : 'averageSpeedKph', $pb.PbFieldType.OD)
     ..a<$core.double>(5, _omitFieldNames ? '' : 'volumeKph', $pb.PbFieldType.OD)
@@ -925,13 +901,13 @@ class FieldDevice_TrafficSensor_TrafficSensorLaneData extends $pb.GeneratedMessa
   void clearLaneOrder() => clearField(1);
 
   @$pb.TagNumber(2)
-  $fixnum.Int64 get roadSegmentId => $_getI64(1);
+  $fixnum.Int64 get roadSectionId => $_getI64(1);
   @$pb.TagNumber(2)
-  set roadSegmentId($fixnum.Int64 v) { $_setInt64(1, v); }
+  set roadSectionId($fixnum.Int64 v) { $_setInt64(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasRoadSegmentId() => $_has(1);
+  $core.bool hasRoadSectionId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearRoadSegmentId() => clearField(2);
+  void clearRoadSectionId() => clearField(2);
 
   @$pb.TagNumber(3)
   $fixnum.Int64 get activityAreaId => $_getI64(2);
@@ -1193,8 +1169,8 @@ class FieldDevice extends $pb.GeneratedMessage {
     FieldDevice_TrafficSensor? trafficSensor,
     FieldDevice_TrafficSignal? trafficSignal,
     $fixnum.Int64? projectId,
-    $fixnum.Int64? segmentId,
-    $fixnum.Int64? areaId,
+    $fixnum.Int64? roadSectionId,
+    $fixnum.Int64? activityAreaId,
     $core.Iterable<$3.PointGeometry>? geometry,
     $core.Iterable<$3.BoundingBox>? bbox,
   }) {
@@ -1226,11 +1202,11 @@ class FieldDevice extends $pb.GeneratedMessage {
     if (projectId != null) {
       $result.projectId = projectId;
     }
-    if (segmentId != null) {
-      $result.segmentId = segmentId;
+    if (roadSectionId != null) {
+      $result.roadSectionId = roadSectionId;
     }
-    if (areaId != null) {
-      $result.areaId = areaId;
+    if (activityAreaId != null) {
+      $result.activityAreaId = activityAreaId;
     }
     if (geometry != null) {
       $result.geometry.addAll(geometry);
@@ -1266,8 +1242,8 @@ class FieldDevice extends $pb.GeneratedMessage {
     ..aOM<FieldDevice_TrafficSensor>(7, _omitFieldNames ? '' : 'trafficSensor', subBuilder: FieldDevice_TrafficSensor.create)
     ..aOM<FieldDevice_TrafficSignal>(8, _omitFieldNames ? '' : 'trafficSignal', subBuilder: FieldDevice_TrafficSignal.create)
     ..a<$fixnum.Int64>(9, _omitFieldNames ? '' : 'projectId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..a<$fixnum.Int64>(10, _omitFieldNames ? '' : 'segmentId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..a<$fixnum.Int64>(11, _omitFieldNames ? '' : 'areaId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(10, _omitFieldNames ? '' : 'roadSectionId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(11, _omitFieldNames ? '' : 'activityAreaId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..pc<$3.PointGeometry>(12, _omitFieldNames ? '' : 'geometry', $pb.PbFieldType.PM, subBuilder: $3.PointGeometry.create)
     ..pc<$3.BoundingBox>(13, _omitFieldNames ? '' : 'bbox', $pb.PbFieldType.PM, subBuilder: $3.BoundingBox.create)
     ..hasRequiredFields = false
@@ -1395,22 +1371,22 @@ class FieldDevice extends $pb.GeneratedMessage {
   void clearProjectId() => clearField(9);
 
   @$pb.TagNumber(10)
-  $fixnum.Int64 get segmentId => $_getI64(9);
+  $fixnum.Int64 get roadSectionId => $_getI64(9);
   @$pb.TagNumber(10)
-  set segmentId($fixnum.Int64 v) { $_setInt64(9, v); }
+  set roadSectionId($fixnum.Int64 v) { $_setInt64(9, v); }
   @$pb.TagNumber(10)
-  $core.bool hasSegmentId() => $_has(9);
+  $core.bool hasRoadSectionId() => $_has(9);
   @$pb.TagNumber(10)
-  void clearSegmentId() => clearField(10);
+  void clearRoadSectionId() => clearField(10);
 
   @$pb.TagNumber(11)
-  $fixnum.Int64 get areaId => $_getI64(10);
+  $fixnum.Int64 get activityAreaId => $_getI64(10);
   @$pb.TagNumber(11)
-  set areaId($fixnum.Int64 v) { $_setInt64(10, v); }
+  set activityAreaId($fixnum.Int64 v) { $_setInt64(10, v); }
   @$pb.TagNumber(11)
-  $core.bool hasAreaId() => $_has(10);
+  $core.bool hasActivityAreaId() => $_has(10);
   @$pb.TagNumber(11)
-  void clearAreaId() => clearField(11);
+  void clearActivityAreaId() => clearField(11);
 
   @$pb.TagNumber(12)
   $core.List<$3.PointGeometry> get geometry => $_getList(11);

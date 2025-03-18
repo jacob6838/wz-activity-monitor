@@ -19,14 +19,18 @@ import 'wzdx.pb.dart' as $2;
 
 class Delay extends $pb.GeneratedMessage {
   factory Delay({
-    $fixnum.Int64? roadSegmentId,
+    $fixnum.Int64? projectId,
+    $fixnum.Int64? roadSectionId,
     $core.Iterable<$2.Lane>? lanes,
     $core.double? reducedSpeedLimitKph,
     $core.Iterable<$2.Restriction>? restrictions,
   }) {
     final $result = create();
-    if (roadSegmentId != null) {
-      $result.roadSegmentId = roadSegmentId;
+    if (projectId != null) {
+      $result.projectId = projectId;
+    }
+    if (roadSectionId != null) {
+      $result.roadSectionId = roadSectionId;
     }
     if (lanes != null) {
       $result.lanes.addAll(lanes);
@@ -44,10 +48,11 @@ class Delay extends $pb.GeneratedMessage {
   factory Delay.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Delay', package: const $pb.PackageName(_omitMessageNames ? '' : 'datahub.v1'), createEmptyInstance: create)
-    ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'roadSegmentId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..pc<$2.Lane>(2, _omitFieldNames ? '' : 'lanes', $pb.PbFieldType.PM, subBuilder: $2.Lane.create)
-    ..a<$core.double>(3, _omitFieldNames ? '' : 'reducedSpeedLimitKph', $pb.PbFieldType.OF)
-    ..pc<$2.Restriction>(4, _omitFieldNames ? '' : 'restrictions', $pb.PbFieldType.PM, subBuilder: $2.Restriction.create)
+    ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'projectId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'roadSectionId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..pc<$2.Lane>(3, _omitFieldNames ? '' : 'lanes', $pb.PbFieldType.PM, subBuilder: $2.Lane.create)
+    ..a<$core.double>(4, _omitFieldNames ? '' : 'reducedSpeedLimitKph', $pb.PbFieldType.OF)
+    ..pc<$2.Restriction>(5, _omitFieldNames ? '' : 'restrictions', $pb.PbFieldType.PM, subBuilder: $2.Restriction.create)
     ..hasRequiredFields = false
   ;
 
@@ -73,28 +78,37 @@ class Delay extends $pb.GeneratedMessage {
   static Delay? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $fixnum.Int64 get roadSegmentId => $_getI64(0);
+  $fixnum.Int64 get projectId => $_getI64(0);
   @$pb.TagNumber(1)
-  set roadSegmentId($fixnum.Int64 v) { $_setInt64(0, v); }
+  set projectId($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasRoadSegmentId() => $_has(0);
+  $core.bool hasProjectId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearRoadSegmentId() => clearField(1);
+  void clearProjectId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.List<$2.Lane> get lanes => $_getList(1);
+  $fixnum.Int64 get roadSectionId => $_getI64(1);
+  @$pb.TagNumber(2)
+  set roadSectionId($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasRoadSectionId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearRoadSectionId() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.double get reducedSpeedLimitKph => $_getN(2);
-  @$pb.TagNumber(3)
-  set reducedSpeedLimitKph($core.double v) { $_setFloat(2, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasReducedSpeedLimitKph() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearReducedSpeedLimitKph() => clearField(3);
+  $core.List<$2.Lane> get lanes => $_getList(2);
 
   @$pb.TagNumber(4)
-  $core.List<$2.Restriction> get restrictions => $_getList(3);
+  $core.double get reducedSpeedLimitKph => $_getN(3);
+  @$pb.TagNumber(4)
+  set reducedSpeedLimitKph($core.double v) { $_setFloat(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasReducedSpeedLimitKph() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearReducedSpeedLimitKph() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.List<$2.Restriction> get restrictions => $_getList(4);
 }
 
 class DelayCreated extends $pb.GeneratedMessage {

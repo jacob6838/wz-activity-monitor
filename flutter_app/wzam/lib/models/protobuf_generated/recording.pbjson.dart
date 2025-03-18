@@ -76,7 +76,7 @@ const Recording$json = {
   '1': 'Recording',
   '2': [
     {'1': 'project_id', '3': 1, '4': 1, '5': 4, '9': 0, '10': 'projectId', '17': true},
-    {'1': 'segment_id', '3': 2, '4': 1, '5': 4, '9': 1, '10': 'segmentId', '17': true},
+    {'1': 'road_section_id', '3': 2, '4': 1, '5': 4, '9': 1, '10': 'roadSectionId', '17': true},
     {'1': 'area_id', '3': 3, '4': 1, '5': 4, '9': 2, '10': 'areaId', '17': true},
     {'1': 'recording_name', '3': 4, '4': 1, '5': 9, '10': 'recordingName'},
     {'1': 'types_of_work', '3': 5, '4': 3, '5': 11, '6': '.datahub.v1.TypeOfWork', '10': 'typesOfWork'},
@@ -89,7 +89,7 @@ const Recording$json = {
   ],
   '8': [
     {'1': '_project_id'},
-    {'1': '_segment_id'},
+    {'1': '_road_section_id'},
     {'1': '_area_id'},
     {'1': '_start_date'},
     {'1': '_end_date'},
@@ -100,17 +100,17 @@ const Recording$json = {
 
 /// Descriptor for `Recording`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List recordingDescriptor = $convert.base64Decode(
-    'CglSZWNvcmRpbmcSIgoKcHJvamVjdF9pZBgBIAEoBEgAUglwcm9qZWN0SWSIAQESIgoKc2VnbW'
-    'VudF9pZBgCIAEoBEgBUglzZWdtZW50SWSIAQESHAoHYXJlYV9pZBgDIAEoBEgCUgZhcmVhSWSI'
-    'AQESJQoOcmVjb3JkaW5nX25hbWUYBCABKAlSDXJlY29yZGluZ05hbWUSOgoNdHlwZXNfb2Zfd2'
-    '9yaxgFIAMoCzIWLmRhdGFodWIudjEuVHlwZU9mV29ya1ILdHlwZXNPZldvcmsSPgoKc3RhcnRf'
-    'ZGF0ZRgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBIA1IJc3RhcnREYXRliAEBEj'
-    'oKCGVuZF9kYXRlGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgEUgdlbmREYXRl'
-    'iAEBEjUKCWFyZWFfdHlwZRgIIAEoDjIYLmRhdGFodWIudjEuV29ya1pvbmVUeXBlUghhcmVhVH'
-    'lwZRIxChJtb2JpbGl0eV9zcGVlZF9tcGgYCSABKAJIBVIQbW9iaWxpdHlTcGVlZE1waIgBARJD'
-    'CgxzdXJmYWNlX3R5cGUYCiABKA4yGy5kYXRhaHViLnYxLlJvYWRTdXJmYWNlVHlwZUgGUgtzdX'
-    'JmYWNlVHlwZYgBARIyCgZwb2ludHMYCyADKAsyGi5kYXRhaHViLnYxLlJlY29yZGluZ1BvaW50'
-    'UgZwb2ludHNCDQoLX3Byb2plY3RfaWRCDQoLX3NlZ21lbnRfaWRCCgoIX2FyZWFfaWRCDQoLX3'
-    'N0YXJ0X2RhdGVCCwoJX2VuZF9kYXRlQhUKE19tb2JpbGl0eV9zcGVlZF9tcGhCDwoNX3N1cmZh'
-    'Y2VfdHlwZQ==');
+    'CglSZWNvcmRpbmcSIgoKcHJvamVjdF9pZBgBIAEoBEgAUglwcm9qZWN0SWSIAQESKwoPcm9hZF'
+    '9zZWN0aW9uX2lkGAIgASgESAFSDXJvYWRTZWN0aW9uSWSIAQESHAoHYXJlYV9pZBgDIAEoBEgC'
+    'UgZhcmVhSWSIAQESJQoOcmVjb3JkaW5nX25hbWUYBCABKAlSDXJlY29yZGluZ05hbWUSOgoNdH'
+    'lwZXNfb2Zfd29yaxgFIAMoCzIWLmRhdGFodWIudjEuVHlwZU9mV29ya1ILdHlwZXNPZldvcmsS'
+    'PgoKc3RhcnRfZGF0ZRgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBIA1IJc3Rhcn'
+    'REYXRliAEBEjoKCGVuZF9kYXRlGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgE'
+    'UgdlbmREYXRliAEBEjUKCWFyZWFfdHlwZRgIIAEoDjIYLmRhdGFodWIudjEuV29ya1pvbmVUeX'
+    'BlUghhcmVhVHlwZRIxChJtb2JpbGl0eV9zcGVlZF9tcGgYCSABKAJIBVIQbW9iaWxpdHlTcGVl'
+    'ZE1waIgBARJDCgxzdXJmYWNlX3R5cGUYCiABKA4yGy5kYXRhaHViLnYxLlJvYWRTdXJmYWNlVH'
+    'lwZUgGUgtzdXJmYWNlVHlwZYgBARIyCgZwb2ludHMYCyADKAsyGi5kYXRhaHViLnYxLlJlY29y'
+    'ZGluZ1BvaW50UgZwb2ludHNCDQoLX3Byb2plY3RfaWRCEgoQX3JvYWRfc2VjdGlvbl9pZEIKCg'
+    'hfYXJlYV9pZEINCgtfc3RhcnRfZGF0ZUILCglfZW5kX2RhdGVCFQoTX21vYmlsaXR5X3NwZWVk'
+    'X21waEIPCg1fc3VyZmFjZV90eXBl');
 

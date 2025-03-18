@@ -24,7 +24,7 @@ class FieldDeviceAssociationChanged extends $pb.GeneratedMessage {
   factory FieldDeviceAssociationChanged({
     $fixnum.Int64? id,
     $fixnum.Int64? projectId,
-    $fixnum.Int64? segmentId,
+    $fixnum.Int64? roadSectionId,
     $fixnum.Int64? areaId,
     $6.FieldDevice? fieldDevice,
     $1.Timestamp? updatedTime,
@@ -36,8 +36,8 @@ class FieldDeviceAssociationChanged extends $pb.GeneratedMessage {
     if (projectId != null) {
       $result.projectId = projectId;
     }
-    if (segmentId != null) {
-      $result.segmentId = segmentId;
+    if (roadSectionId != null) {
+      $result.roadSectionId = roadSectionId;
     }
     if (areaId != null) {
       $result.areaId = areaId;
@@ -57,7 +57,7 @@ class FieldDeviceAssociationChanged extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'FieldDeviceAssociationChanged', package: const $pb.PackageName(_omitMessageNames ? '' : 'datahub.v1'), createEmptyInstance: create)
     ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'id', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'projectId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..a<$fixnum.Int64>(3, _omitFieldNames ? '' : 'segmentId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..a<$fixnum.Int64>(3, _omitFieldNames ? '' : 'roadSectionId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..a<$fixnum.Int64>(4, _omitFieldNames ? '' : 'areaId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..aOM<$6.FieldDevice>(5, _omitFieldNames ? '' : 'fieldDevice', subBuilder: $6.FieldDevice.create)
     ..aOM<$1.Timestamp>(6, _omitFieldNames ? '' : 'updatedTime', subBuilder: $1.Timestamp.create)
@@ -104,13 +104,13 @@ class FieldDeviceAssociationChanged extends $pb.GeneratedMessage {
   void clearProjectId() => clearField(2);
 
   @$pb.TagNumber(3)
-  $fixnum.Int64 get segmentId => $_getI64(2);
+  $fixnum.Int64 get roadSectionId => $_getI64(2);
   @$pb.TagNumber(3)
-  set segmentId($fixnum.Int64 v) { $_setInt64(2, v); }
+  set roadSectionId($fixnum.Int64 v) { $_setInt64(2, v); }
   @$pb.TagNumber(3)
-  $core.bool hasSegmentId() => $_has(2);
+  $core.bool hasRoadSectionId() => $_has(2);
   @$pb.TagNumber(3)
-  void clearSegmentId() => clearField(3);
+  void clearRoadSectionId() => clearField(3);
 
   @$pb.TagNumber(4)
   $fixnum.Int64 get areaId => $_getI64(3);
@@ -416,11 +416,11 @@ class ProjectUpdated extends $pb.GeneratedMessage {
   $1.Timestamp ensureUpdatedTime() => $_ensure(3);
 }
 
-class RoadSegmentCreated extends $pb.GeneratedMessage {
-  factory RoadSegmentCreated({
+class RoadSectionCreated extends $pb.GeneratedMessage {
+  factory RoadSectionCreated({
     $fixnum.Int64? id,
     $fixnum.Int64? requestId,
-    $8.RoadSection? roadSegment,
+    $8.RoadSection? roadSection,
     $1.Timestamp? createdTime,
   }) {
     final $result = create();
@@ -430,22 +430,22 @@ class RoadSegmentCreated extends $pb.GeneratedMessage {
     if (requestId != null) {
       $result.requestId = requestId;
     }
-    if (roadSegment != null) {
-      $result.roadSegment = roadSegment;
+    if (roadSection != null) {
+      $result.roadSection = roadSection;
     }
     if (createdTime != null) {
       $result.createdTime = createdTime;
     }
     return $result;
   }
-  RoadSegmentCreated._() : super();
-  factory RoadSegmentCreated.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory RoadSegmentCreated.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  RoadSectionCreated._() : super();
+  factory RoadSectionCreated.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RoadSectionCreated.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'RoadSegmentCreated', package: const $pb.PackageName(_omitMessageNames ? '' : 'datahub.v1'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'RoadSectionCreated', package: const $pb.PackageName(_omitMessageNames ? '' : 'datahub.v1'), createEmptyInstance: create)
     ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'id', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'requestId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aOM<$8.RoadSection>(3, _omitFieldNames ? '' : 'roadSegment', subBuilder: $8.RoadSection.create)
+    ..aOM<$8.RoadSection>(3, _omitFieldNames ? '' : 'roadSection', subBuilder: $8.RoadSection.create)
     ..aOM<$1.Timestamp>(4, _omitFieldNames ? '' : 'createdTime', subBuilder: $1.Timestamp.create)
     ..hasRequiredFields = false
   ;
@@ -454,22 +454,22 @@ class RoadSegmentCreated extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  RoadSegmentCreated clone() => RoadSegmentCreated()..mergeFromMessage(this);
+  RoadSectionCreated clone() => RoadSectionCreated()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RoadSegmentCreated copyWith(void Function(RoadSegmentCreated) updates) => super.copyWith((message) => updates(message as RoadSegmentCreated)) as RoadSegmentCreated;
+  RoadSectionCreated copyWith(void Function(RoadSectionCreated) updates) => super.copyWith((message) => updates(message as RoadSectionCreated)) as RoadSectionCreated;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static RoadSegmentCreated create() => RoadSegmentCreated._();
-  RoadSegmentCreated createEmptyInstance() => create();
-  static $pb.PbList<RoadSegmentCreated> createRepeated() => $pb.PbList<RoadSegmentCreated>();
+  static RoadSectionCreated create() => RoadSectionCreated._();
+  RoadSectionCreated createEmptyInstance() => create();
+  static $pb.PbList<RoadSectionCreated> createRepeated() => $pb.PbList<RoadSectionCreated>();
   @$core.pragma('dart2js:noInline')
-  static RoadSegmentCreated getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RoadSegmentCreated>(create);
-  static RoadSegmentCreated? _defaultInstance;
+  static RoadSectionCreated getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RoadSectionCreated>(create);
+  static RoadSectionCreated? _defaultInstance;
 
   @$pb.TagNumber(1)
   $fixnum.Int64 get id => $_getI64(0);
@@ -490,15 +490,15 @@ class RoadSegmentCreated extends $pb.GeneratedMessage {
   void clearRequestId() => clearField(2);
 
   @$pb.TagNumber(3)
-  $8.RoadSection get roadSegment => $_getN(2);
+  $8.RoadSection get roadSection => $_getN(2);
   @$pb.TagNumber(3)
-  set roadSegment($8.RoadSection v) { setField(3, v); }
+  set roadSection($8.RoadSection v) { setField(3, v); }
   @$pb.TagNumber(3)
-  $core.bool hasRoadSegment() => $_has(2);
+  $core.bool hasRoadSection() => $_has(2);
   @$pb.TagNumber(3)
-  void clearRoadSegment() => clearField(3);
+  void clearRoadSection() => clearField(3);
   @$pb.TagNumber(3)
-  $8.RoadSection ensureRoadSegment() => $_ensure(2);
+  $8.RoadSection ensureRoadSection() => $_ensure(2);
 
   @$pb.TagNumber(4)
   $1.Timestamp get createdTime => $_getN(3);
@@ -512,11 +512,11 @@ class RoadSegmentCreated extends $pb.GeneratedMessage {
   $1.Timestamp ensureCreatedTime() => $_ensure(3);
 }
 
-class RoadSegmentUpdated extends $pb.GeneratedMessage {
-  factory RoadSegmentUpdated({
+class RoadSectionUpdated extends $pb.GeneratedMessage {
+  factory RoadSectionUpdated({
     $fixnum.Int64? id,
     $fixnum.Int64? requestId,
-    $8.RoadSection? roadSegment,
+    $8.RoadSection? roadSection,
     $1.Timestamp? updatedTime,
   }) {
     final $result = create();
@@ -526,22 +526,22 @@ class RoadSegmentUpdated extends $pb.GeneratedMessage {
     if (requestId != null) {
       $result.requestId = requestId;
     }
-    if (roadSegment != null) {
-      $result.roadSegment = roadSegment;
+    if (roadSection != null) {
+      $result.roadSection = roadSection;
     }
     if (updatedTime != null) {
       $result.updatedTime = updatedTime;
     }
     return $result;
   }
-  RoadSegmentUpdated._() : super();
-  factory RoadSegmentUpdated.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory RoadSegmentUpdated.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  RoadSectionUpdated._() : super();
+  factory RoadSectionUpdated.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RoadSectionUpdated.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'RoadSegmentUpdated', package: const $pb.PackageName(_omitMessageNames ? '' : 'datahub.v1'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'RoadSectionUpdated', package: const $pb.PackageName(_omitMessageNames ? '' : 'datahub.v1'), createEmptyInstance: create)
     ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'id', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
     ..a<$fixnum.Int64>(2, _omitFieldNames ? '' : 'requestId', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aOM<$8.RoadSection>(3, _omitFieldNames ? '' : 'roadSegment', subBuilder: $8.RoadSection.create)
+    ..aOM<$8.RoadSection>(3, _omitFieldNames ? '' : 'roadSection', subBuilder: $8.RoadSection.create)
     ..aOM<$1.Timestamp>(4, _omitFieldNames ? '' : 'updatedTime', subBuilder: $1.Timestamp.create)
     ..hasRequiredFields = false
   ;
@@ -550,22 +550,22 @@ class RoadSegmentUpdated extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  RoadSegmentUpdated clone() => RoadSegmentUpdated()..mergeFromMessage(this);
+  RoadSectionUpdated clone() => RoadSectionUpdated()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  RoadSegmentUpdated copyWith(void Function(RoadSegmentUpdated) updates) => super.copyWith((message) => updates(message as RoadSegmentUpdated)) as RoadSegmentUpdated;
+  RoadSectionUpdated copyWith(void Function(RoadSectionUpdated) updates) => super.copyWith((message) => updates(message as RoadSectionUpdated)) as RoadSectionUpdated;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static RoadSegmentUpdated create() => RoadSegmentUpdated._();
-  RoadSegmentUpdated createEmptyInstance() => create();
-  static $pb.PbList<RoadSegmentUpdated> createRepeated() => $pb.PbList<RoadSegmentUpdated>();
+  static RoadSectionUpdated create() => RoadSectionUpdated._();
+  RoadSectionUpdated createEmptyInstance() => create();
+  static $pb.PbList<RoadSectionUpdated> createRepeated() => $pb.PbList<RoadSectionUpdated>();
   @$core.pragma('dart2js:noInline')
-  static RoadSegmentUpdated getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RoadSegmentUpdated>(create);
-  static RoadSegmentUpdated? _defaultInstance;
+  static RoadSectionUpdated getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RoadSectionUpdated>(create);
+  static RoadSectionUpdated? _defaultInstance;
 
   @$pb.TagNumber(1)
   $fixnum.Int64 get id => $_getI64(0);
@@ -586,15 +586,15 @@ class RoadSegmentUpdated extends $pb.GeneratedMessage {
   void clearRequestId() => clearField(2);
 
   @$pb.TagNumber(3)
-  $8.RoadSection get roadSegment => $_getN(2);
+  $8.RoadSection get roadSection => $_getN(2);
   @$pb.TagNumber(3)
-  set roadSegment($8.RoadSection v) { setField(3, v); }
+  set roadSection($8.RoadSection v) { setField(3, v); }
   @$pb.TagNumber(3)
-  $core.bool hasRoadSegment() => $_has(2);
+  $core.bool hasRoadSection() => $_has(2);
   @$pb.TagNumber(3)
-  void clearRoadSegment() => clearField(3);
+  void clearRoadSection() => clearField(3);
   @$pb.TagNumber(3)
-  $8.RoadSection ensureRoadSegment() => $_ensure(2);
+  $8.RoadSection ensureRoadSection() => $_ensure(2);
 
   @$pb.TagNumber(4)
   $1.Timestamp get updatedTime => $_getN(3);

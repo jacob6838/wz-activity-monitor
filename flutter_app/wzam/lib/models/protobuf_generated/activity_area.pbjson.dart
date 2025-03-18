@@ -17,27 +17,28 @@ import 'dart:typed_data' as $typed_data;
 const ActivityArea$json = {
   '1': 'ActivityArea',
   '2': [
-    {'1': 'segment_id', '3': 1, '4': 1, '5': 4, '10': 'segmentId'},
-    {'1': 'name', '3': 2, '4': 1, '5': 9, '10': 'name'},
-    {'1': 'description', '3': 3, '4': 1, '5': 9, '10': 'description'},
-    {'1': 'status', '3': 4, '4': 1, '5': 14, '6': '.datahub.v1.ActivityArea.ActivityAreaActiveStatus', '10': 'status'},
-    {'1': 'start_date', '3': 5, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '10': 'startDate'},
-    {'1': 'end_date', '3': 6, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '9': 1, '10': 'endDate', '17': true},
-    {'1': 'area_type', '3': 7, '4': 1, '5': 14, '6': '.datahub.v1.WorkZoneType', '10': 'areaType'},
-    {'1': 'lanes', '3': 8, '4': 3, '5': 11, '6': '.datahub.v1.Lane', '10': 'lanes'},
-    {'1': 'beginning_cross_street', '3': 9, '4': 1, '5': 13, '10': 'beginningCrossStreet'},
-    {'1': 'ending_cross_street', '3': 10, '4': 1, '5': 13, '10': 'endingCrossStreet'},
-    {'1': 'beginning_milepost', '3': 11, '4': 1, '5': 13, '10': 'beginningMilepost'},
-    {'1': 'ending_milepost', '3': 12, '4': 1, '5': 13, '10': 'endingMilepost'},
-    {'1': 'types_of_work', '3': 13, '4': 3, '5': 11, '6': '.datahub.v1.TypeOfWork', '10': 'typesOfWork'},
-    {'1': 'worker_presence', '3': 14, '4': 1, '5': 11, '6': '.datahub.v1.WorkerPresence', '10': 'workerPresence'},
-    {'1': 'reduced_speed_limit_kph', '3': 15, '4': 1, '5': 2, '10': 'reducedSpeedLimitKph'},
-    {'1': 'restrictions', '3': 16, '4': 3, '5': 11, '6': '.datahub.v1.Restriction', '10': 'restrictions'},
-    {'1': 'schedule', '3': 17, '4': 3, '5': 11, '6': '.datahub.v1.ActivityArea.EventRecurrence', '10': 'schedule'},
-    {'1': 'point', '3': 18, '4': 1, '5': 11, '6': '.datahub.v1.PointGeometry', '9': 0, '10': 'point'},
-    {'1': 'line_string', '3': 19, '4': 1, '5': 11, '6': '.datahub.v1.LineStringGeometry', '9': 0, '10': 'lineString'},
-    {'1': 'polygon', '3': 20, '4': 1, '5': 11, '6': '.datahub.v1.PolygonGeometry', '9': 0, '10': 'polygon'},
-    {'1': 'bbox', '3': 21, '4': 1, '5': 11, '6': '.datahub.v1.BoundingBox', '10': 'bbox'},
+    {'1': 'project_id', '3': 1, '4': 1, '5': 4, '10': 'projectId'},
+    {'1': 'road_section_id', '3': 2, '4': 1, '5': 4, '10': 'roadSectionId'},
+    {'1': 'name', '3': 3, '4': 1, '5': 9, '10': 'name'},
+    {'1': 'description', '3': 4, '4': 1, '5': 9, '10': 'description'},
+    {'1': 'status', '3': 5, '4': 1, '5': 14, '6': '.datahub.v1.ActivityArea.ActivityAreaActiveStatus', '10': 'status'},
+    {'1': 'start_date', '3': 6, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '10': 'startDate'},
+    {'1': 'end_date', '3': 7, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '9': 1, '10': 'endDate', '17': true},
+    {'1': 'area_type', '3': 8, '4': 1, '5': 14, '6': '.datahub.v1.WorkZoneType', '10': 'areaType'},
+    {'1': 'lanes', '3': 9, '4': 3, '5': 11, '6': '.datahub.v1.Lane', '10': 'lanes'},
+    {'1': 'beginning_cross_street', '3': 10, '4': 1, '5': 13, '10': 'beginningCrossStreet'},
+    {'1': 'ending_cross_street', '3': 11, '4': 1, '5': 13, '10': 'endingCrossStreet'},
+    {'1': 'beginning_milepost', '3': 12, '4': 1, '5': 13, '10': 'beginningMilepost'},
+    {'1': 'ending_milepost', '3': 13, '4': 1, '5': 13, '10': 'endingMilepost'},
+    {'1': 'types_of_work', '3': 14, '4': 3, '5': 11, '6': '.datahub.v1.TypeOfWork', '10': 'typesOfWork'},
+    {'1': 'worker_presence', '3': 15, '4': 1, '5': 11, '6': '.datahub.v1.WorkerPresence', '10': 'workerPresence'},
+    {'1': 'reduced_speed_limit_kph', '3': 16, '4': 1, '5': 2, '10': 'reducedSpeedLimitKph'},
+    {'1': 'restrictions', '3': 17, '4': 3, '5': 11, '6': '.datahub.v1.Restriction', '10': 'restrictions'},
+    {'1': 'schedule', '3': 18, '4': 3, '5': 11, '6': '.datahub.v1.ActivityArea.EventRecurrence', '10': 'schedule'},
+    {'1': 'point', '3': 19, '4': 1, '5': 11, '6': '.datahub.v1.PointGeometry', '9': 0, '10': 'point'},
+    {'1': 'line_string', '3': 20, '4': 1, '5': 11, '6': '.datahub.v1.LineStringGeometry', '9': 0, '10': 'lineString'},
+    {'1': 'polygon', '3': 21, '4': 1, '5': 11, '6': '.datahub.v1.PolygonGeometry', '9': 0, '10': 'polygon'},
+    {'1': 'bbox', '3': 22, '4': 1, '5': 11, '6': '.datahub.v1.BoundingBox', '10': 'bbox'},
   ],
   '3': [ActivityArea_EventRecurrence$json],
   '4': [ActivityArea_ActivityAreaActiveStatus$json],
@@ -77,35 +78,36 @@ const ActivityArea_ActivityAreaActiveStatus$json = {
 
 /// Descriptor for `ActivityArea`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List activityAreaDescriptor = $convert.base64Decode(
-    'CgxBY3Rpdml0eUFyZWESHQoKc2VnbWVudF9pZBgBIAEoBFIJc2VnbWVudElkEhIKBG5hbWUYAi'
-    'ABKAlSBG5hbWUSIAoLZGVzY3JpcHRpb24YAyABKAlSC2Rlc2NyaXB0aW9uEkkKBnN0YXR1cxgE'
-    'IAEoDjIxLmRhdGFodWIudjEuQWN0aXZpdHlBcmVhLkFjdGl2aXR5QXJlYUFjdGl2ZVN0YXR1c1'
-    'IGc3RhdHVzEjkKCnN0YXJ0X2RhdGUYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1w'
-    'UglzdGFydERhdGUSOgoIZW5kX2RhdGUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW'
-    '1wSAFSB2VuZERhdGWIAQESNQoJYXJlYV90eXBlGAcgASgOMhguZGF0YWh1Yi52MS5Xb3JrWm9u'
-    'ZVR5cGVSCGFyZWFUeXBlEiYKBWxhbmVzGAggAygLMhAuZGF0YWh1Yi52MS5MYW5lUgVsYW5lcx'
-    'I0ChZiZWdpbm5pbmdfY3Jvc3Nfc3RyZWV0GAkgASgNUhRiZWdpbm5pbmdDcm9zc1N0cmVldBIu'
-    'ChNlbmRpbmdfY3Jvc3Nfc3RyZWV0GAogASgNUhFlbmRpbmdDcm9zc1N0cmVldBItChJiZWdpbm'
-    '5pbmdfbWlsZXBvc3QYCyABKA1SEWJlZ2lubmluZ01pbGVwb3N0EicKD2VuZGluZ19taWxlcG9z'
-    'dBgMIAEoDVIOZW5kaW5nTWlsZXBvc3QSOgoNdHlwZXNfb2Zfd29yaxgNIAMoCzIWLmRhdGFodW'
-    'IudjEuVHlwZU9mV29ya1ILdHlwZXNPZldvcmsSQwoPd29ya2VyX3ByZXNlbmNlGA4gASgLMhou'
-    'ZGF0YWh1Yi52MS5Xb3JrZXJQcmVzZW5jZVIOd29ya2VyUHJlc2VuY2USNQoXcmVkdWNlZF9zcG'
-    'VlZF9saW1pdF9rcGgYDyABKAJSFHJlZHVjZWRTcGVlZExpbWl0S3BoEjsKDHJlc3RyaWN0aW9u'
-    'cxgQIAMoCzIXLmRhdGFodWIudjEuUmVzdHJpY3Rpb25SDHJlc3RyaWN0aW9ucxJECghzY2hlZH'
-    'VsZRgRIAMoCzIoLmRhdGFodWIudjEuQWN0aXZpdHlBcmVhLkV2ZW50UmVjdXJyZW5jZVIIc2No'
-    'ZWR1bGUSMQoFcG9pbnQYEiABKAsyGS5kYXRhaHViLnYxLlBvaW50R2VvbWV0cnlIAFIFcG9pbn'
-    'QSQQoLbGluZV9zdHJpbmcYEyABKAsyHi5kYXRhaHViLnYxLkxpbmVTdHJpbmdHZW9tZXRyeUgA'
-    'UgpsaW5lU3RyaW5nEjcKB3BvbHlnb24YFCABKAsyGy5kYXRhaHViLnYxLlBvbHlnb25HZW9tZX'
-    'RyeUgAUgdwb2x5Z29uEisKBGJib3gYFSABKAsyFy5kYXRhaHViLnYxLkJvdW5kaW5nQm94UgRi'
-    'Ym94GrEDCg9FdmVudFJlY3VycmVuY2USNQoKc3RhcnRfdGltZRgBIAEoCzIWLmdvb2dsZS50eX'
-    'BlLlRpbWVPZkRheVIJc3RhcnRUaW1lEjEKCGVuZF90aW1lGAIgASgLMhYuZ29vZ2xlLnR5cGUu'
-    'VGltZU9mRGF5UgdlbmRUaW1lEjAKCnN0YXJ0X2RhdGUYAyABKAsyES5nb29nbGUudHlwZS5EYX'
-    'RlUglzdGFydERhdGUSLAoIZW5kX2RhdGUYBCABKAsyES5nb29nbGUudHlwZS5EYXRlUgdlbmRE'
-    'YXRlEhYKBm1vbmRheRgFIAEoCFIGbW9uZGF5EhgKB3R1ZXNkYXkYBiABKAhSB3R1ZXNkYXkSHA'
-    'oJd2VkbmVzZGF5GAcgASgIUgl3ZWRuZXNkYXkSGgoIdGh1cnNkYXkYCCABKAhSCHRodXJzZGF5'
-    'EhYKBmZyaWRheRgJIAEoCFIGZnJpZGF5EhoKCHNhdHVyZGF5GAogASgIUghzYXR1cmRheRIWCg'
-    'ZzdW5kYXkYCyABKAhSBnN1bmRheRIcCglleGNsdXNpb24YDCABKAhSCWV4Y2x1c2lvbiJsChhB'
-    'Y3Rpdml0eUFyZWFBY3RpdmVTdGF0dXMSJgoiQUNUSVZJVFlfQVJFQV9BQ1RJVkVfU1RBVFVTX0'
-    'FDVElWRRAAEigKJEFDVElWSVRZX0FSRUFfQUNUSVZFX1NUQVRVU19JTkFDVElWRRABQgoKCEdl'
-    'b21ldHJ5QgsKCV9lbmRfZGF0ZQ==');
+    'CgxBY3Rpdml0eUFyZWESHQoKcHJvamVjdF9pZBgBIAEoBFIJcHJvamVjdElkEiYKD3JvYWRfc2'
+    'VjdGlvbl9pZBgCIAEoBFINcm9hZFNlY3Rpb25JZBISCgRuYW1lGAMgASgJUgRuYW1lEiAKC2Rl'
+    'c2NyaXB0aW9uGAQgASgJUgtkZXNjcmlwdGlvbhJJCgZzdGF0dXMYBSABKA4yMS5kYXRhaHViLn'
+    'YxLkFjdGl2aXR5QXJlYS5BY3Rpdml0eUFyZWFBY3RpdmVTdGF0dXNSBnN0YXR1cxI5CgpzdGFy'
+    'dF9kYXRlGAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFIJc3RhcnREYXRlEjoKCG'
+    'VuZF9kYXRlGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgBUgdlbmREYXRliAEB'
+    'EjUKCWFyZWFfdHlwZRgIIAEoDjIYLmRhdGFodWIudjEuV29ya1pvbmVUeXBlUghhcmVhVHlwZR'
+    'ImCgVsYW5lcxgJIAMoCzIQLmRhdGFodWIudjEuTGFuZVIFbGFuZXMSNAoWYmVnaW5uaW5nX2Ny'
+    'b3NzX3N0cmVldBgKIAEoDVIUYmVnaW5uaW5nQ3Jvc3NTdHJlZXQSLgoTZW5kaW5nX2Nyb3NzX3'
+    'N0cmVldBgLIAEoDVIRZW5kaW5nQ3Jvc3NTdHJlZXQSLQoSYmVnaW5uaW5nX21pbGVwb3N0GAwg'
+    'ASgNUhFiZWdpbm5pbmdNaWxlcG9zdBInCg9lbmRpbmdfbWlsZXBvc3QYDSABKA1SDmVuZGluZ0'
+    '1pbGVwb3N0EjoKDXR5cGVzX29mX3dvcmsYDiADKAsyFi5kYXRhaHViLnYxLlR5cGVPZldvcmtS'
+    'C3R5cGVzT2ZXb3JrEkMKD3dvcmtlcl9wcmVzZW5jZRgPIAEoCzIaLmRhdGFodWIudjEuV29ya2'
+    'VyUHJlc2VuY2VSDndvcmtlclByZXNlbmNlEjUKF3JlZHVjZWRfc3BlZWRfbGltaXRfa3BoGBAg'
+    'ASgCUhRyZWR1Y2VkU3BlZWRMaW1pdEtwaBI7CgxyZXN0cmljdGlvbnMYESADKAsyFy5kYXRhaH'
+    'ViLnYxLlJlc3RyaWN0aW9uUgxyZXN0cmljdGlvbnMSRAoIc2NoZWR1bGUYEiADKAsyKC5kYXRh'
+    'aHViLnYxLkFjdGl2aXR5QXJlYS5FdmVudFJlY3VycmVuY2VSCHNjaGVkdWxlEjEKBXBvaW50GB'
+    'MgASgLMhkuZGF0YWh1Yi52MS5Qb2ludEdlb21ldHJ5SABSBXBvaW50EkEKC2xpbmVfc3RyaW5n'
+    'GBQgASgLMh4uZGF0YWh1Yi52MS5MaW5lU3RyaW5nR2VvbWV0cnlIAFIKbGluZVN0cmluZxI3Cg'
+    'dwb2x5Z29uGBUgASgLMhsuZGF0YWh1Yi52MS5Qb2x5Z29uR2VvbWV0cnlIAFIHcG9seWdvbhIr'
+    'CgRiYm94GBYgASgLMhcuZGF0YWh1Yi52MS5Cb3VuZGluZ0JveFIEYmJveBqxAwoPRXZlbnRSZW'
+    'N1cnJlbmNlEjUKCnN0YXJ0X3RpbWUYASABKAsyFi5nb29nbGUudHlwZS5UaW1lT2ZEYXlSCXN0'
+    'YXJ0VGltZRIxCghlbmRfdGltZRgCIAEoCzIWLmdvb2dsZS50eXBlLlRpbWVPZkRheVIHZW5kVG'
+    'ltZRIwCgpzdGFydF9kYXRlGAMgASgLMhEuZ29vZ2xlLnR5cGUuRGF0ZVIJc3RhcnREYXRlEiwK'
+    'CGVuZF9kYXRlGAQgASgLMhEuZ29vZ2xlLnR5cGUuRGF0ZVIHZW5kRGF0ZRIWCgZtb25kYXkYBS'
+    'ABKAhSBm1vbmRheRIYCgd0dWVzZGF5GAYgASgIUgd0dWVzZGF5EhwKCXdlZG5lc2RheRgHIAEo'
+    'CFIJd2VkbmVzZGF5EhoKCHRodXJzZGF5GAggASgIUgh0aHVyc2RheRIWCgZmcmlkYXkYCSABKA'
+    'hSBmZyaWRheRIaCghzYXR1cmRheRgKIAEoCFIIc2F0dXJkYXkSFgoGc3VuZGF5GAsgASgIUgZz'
+    'dW5kYXkSHAoJZXhjbHVzaW9uGAwgASgIUglleGNsdXNpb24ibAoYQWN0aXZpdHlBcmVhQWN0aX'
+    'ZlU3RhdHVzEiYKIkFDVElWSVRZX0FSRUFfQUNUSVZFX1NUQVRVU19BQ1RJVkUQABIoCiRBQ1RJ'
+    'VklUWV9BUkVBX0FDVElWRV9TVEFUVVNfSU5BQ1RJVkUQAUIKCghHZW9tZXRyeUILCglfZW5kX2'
+    'RhdGU=');
 

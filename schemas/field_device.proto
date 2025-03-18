@@ -36,14 +36,14 @@ message FieldDevice {
         bool has_automatic_location = 2;
         optional RoadwayDirection road_direction = 3;
         repeated string road_names = 4;
-        optional string name = 5;
+        string name = 5;
         optional string description = 6;
         repeated string status_messages = 7; // error or warning messages
-        optional bool is_moving = 8;
+        bool is_moving = 8;
         optional uint32 milepost = 12;
-        optional string make = 13;
-        optional string model = 14;
-        optional string serial_number = 15;
+        string make = 13;
+        string model = 14;
+        string serial_number = 15;
         optional string firmware_version = 16;
         optional double velocity_kph = 17;
     }

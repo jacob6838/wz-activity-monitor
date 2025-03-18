@@ -16,8 +16,8 @@ message RoadSection {
     optional google.protobuf.Timestamp end_date = 7;
     WorkZoneType area_type = 8;
     repeated string road_names = 9;
-    optional uint32 beginning_cross_street = 10;
-    optional uint32 ending_cross_street = 11;
+    optional string beginning_cross_street = 10;
+    optional string ending_cross_street = 11;
     uint32 beginning_milepost = 12;
     uint32 ending_milepost = 13;
     RoadSurfaceType surface_type = 14;

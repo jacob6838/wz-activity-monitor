@@ -18,8 +18,8 @@ message ActivityArea {
     optional google.protobuf.Timestamp end_date = 7;
     WorkZoneType area_type = 8;
     repeated Lane lanes = 9;
-    uint32 beginning_cross_street = 10;
-    uint32 ending_cross_street = 11;
+    optional string beginning_cross_street = 10;
+    optional string ending_cross_street = 11;
     uint32 beginning_milepost = 12;
     uint32 ending_milepost = 13;
     repeated TypeOfWork types_of_work = 14;
@@ -53,6 +53,7 @@ message ActivityArea {
         bool saturday = 10;
         bool sunday = 11;
 
-        bool exclusion = 12; // If true, time span is excluded from the recurrence
+        bool exclusion = 12; // If false, the time span is included
+                             // If true, the time span is excluded from other EventRecurrence entries
     }
 }

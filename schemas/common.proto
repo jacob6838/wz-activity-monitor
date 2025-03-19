@@ -45,9 +45,7 @@ message PointArray {
 
 message BoundingBox {
     google.type.LatLng lower_left = 1;
-    google.type.LatLng lower_right = 2;
-    google.type.LatLng upper_right = 3;
-    google.type.LatLng upper_left = 4;
+    google.type.LatLng upper_right = 2;
 }
 
 enum RoadSurfaceType {

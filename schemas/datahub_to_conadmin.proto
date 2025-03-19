@@ -9,7 +9,7 @@ import "delay.proto";
 import "road_section.proto";
 import "google/protobuf/timestamp.proto";
 
-message VehicleLocationUpdated {
+message UpdateVehicleLocation {
     uint64 id = 1;
     string license_plate = 2;
     VehicleOperationType operation_type = 3;
@@ -17,6 +17,7 @@ message VehicleLocationUpdated {
     double velocity_kph = 5;
     double heading = 6;
     google.protobuf.Timestamp timestamp = 7;
+    uint64 request_id = 8;
     
     enum VehicleOperationType {
         VEHICLE_OPERATION_STRIPING = 0;
@@ -28,53 +29,60 @@ message VehicleLocationUpdated {
     }
 }
 
-message FieldDeviceCreateRequest {
+message CreateFieldDevice {
     FieldDevice field_device = 1;
     google.protobuf.Timestamp updated_time = 2;
+    uint64 request_id = 3;
 }
 
-message FieldDeviceUpdateRequest {
+message UpdateFieldDevice {
     uint64 id = 1;
     FieldDevice field_device = 2;
     google.protobuf.Timestamp updated_time = 3;
+    uint64 request_id = 4;
 }
 
-message RoadSectionCreateRequest {
-    RoadSection proposed_road_section = 1;
+message CreateRoadSection {
+    RoadSection road_section = 1;
     google.protobuf.Timestamp request_time = 2;
     DataHubUpdateSource source = 3;
+    uint64 request_id = 4;
 }
 
-message RoadSectionUpdateRequest {
+message UpdateRoadSection {
     uint64 id = 1;
-    ActivityArea proposed_road_section = 2;
+    ActivityArea road_section = 2;
     google.protobuf.Timestamp request_time = 3;
     DataHubUpdateSource source = 4;
+    uint64 request_id = 5;
 }
 
-message DelayCreated {
-    uint64 id = 1;
-    Delay delay = 2;
-    google.protobuf.Timestamp created_time = 3;
+message CreateDelay {
+    Delay delay = 1;
+    google.protobuf.Timestamp created_time = 2;
+    uint64 request_id = 3;
 }
 
-message DelayUpdated {
+message UpdateDelay {
     uint64 id = 1;
     Delay delay = 2;
     google.protobuf.Timestamp updated_time = 3;
+    uint64 request_id = 4;
 }
 
-message ActivityAreaCreateRequest {
-    ActivityArea proposed_activity_area = 1;
+message CreateActivityArea {
+    ActivityArea activity_area = 1;
     google.protobuf.Timestamp request_time = 2;
     DataHubUpdateSource source = 3;
+    uint64 request_id = 4;
 }
 
-message ActivityAreaUpdateRequest {
+message UpdateActivityArea {
     uint64 id = 1;
-    ActivityArea proposed_activity_area = 2;
+    ActivityArea activity_area = 2;
     google.protobuf.Timestamp request_time = 3;
     DataHubUpdateSource source = 4;
+    uint64 request_id = 5;
 }
 
 

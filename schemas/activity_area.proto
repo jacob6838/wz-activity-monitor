@@ -53,7 +53,7 @@ message ActivityArea {
         bool saturday = 10;
         bool sunday = 11;
 
-        bool exclusion = 12; // If false, the time span is included
+        optional bool exclusion = 12; // If false, the time span is included
                              // If true, the time span is excluded from other EventRecurrence entries
     }
 }

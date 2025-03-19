@@ -17,6 +17,15 @@ message FieldDeviceAssociationChanged {
     google.protobuf.Timestamp updated_time = 6;
 }
 
+message VehicleAssociationChanged {
+    uint64 id = 1;
+    optional uint64 project_id = 2;
+    optional uint64 road_section_id = 3;
+    optional uint64 area_id = 4;
+    optional FieldDevice.MarkedLocationType location_type = 5; 
+    google.protobuf.Timestamp updated_time = 6;
+}
+
 message ProjectCreated {
     uint64 id = 1;
     optional uint64 request_id = 2;

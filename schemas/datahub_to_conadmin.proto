@@ -2,31 +2,17 @@ syntax = "proto3";
 
 package datahub.v1;
 
-import "common.proto";
 import "field_device.proto";
 import "activity_area.proto";
 import "delay.proto";
 import "road_section.proto";
+import "vehicle_location.proto";
 import "google/protobuf/timestamp.proto";
 
 message UpdateVehicleLocation {
     uint64 id = 1;
-    string license_plate = 2;
-    VehicleOperationType operation_type = 3;
-    PointGeometry location = 4;
-    double velocity_kph = 5;
-    double heading = 6;
-    google.protobuf.Timestamp timestamp = 7;
-    uint64 request_id = 8;
-    
-    enum VehicleOperationType {
-        VEHICLE_OPERATION_STRIPING = 0;
-        VEHICLE_OPERATION_PLOWING = 1;
-        VEHICLE_OPERATION_MOWING = 2;
-        VEHICLE_OPERATION_COMMUTING = 3;
-        VEHICLE_OPERATION_OTHER = 4;
-        VEHICLE_OPERATION_UNKNOWN = 5;
-    }
+    VehicleLocation vehicle_location = 2;
+    google.protobuf.Timestamp updated_time = 3;
 }
 
 message CreateFieldDevice {

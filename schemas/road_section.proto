@@ -18,8 +18,8 @@ message RoadSection {
     repeated string road_names = 9;
     optional string beginning_cross_street = 10;
     optional string ending_cross_street = 11;
-    uint32 beginning_milepost = 12;
-    uint32 ending_milepost = 13;
+    double beginning_milepost = 12;
+    double ending_milepost = 13;
     RoadSurfaceType surface_type = 14;
     oneof Geometry {
         LineStringGeometry line_string = 15;

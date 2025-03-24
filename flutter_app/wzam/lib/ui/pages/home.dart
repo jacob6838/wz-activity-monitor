@@ -18,7 +18,6 @@ class Home extends StatelessWidget {
   final FileStorageService fileStorageService = Get.find<FileStorageService>();
   bool _isListening = false; // To track if the app is listening
   String _command = ""; // Captured voice command
-  final SettingsController settingsController = Get.find<SettingsController>();
   final SpeechService speechService = Get.find<SpeechService>();
 
   @override

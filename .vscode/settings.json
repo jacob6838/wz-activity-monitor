@@ -2,10 +2,12 @@
   "java.configuration.updateBuildConfiguration": "interactive",
   "cSpell.words": [
     "backchannel",
+    "Cimms",
     "csvfile",
     "frontchannel",
     "HDOP",
     "userinfo",
     "wydot"
-  ]
+  ],
+  "cmake.ignoreCMakeListsMissing": true
 }

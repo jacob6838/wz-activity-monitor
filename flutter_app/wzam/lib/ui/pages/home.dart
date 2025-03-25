@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wzam/models/stt_commands.dart';
+import 'package:wzam/models/wake_word_commands.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/speech_service.dart';
+import 'package:wzam/services/wake_word_service.dart';
 import 'package:wzam/ui/pages/recording_configuration.dart';
 import 'package:wzam/ui/pages/report_generator.dart';
 import 'package:wzam/ui/pages/view_reports.dart';
@@ -16,9 +18,8 @@ class Home extends StatelessWidget {
   Home({super.key});
 
   final FileStorageService fileStorageService = Get.find<FileStorageService>();
-  bool _isListening = false; // To track if the app is listening
-  String _command = ""; // Captured voice command
   final SpeechService speechService = Get.find<SpeechService>();
+  final WakeWordService wakeWordService = Get.find<WakeWordService>();
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,11 @@ class Home extends StatelessWidget {
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
     ]);
+    wakeWordService.commandStream.any((WakeWordCommand command) {
+      speechService.startListening();
+      return true;
+    });
+    wakeWordService.initialize();
     speechService.initializeSpeech();
     print("Home Page");
     speechService.commandStream.listen((SttCommand command) {
@@ -83,8 +89,9 @@ class Home extends StatelessWidget {
                       'Please enable voice commands in Settings.');
                 }
               },
-              child:
-                  Text(_isListening ? 'Listening...' : 'Start Voice Command'),
+              child: Obx(() => Text(speechService.isListening.value
+                  ? 'Listening...'
+                  : 'Start Voice Command')),
             ),
             Obx(() => Text("Has Speech: ${speechService.hasSpeech.value}")),
             Obx(() => Text("Is Listening: ${speechService.isListening.value}")),

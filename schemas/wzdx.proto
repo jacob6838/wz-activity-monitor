@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package datahub.v1;
 
+option java_package = "com.wyoroad.protobuf";
+option java_outer_classname = "WzdxProto";
+option java_multiple_files = true;
+
 import "google/protobuf/timestamp.proto";
 
 message Restriction {

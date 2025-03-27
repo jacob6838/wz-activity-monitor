@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package datahub.v1;
+
+import "activity_area.proto";
+import "project.proto";
+import "road_section.proto";
+import "field_device.proto";
+import "google/protobuf/timestamp.proto";
+
+message FieldDeviceUpdated {
+    uint64 id = 1;
+    optional uint64 project_id = 2;
+    optional uint64 road_section_id = 3;
+    optional uint64 area_id = 4;
+    optional FieldDevice.MarkedLocationType location_type = 5; 
+    google.protobuf.Timestamp updated_time = 6;
+}
+
+message VehicleLocationUpdated {
+    uint64 id = 1;
+    optional uint64 project_id = 2;
+    optional uint64 road_section_id = 3;
+    optional uint64 area_id = 4;
+    optional FieldDevice.MarkedLocationType location_type = 5; 
+    google.protobuf.Timestamp updated_time = 6;
+}
+
+message ProjectCreated {
+    uint64 id = 1;
+    optional uint64 request_id = 2;
+    Project project = 3;
+    google.protobuf.Timestamp created_time = 4;
+}
+
+message ProjectUpdated {
+    uint64 id = 1;
+    optional uint64 request_id = 2;
+    Project project = 3;
+    google.protobuf.Timestamp updated_time = 4;
+}
+
+message RoadSectionCreated {
+    uint64 id = 1;
+    optional uint64 request_id = 2;
+    RoadSection road_section = 3;
+    google.protobuf.Timestamp created_time = 4;
+}
+
+message RoadSectionUpdated {
+    uint64 id = 1;
+    optional uint64 request_id = 2;
+    RoadSection road_section = 3;
+    google.protobuf.Timestamp updated_time = 4;
+}
+
+message ActivityAreaCreated {
+    uint64 id = 1;
+    optional uint64 request_id = 2;
+    ActivityArea activity_area = 3;
+    google.protobuf.Timestamp created_time = 4;
+}
+
+message ActivityAreaUpdated {
+    uint64 id = 1;
+    optional uint64 request_id = 2;
+    ActivityArea activity_area = 3;
+    google.protobuf.Timestamp updated_time = 4;
+}

@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 const TextStyle style_one = TextStyle(
-  fontSize: 24,
-  fontWeight: FontWeight.w600,
+  fontSize: 36,
+  fontWeight: FontWeight.w400,
 );
 
 const TextStyle style_two = TextStyle(

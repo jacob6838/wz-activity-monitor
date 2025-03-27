@@ -4,8 +4,12 @@
     "backchannel",
     "Cimms",
     "csvfile",
+    "datahub",
     "frontchannel",
     "HDOP",
+    "LINESTRING",
+    "millis",
+    "MULTIPOINT",
     "userinfo",
     "wydot"
   ],

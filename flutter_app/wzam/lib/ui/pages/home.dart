@@ -4,14 +4,18 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:wzam/models/stt_commands.dart';
 import 'package:wzam/models/wake_word_commands.dart';
+import 'package:wzam/controllers/view_recordings_controller.dart';
+import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/speech_service.dart';
 import 'package:wzam/services/wake_word_service.dart';
 import 'package:wzam/ui/pages/recording_configuration.dart';
 import 'package:wzam/ui/pages/report_generator.dart';
+import 'package:wzam/ui/pages/view_recordings.dart';
 import 'package:wzam/ui/pages/view_reports.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
+import 'package:wzam/ui/styles/text_styles.dart';
 import 'package:wzam/ui/styles/widgets/wzam_app_bar.dart';
 import 'package:wzam/ui/styles/widgets/wzam_text.dart';
 
@@ -21,6 +25,10 @@ class Home extends StatelessWidget {
   final FileStorageService fileStorageService = Get.find<FileStorageService>();
   final SpeechService speechService = Get.find<SpeechService>();
   final WakeWordService wakeWordService = Get.find<WakeWordService>();
+  final ViewReportsController viewReportsController =
+      Get.find<ViewReportsController>();
+  final ViewRecordingsController viewRecordingsController =
+      Get.find<ViewRecordingsController>();
 
   @override
   Widget build(BuildContext context) {
@@ -73,14 +81,15 @@ class Home extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            //Create a report button
             _button(
                 onPressed: () {
-                  print("Create Report");
                   Get.to(() => ReportPage());
                 },
                 title: 'Create Report',
                 context: context),
             verticalSpaceMedium,
+            //Create a recording button
             _button(
                 onPressed: () {
                   Get.to(() => RecordingConfiguration());
@@ -88,6 +97,7 @@ class Home extends StatelessWidget {
                 title: 'Map Work Zone',
                 context: context),
             verticalSpaceMedium,
+            //View the reports map button
             _button(
               onPressed: () {
                 Get.to(() => const ViewReports());
@@ -95,6 +105,14 @@ class Home extends StatelessWidget {
               title: 'View Reports',
               context: context,
             ),
+            verticalSpaceMedium,
+            //View the recordings list
+            _button(
+                onPressed: () {
+                  Get.to(() => ViewRecordings());
+                },
+                title: 'View Recordings',
+                context: context),
             verticalSpaceMedium,
             ElevatedButton(
               onPressed: () {
@@ -115,6 +133,11 @@ class Home extends StatelessWidget {
             Obx(() => Text(
                 "Is Wake Listening: ${wakeWordService.isListening.value}")),
             Obx(() => Text("Wake Message: ${wakeWordService.message.value}")),
+            Obx(() =>
+                viewRecordingsController.unUploadedRecordings.isNotEmpty ||
+                        viewReportsController.areThereLocalReports.value
+                    ? unUploadedWarning(context)
+                    : Container()),
           ],
         ),
       ),
@@ -143,7 +166,7 @@ class Home extends StatelessWidget {
   }
 
   SizedBox _button({
-    required void Function()? onPressed,
+    void Function()? onPressed,
     required String title,
     required BuildContext context,
   }) {
@@ -152,6 +175,27 @@ class Home extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         child: WZAMText.styleFour(title),
+      ),
+    );
+  }
+
+  Container unUploadedWarning(BuildContext context) {
+    return Container(
+      width: screenWidthPercentage(context, percentage: 0.8),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: Colors.red, width: 3.0, style: BorderStyle.values[1]),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Text(
+                "You have un-uploaded recordings or reports. Please upload them.",
+                style: style_four.copyWith(color: Colors.red)),
+          ],
+        ),
       ),
     );
   }

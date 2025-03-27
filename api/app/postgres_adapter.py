@@ -38,7 +38,7 @@ class DatabaseAdapter:
         INSERT INTO public.projects (
             name, description, tmc_notes, active_status, hyperlink, start_date, end_date,
             districts, wydot_contact, project_update_contact, traffic_control_contact,
-            emergency_contact, contractor, selected_towns
+            emergency_contact, contractor, selected_towns, geometry, bbox
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING id
         """
@@ -57,15 +57,26 @@ class DatabaseAdapter:
             project.emergency_contact,
             project.contractor,
             project.selected_towns,
+            "LINESTRING("
+            + ", ".join(f"{coord[0]} {coord[1]}" for coord in project.geometry)
+            + ")",
+            json.dumps(project.bbox) if project.bbox else None,
         )
         self.cursor.execute(query, values)
         self.connection.commit()
         return self.cursor.fetchone()[0]
 
-    def get_projects(self) -> list[models.ProjectWithId]:
+    def get_projects(self, start_date_epoch_millis: int | None, end_date_epoch_millis: int | None) -> list[models.ProjectWithId]:
         self.ensure_cursor()
-        query = "SELECT * FROM public.projects"
-        self.cursor.execute(query)
+        query = "SELECT *, ST_AsText(geometry) as geometry_text FROM public.projects WHERE 1=1"
+        params = []
+        if start_date_epoch_millis:
+            query += " AND start_date <= %s"
+            params.append(start_date_epoch_millis)
+        if end_date_epoch_millis:
+            query += " AND end_date >= %s"
+            params.append(end_date_epoch_millis)
+        self.cursor.execute(query, params)
         columns = [desc[0] for desc in self.cursor.description]
         rows = [dict(zip(columns, row)) for row in self.cursor.fetchall()]
         projects = []
@@ -87,13 +98,21 @@ class DatabaseAdapter:
                     emergency_contact=row["emergency_contact"],
                     contractor=row["contractor"],
                     selected_towns=row["selected_towns"],
+                    geometry=[
+                        [float(coord) for coord in point.split()]
+                        for point in row["geometry_text"]
+                        .replace("LINESTRING(", "")
+                        .replace(")", "")
+                        .split(",")
+                    ],
+                    bbox=row["bbox"]
                 )
             )
         return projects
 
     def get_project(self, project_id: int) -> models.ProjectWithId | None:
         self.ensure_cursor()
-        query = "SELECT * FROM public.projects WHERE id = %s"
+        query = "SELECT *, ST_AsText(geometry) as geometry_text FROM public.projects WHERE id = %s"
         self.cursor.execute(query, (project_id,))
         columns = [desc[0] for desc in self.cursor.description]
         results = self.cursor.fetchone()
@@ -119,6 +138,14 @@ class DatabaseAdapter:
                 emergency_contact=row["emergency_contact"],
                 contractor=row["contractor"],
                 selected_towns=row["selected_towns"],
+                geometry=[
+                    [float(coord) for coord in point.split()]
+                    for point in row["geometry_text"]
+                    .replace("LINESTRING(", "")
+                    .replace(")", "")
+                    .split(",")
+                ],
+                bbox=row["bbox"]
             )
         return None
 
@@ -157,12 +184,17 @@ class DatabaseAdapter:
         self.connection.commit()
         return self.cursor.fetchone()[0]
 
-    def get_road_sections(self) -> list[models.RoadSectionWithId]:
+    def get_road_sections(self, start_date_epoch_millis: int | None, end_date_epoch_millis: int | None) -> list[models.RoadSectionWithId]:
         self.ensure_cursor()
-        query = (
-            "SELECT *, ST_AsText(geometry) as geometry_text FROM public.road_sections"
-        )
-        self.cursor.execute(query)
+        query = "SELECT *, ST_AsText(geometry) as geometry_text FROM public.road_sections WHERE 1=1"
+        params = []
+        if start_date_epoch_millis:
+            query += " AND start_date <= %s"
+            params.append(start_date_epoch_millis)
+        if end_date_epoch_millis:
+            query += " AND end_date >= %s"
+            params.append(end_date_epoch_millis)
+        self.cursor.execute(query, params)
         columns = [desc[0] for desc in self.cursor.description]
         rows = [dict(zip(columns, row)) for row in self.cursor.fetchall()]
         sections = []
@@ -176,7 +208,7 @@ class DatabaseAdapter:
                     start_mm=row["start_mm"],
                     end_mm=row["end_mm"],
                     direction=models.RoadSegmentDirection(row["direction"]),
-                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"]) if row["surface_type"] else None,
+                    surface_type=models.RoadSegmentSurfaceType(row["surface_type"]),
                     start_date=row["start_date"],
                     end_date=row["end_date"],
                     armed_status=models.RoadSegmentArmedStatus(row["armed_status"]),
@@ -212,7 +244,7 @@ class DatabaseAdapter:
                 start_mm=row["start_mm"],
                 end_mm=row["end_mm"],
                 direction=models.RoadSegmentDirection(row["direction"]),
-                surface_type=models.RoadSegmentSurfaceType(row["surface_type"]) if row["surface_type"] else None,
+                surface_type=models.RoadSegmentSurfaceType(row["surface_type"]),
                 start_date=row["start_date"],
                 end_date=row["end_date"],
                 armed_status=models.RoadSegmentArmedStatus(row["armed_status"]),
@@ -288,12 +320,17 @@ class DatabaseAdapter:
         self.connection.commit()
         return self.cursor.fetchone()[0]
 
-    def get_activity_areas(self) -> list[models.ActivityAreaWithId]:
+    def get_activity_areas(self, start_date_epoch_millis: int | None, end_date_epoch_millis: int | None) -> list[models.ActivityAreaWithId]:
         self.ensure_cursor()
-        query = (
-            "SELECT *, ST_AsText(geometry) as geometry_text FROM public.activity_areas"
-        )
-        self.cursor.execute(query)
+        query = "SELECT *, ST_AsText(geometry) as geometry_text FROM public.activity_areas WHERE 1=1"
+        params = []
+        if start_date_epoch_millis:
+            query += " AND start_date <= %s"
+            params.append(start_date_epoch_millis)
+        if end_date_epoch_millis:
+            query += " AND end_date >= %s"
+            params.append(end_date_epoch_millis)
+        self.cursor.execute(query, params)
         columns = [desc[0] for desc in self.cursor.description]
         rows = [dict(zip(columns, row)) for row in self.cursor.fetchall()]
         areas = []
@@ -578,6 +615,7 @@ class DatabaseAdapter:
         return self.cursor.fetchone()[0]
 
     def get_recordings(self) -> list[models.RecordingWithId]:
+        self.ensure_cursor()
         query = "SELECT * FROM public.recordings"
         self.cursor.execute(query)
         columns = [desc[0] for desc in self.cursor.description]

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:wzam/models/stt_commands.dart';
 import 'package:wzam/models/wake_word_commands.dart';
@@ -30,7 +31,23 @@ class Home extends StatelessWidget {
       DeviceOrientation.landscapeLeft,
     ]);
     wakeWordService.commandStream.any((WakeWordCommand command) {
-      speechService.startListening();
+      print("Home Page Wake Word Command: ${command.text}");
+      // Show a toast notification
+      Fluttertoast.showToast(
+        msg: "Wake Word Command: ${command.text}",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      speechService.stopListening();
+      Future.delayed(Duration(seconds: 2), () {
+        speechService.startListening();
+      });
+      Future.delayed(Duration(seconds: 10), () {
+        wakeWordService.startListening();
+      });
       return true;
     });
     wakeWordService.initialize();
@@ -95,6 +112,9 @@ class Home extends StatelessWidget {
             ),
             Obx(() => Text("Has Speech: ${speechService.hasSpeech.value}")),
             Obx(() => Text("Is Listening: ${speechService.isListening.value}")),
+            Obx(() => Text(
+                "Is Wake Listening: ${wakeWordService.isListening.value}")),
+            Obx(() => Text("Wake Message: ${wakeWordService.message.value}")),
           ],
         ),
       ),

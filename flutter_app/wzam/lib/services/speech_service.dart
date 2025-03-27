@@ -69,6 +69,7 @@ class SpeechService extends GetxService {
       isListening.value = true;
       _sttEngine.listen(
         onResult: (result) async {
+          _logger.i("Received voice command: ${result.recognizedWords}");
           SttCommand? command = await parseCommandText(result.recognizedWords);
           if (command != null) {
             if (announceCommands) {

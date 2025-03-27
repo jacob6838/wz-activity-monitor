@@ -45,7 +45,7 @@ class WakeWordService extends GetxService {
 
       print("useModel == : $useModel");
       await useModel.setKeywordDetectionLicense(
-          "MTc0MTk4OTYwMDAwMA==-T6tBtoFpClll7ef89x/bOXRxC9Maf2nZTUFXqBKwnc0=");
+          "MTc0NDY2NDQwMDAwMA==-m4g05tL50nMcnOp4mu6NghsgkfXk1ZNVTPo26+2/Z0E=");
       print("After useModel.setKeywordDetectionLicense:");
 
       await useModel.loadModel(configs, onWakeWordDetected);
@@ -95,19 +95,22 @@ class WakeWordService extends GetxService {
     requestAudioPermissions();
   }
 
+  void startListening() {
+    useModel.startListening();
+    message.value = "Listening to WakeWord...";
+  }
+
+  void stopListening({String? word}) {
+    useModel.stopListening();
+    message.value = "Stopped Listening to WakeWord... $word";
+  }
+
   void onWakeWordDetected(String wakeWord) {
     print("onWakeWordDetected(): $wakeWord");
     print("Calling stopListening(): $wakeWord");
-    useModel.stopListening();
-
-    message.value = "WakeWord '$wakeWord' DETECTED";
-    _commandController.add(WakeWordCommand.values.firstWhere(
-        (element) => element.text.toLowerCase().trim() == wakeWord));
-
-    Future.delayed(Duration(seconds: 5), () {
-      useModel.startListening();
-      message.value = "Listening to WakeWord...";
-    });
+    _logger.i("WakeWord '$wakeWord' DETECTED");
+    stopListening(word: wakeWord);
+    _commandController.add(WakeWordCommand.heyWorkZone);
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

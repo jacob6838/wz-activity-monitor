@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package datahub.v1;
 
-option java_package = "com.wyoroad.protobuf";
+option java_package = "wyo.dot.protobuf";
 option java_outer_classname = "RoadSectionProto";
 option java_multiple_files = true;
 

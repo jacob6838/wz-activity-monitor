@@ -265,11 +265,18 @@ class FileStorageService extends GetxService {
 
   List<ActivityArea> convertFilesToActivityAreas(List<File> files) {
     List<ActivityArea> activityAreas = [];
+    print(files.length);
     for (File file in files) {
-      String activityAreaJson = file.readAsStringSync();
-      Map<String, dynamic> activityAreaMap = jsonDecode(activityAreaJson);
-      ActivityArea activityArea = ActivityArea.fromJson(activityAreaMap);
-      activityAreas.add(activityArea);
+      String activityAreasJson = file.readAsStringSync();
+      Map<String, dynamic> activityAreaMap = jsonDecode(activityAreasJson);
+
+      if (activityAreaMap.containsKey('id')) {
+        ActivityAreaWithId roadSectionWithId = ActivityAreaWithId.fromJson(activityAreaMap);
+        activityAreas.add(roadSectionWithId);
+      } else {
+        ActivityArea activityArea = ActivityArea.fromJson(activityAreaMap);
+        activityAreas.add(activityArea);
+      }
     }
     return activityAreas;
   }

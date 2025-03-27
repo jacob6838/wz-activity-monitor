@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wzam/controllers/notification_controller.dart';
+import 'package:wzam/controllers/project_map_controller.dart';
 import 'package:wzam/controllers/recording_controller.dart';
+import 'package:wzam/models/activity_area.dart';
+import 'package:wzam/models/project.dart';
+import 'package:wzam/models/road_section.dart';
 import 'package:wzam/models/wzdx_models.dart';
 import 'package:wzam/services/file_storage.dart';
+import 'package:wzam/ui/pages/select_project_zone.dart';
 import 'package:wzam/ui/pages/work_zone_recording.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
@@ -47,14 +52,83 @@ class RecordingConfiguration extends StatelessWidget {
         padding: const EdgeInsets.all(30.0),
         child: Obx(() => ListView(children: [
           verticalSpaceMedium,
-          _inputField("Project ID", projectIdController, isNumeric: true),
+        Row(
+              children: [
+                SizedBox(
+                  width: screenWidthPercentage(context, percentage: 0.7),
+                  child: _inputField("Project ID", projectIdController, isNumeric: true),
+                ),
+                Expanded(child: Container()),
+                IconButton(  
+                  onPressed: () async {
+                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
+                    projectMapController.selectProject.value = true;
+                    ProjectWithId? project = await Get.to(() => const SelectProjects());
+                    if (project != null) {
+                      projectIdController.text = project.id.toString();
+                      segmentIdController.text = "";
+                      areaIdController.text = "";
+                    }
+                  },
+                  icon: const Icon(Icons.map),
+                )
+              ],
+            ), //optional
+            verticalSpaceMedium,
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidthPercentage(context, percentage: 0.7),
+                  child: _inputField("Segment ID", segmentIdController, isNumeric: true),
+                ),
+                Expanded(child: Container()),
+                IconButton(  
+                  onPressed: () async {
+                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
+                    projectMapController.selectRoadSection.value = true;
+                    RoadSectionWithId? roadSection = await Get.to(() => const SelectProjects());
+                    if (roadSection != null) {
+                      segmentIdController.text = roadSection.id.toString();
+                      projectIdController.text = roadSection.project_id.toString();
+                      areaIdController.text = "";
+                    }
+                  },
+                  icon: const Icon(Icons.map),
+                )
+              ],
+            ),
+            verticalSpaceMedium,
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidthPercentage(context, percentage: 0.7),
+                  child: _inputField("Area ID", areaIdController, isNumeric: true),
+                ),
+                Expanded(child: Container()),
+                IconButton(  
+                  onPressed: () async {
+                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
+                    projectMapController.selectActivityArea.value = true;
+                    ActivityAreaWithId? areaActivity = await Get.to(() => const SelectProjects());
+                    if (areaActivity != null) {
+                      areaIdController.text = areaActivity.id.toString();
+                      segmentIdController.text = areaActivity.segment_id.toString();
+                      //TODO: Add project ID lookup here
+                    }
+                  },
+                  icon: const Icon(Icons.map),
+                )
+              ],
+            ),
+          verticalSpaceMedium,
+          /*_inputField("Project ID", projectIdController, isNumeric: true),
           verticalSpaceMedium,
           _inputField("Segment ID", segmentIdController, isNumeric: true),
           verticalSpaceMedium,
           _inputField("Area ID", areaIdController, isNumeric: true),
           verticalSpaceMedium,
           _inputField("Recording Name", recordingNameController, isRequired: true),
-          verticalSpaceMedium,
+          verticalSpaceMedium,*/
           ...workTypeSegments,
           ElevatedButton(
             onPressed: () {

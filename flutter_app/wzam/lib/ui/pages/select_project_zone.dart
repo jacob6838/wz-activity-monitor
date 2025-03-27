@@ -23,7 +23,7 @@ class SelectProjects extends StatelessWidget {
     final mapController = MapController();
 
     return FutureBuilder(
-      future: controller.initialize(),
+      future: controller.initializeTwo(),
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
@@ -60,7 +60,7 @@ class SelectProjects extends StatelessWidget {
           body: Stack(
             children: [
               _map(context, controller, mapController, MediaQuery.of(context).orientation),
-              Positioned(
+              /*Positioned(
                 right: 10,
                 top: 10,
                 child: Obx(() => GestureDetector( 
@@ -71,7 +71,7 @@ class SelectProjects extends StatelessWidget {
                       ? viewSettingsExpanded(controller)
                       : viewSettingsCollapsed(),
                 )),
-              )
+              )*/
             ],
           ),
         );
@@ -134,7 +134,7 @@ class SelectProjects extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text('Show Projects', style: style_body),
+              const Text('Show Projects', style: style_body),
               horizontalSpaceSmall,
               Transform.scale(
                 scale: 0.75,
@@ -203,7 +203,7 @@ class SelectProjects extends StatelessWidget {
               initialCenter: controller.currentPosition.value == null
                   ? const LatLng(40.507289, -105.093355)
                   : LatLng(controller.currentPosition.value!.latitude, controller.currentPosition.value!.longitude),
-              initialZoom: 17,
+              initialZoom: 12,
               onMapReady: () {
                 controller.mapController = mapController;
               },

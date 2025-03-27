@@ -31,6 +31,12 @@ class ProjectMapController extends GetxController {
   RxBool showProjects = true.obs;
   RxBool showRoadSections = true.obs;
   RxBool showActivityAreas = true.obs;
+  RxBool selectProject = false.obs;
+  RxBool selectRoadSection = false.obs;
+  RxBool selectActivityArea = false.obs;
+  //RxInt selectedProjectId = (-1).obs;
+  //RxInt selectedRoadSectionId = (-1).obs;
+  //RxInt selectedActivityAreaId = (-1).obs;
 
   Future<void> initialize() async {
     currentPosition = locationService.currentPosition;
@@ -39,6 +45,31 @@ class ProjectMapController extends GetxController {
     await downloadActivityAreasFromServer();
     while (currentPosition.value == null) {
       await Future.delayed(const Duration(milliseconds: 100));
+    }
+    if (selectProject.value) {
+      showProjects.value = true;
+      showRoadSections.value = false;
+      showActivityAreas.value = false;
+    }
+    updateLayers();
+  }
+
+  Future<void> initializeTwo() async {
+    while (currentPosition.value == null) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    if (selectProject.value) {
+      showProjects.value = true;
+      showRoadSections.value = false;
+      showActivityAreas.value = false;
+    } else if (selectRoadSection.value) {
+      showProjects.value = false;
+      showRoadSections.value = true;
+      showActivityAreas.value = false;
+    } else if (selectActivityArea.value) {
+      showProjects.value = false;
+      showRoadSections.value = false;
+      showActivityAreas.value = true;
     }
     updateLayers();
   }
@@ -356,6 +387,15 @@ class ProjectMapController extends GetxController {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    (selectProject.value) ? ClickableText(  
+                      text: "Select This Project",
+                      onTap: () {
+                        Get.back();
+                        ProjectWithId projectWithId = project as ProjectWithId;
+                        selectProject.value = false;
+                        Get.back(result: projectWithId);
+                      },
+                    ) : Container(),
                     Expanded(child: Container()),
                     ClickableText(
                       text: "Close",
@@ -429,6 +469,15 @@ class ProjectMapController extends GetxController {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    (selectRoadSection.value) ? ClickableText(  
+                      text: "Select This Road Section",
+                      onTap: () {
+                        Get.back();
+                        RoadSectionWithId roadSectionWithId = roadsection as RoadSectionWithId;
+                        selectRoadSection.value = false;
+                        Get.back(result: roadSectionWithId);
+                      },
+                    ) : Container(),
                     Expanded(child: Container()),
                     ClickableText(
                       text: "Close",
@@ -501,6 +550,15 @@ class ProjectMapController extends GetxController {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    (selectActivityArea.value) ? ClickableText(  
+                      text: "Select This Activity Area",
+                      onTap: () {
+                        Get.back();
+                        ActivityAreaWithId activityAreaWithId =  activityArea as ActivityAreaWithId;
+                        selectActivityArea.value = false;
+                        Get.back(result: activityAreaWithId);
+                      },
+                    ) : Container(),
                     Expanded(child: Container()),
                     ClickableText(
                       text: "Close",

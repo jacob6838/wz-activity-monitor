@@ -203,7 +203,7 @@ class ViewProjects extends StatelessWidget {
               initialCenter: controller.currentPosition.value == null
                   ? const LatLng(40.507289, -105.093355)
                   : LatLng(controller.currentPosition.value!.latitude, controller.currentPosition.value!.longitude),
-              initialZoom: 17,
+              initialZoom: 12,
               onMapReady: () {
                 controller.mapController = mapController;
               },

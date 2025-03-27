@@ -168,9 +168,7 @@ class ReportLocationSelectionController extends GetxController {
       polygonLayer.value = PolygonLayer(polygons: <Polygon>[reportZonePolygon]);
     }
     if (geometryType.value == GeometryType.linestring) {
-      print("GOOOODDDBYE");
       List<Polygon> borderzones = _generateLineBorderShapeFromLatLngPoint(points, lineWidth.value);
-      print(borderzones.length);
       polygonLayer.value = PolygonLayer(polygons: borderzones);
     }
   }
@@ -268,7 +266,6 @@ class ReportLocationSelectionController extends GetxController {
       );
       borderZones.add(reportZonePolygon);
     }
-    print("HELLLLLOOOOOOOOO");
     return borderZones;
   }
 

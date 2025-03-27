@@ -4,13 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wzam/controllers/notification_controller.dart';
+import 'package:wzam/controllers/project_map_controller.dart';
 import 'package:wzam/controllers/view_reports_controller.dart';
+import 'package:wzam/models/activity_area.dart';
 import 'package:wzam/models/project.dart';
 import 'package:wzam/models/report.dart';
+import 'package:wzam/models/road_section.dart';
 import 'package:wzam/models/wzdx_models.dart';
 import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/ui/pages/report_location_selection.dart';
+import 'package:wzam/ui/pages/select_project_zone.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
 import 'package:wzam/ui/styles/widgets/wzam_app_bar.dart';
@@ -75,12 +79,75 @@ class ReportPage extends StatelessWidget {
           children: [
             ListView(children: [
             verticalSpaceMedium,
-            _inputField("Project ID", projectIdController, isNumeric: true), //optional
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidthPercentage(context, percentage: 0.7),
+                  child: _inputField("Project ID", projectIdController, isNumeric: true),
+                ),
+                Expanded(child: Container()),
+                IconButton(  
+                  onPressed: () async {
+                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
+                    projectMapController.selectProject.value = true;
+                    ProjectWithId? project = await Get.to(() => const SelectProjects());
+                    if (project != null) {
+                      projectIdController.text = project.id.toString();
+                      segmentIdController.text = "";
+                      areaIdController.text = "";
+                    }
+                  },
+                  icon: const Icon(Icons.map),
+                )
+              ],
+            ), //optional
             verticalSpaceMedium,
-            _inputField("Segment ID", segmentIdController, isNumeric: true), //optional
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidthPercentage(context, percentage: 0.7),
+                  child: _inputField("Segment ID", segmentIdController, isNumeric: true),
+                ),
+                Expanded(child: Container()),
+                IconButton(  
+                  onPressed: () async {
+                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
+                    projectMapController.selectRoadSection.value = true;
+                    RoadSectionWithId? roadSection = await Get.to(() => const SelectProjects());
+                    if (roadSection != null) {
+                      segmentIdController.text = roadSection.id.toString();
+                      projectIdController.text = roadSection.project_id.toString();
+                      areaIdController.text = "";
+                    }
+                  },
+                  icon: const Icon(Icons.map),
+                )
+              ],
+            ),
             verticalSpaceMedium,
-            _inputField("Area ID", areaIdController, isNumeric: true), //optional
-            verticalSpaceMedium,
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidthPercentage(context, percentage: 0.7),
+                  child: _inputField("Area ID", areaIdController, isNumeric: true),
+                ),
+                Expanded(child: Container()),
+                IconButton(  
+                  onPressed: () async {
+                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
+                    projectMapController.selectActivityArea.value = true;
+                    ActivityAreaWithId? areaActivity = await Get.to(() => const SelectProjects());
+                    if (areaActivity != null) {
+                      areaIdController.text = areaActivity.id.toString();
+                      segmentIdController.text = areaActivity.segment_id.toString();
+                      //TODO: Add project ID lookup here
+                    }
+                  },
+                  icon: const Icon(Icons.map),
+                )
+              ],
+            ),
+            verticalSpaceMedium, 
             _inputField("Report Name", reportNameController, isRequired: true),
             Obx(() => Row(
               children: [
@@ -128,7 +195,7 @@ class ReportPage extends StatelessWidget {
             verticalSpaceSmall,
             Container(  
               height: 3,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.black,
             )),
             verticalSpaceSmall,
@@ -377,37 +444,6 @@ class ReportPage extends StatelessWidget {
         return WorkTypeName.roadwayCreation;
       default:
         throw ArgumentError('Invalid WorkTypeName: $type'); //TODO change this
-    }
-  }
-
-  List<String> _getGeometryTypes() {
-    List<GeometryType> geometryTypes = GeometryType.values;
-    List<String> geometryTypesStr = [];
-    for (GeometryType type in geometryTypes) {
-      switch (type) {
-        case GeometryType.multipoint:
-          geometryTypesStr.add('multipoint');
-        case GeometryType.linestring:
-          geometryTypesStr.add('linestring');
-        case GeometryType.polygon:
-          geometryTypesStr.add('polygon');
-        default:
-          geometryTypesStr.add('unknown');
-      }
-    }
-    return geometryTypesStr;
-  }
-
-  GeometryType _stringToGeometryType(String type) {
-    switch (type) {
-      case 'multipoint':
-        return GeometryType.multipoint;
-      case 'linestring':
-        return GeometryType.linestring;
-      case 'polygon':
-        return GeometryType.polygon;
-      default:
-        throw ArgumentError('Invalid GeometryType: $type');
     }
   }
 

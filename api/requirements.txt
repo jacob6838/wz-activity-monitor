@@ -9,3 +9,4 @@ python-keycloak==4.2.2
 # asyncio==3.4.3
 pytz==2024.1
 psycopg2-binary==2.9.10
+httpx==0.24.1

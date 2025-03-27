@@ -12,7 +12,7 @@ class AuthService {
   Future<String> getUsername() async => await _secureStorage.getUsername();
   Future<String> getPassword() async => await _secureStorage.getPassword();
   Future<String?> getKeycloakEndpoint() async => await _secureStorage.getKeycloakEndpoint();
-  Future<String?> getCimmsBroker() async => await _secureStorage.getCimmsBroker();
+  //Future<String?> getCimmsBroker() async => await _secureStorage.getCimmsBroker();
   Future<String?> getRealm() async => await _secureStorage.getRealm();
   Future<String?> getClient() async => await _secureStorage.getClient();
   Future<String?> getAccessToken() async => await _secureStorage.getAccessToken();
@@ -36,10 +36,6 @@ class AuthService {
     await _secureStorage.clear();
   }
 
-  Future clearProfile() async { 
-    await _secureStorage.clearProfiles();
-  }
-
   Future<int> authenticateUser(String username, String password, String keycloakEndpoint, String realm, String client, String clientSecret) async {
     try {
       var res = await http.post(getKeycloakAuthEndpoint(keycloakEndpoint, realm), headers: {
@@ -51,7 +47,7 @@ class AuthService {
         "client_secret": clientSecret,
         "grant_type": "password"
       }).timeout(
-        const Duration(seconds: 5),
+        const Duration(seconds: 5), 
         onTimeout: () => http.Response('Timeout', 408),
       );
 
@@ -60,6 +56,7 @@ class AuthService {
           var data = jsonDecode(res.body);
           await _secureStorage.setAccessToken(data['access_token']);
           await _secureStorage.setRefreshToken(data['refresh_token']);
+          print(data['access_token']);
           return res.statusCode;
         default:
           debugPrint(

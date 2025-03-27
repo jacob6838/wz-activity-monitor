@@ -64,9 +64,9 @@ class ReportLocationSelectionController extends GetxController {
 
   void changeOrAddMarker(TapPosition position, LatLng point) {
     if (selectedPoint.value != -1) {
-      if (geometryType == GeometryType.multipoint) {
+      if (geometryType.value == GeometryType.multipoint) {
         points[selectedPoint.value] = point;
-      } else if (geometryType == GeometryType.linestring) {
+      } else if (geometryType.value == GeometryType.linestring) {
         _editPointInPolylineLayer(point);
         _editPointInPolygonLayer(point);
       } else {
@@ -75,9 +75,9 @@ class ReportLocationSelectionController extends GetxController {
       }
       selectedPoint.value = -1;
     } else {
-      if (geometryType == GeometryType.multipoint) {
+      if (geometryType.value == GeometryType.multipoint) {
         points = [point].obs;
-      } else if (geometryType == GeometryType.linestring) {
+      } else if (geometryType.value == GeometryType.linestring) {
         _addPointToPolylineLayer(point);
         _addPointToPolygonLayer(point);
       } else {
@@ -97,7 +97,7 @@ class ReportLocationSelectionController extends GetxController {
         onTap: () {
           selectedPoint.value = points.indexOf(point);
         },
-        child: geometryType == GeometryType.multipoint ? Container(
+        child: geometryType.value == GeometryType.multipoint ? Container(
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10.0),
@@ -133,7 +133,7 @@ class ReportLocationSelectionController extends GetxController {
   }
 
   void _addPointToPolylineLayer(LatLng point) {
-    if (geometryType == GeometryType.linestring) {
+    if (geometryType.value == GeometryType.linestring) {
       points.add(point);
     }
     Polyline reportZonePolyline = Polyline(
@@ -145,7 +145,7 @@ class ReportLocationSelectionController extends GetxController {
   }
 
   void _editPointInPolylineLayer(LatLng point) {
-    if (geometryType == GeometryType.linestring) {
+    if (geometryType.value == GeometryType.linestring) {
       points[selectedPoint.value] = point;
     }
     Polyline reportZonePolyline = Polyline(
@@ -157,7 +157,7 @@ class ReportLocationSelectionController extends GetxController {
   }
 
   void _addPointToPolygonLayer(LatLng point) {
-    if (geometryType == GeometryType.polygon) {
+    if (geometryType.value == GeometryType.polygon) {
       points.add(point);
       Polygon reportZonePolygon = Polygon(
         points: points,
@@ -167,14 +167,16 @@ class ReportLocationSelectionController extends GetxController {
       );
       polygonLayer.value = PolygonLayer(polygons: <Polygon>[reportZonePolygon]);
     }
-    if (geometryType == GeometryType.linestring) {
+    if (geometryType.value == GeometryType.linestring) {
+      print("GOOOODDDBYE");
       List<Polygon> borderzones = _generateLineBorderShapeFromLatLngPoint(points, lineWidth.value);
+      print(borderzones.length);
       polygonLayer.value = PolygonLayer(polygons: borderzones);
     }
   }
 
   void _editPointInPolygonLayer(LatLng point) {
-    if (geometryType == GeometryType.polygon) {
+    if (geometryType.value == GeometryType.polygon) {
       points[selectedPoint.value] = point;
       Polygon reportZonePolygon = Polygon(
         points: points,
@@ -184,7 +186,7 @@ class ReportLocationSelectionController extends GetxController {
       );
       polygonLayer.value = PolygonLayer(polygons: <Polygon>[reportZonePolygon]);
     }
-    if (geometryType == GeometryType.linestring) {
+    if (geometryType.value == GeometryType.linestring) {
       List<Polygon> borderzones = _generateLineBorderShapeFromLatLngPoint(points, lineWidth.value).obs;
       polygonLayer.value = PolygonLayer(polygons: borderzones);
     }
@@ -239,7 +241,6 @@ class ReportLocationSelectionController extends GetxController {
  
   List<Polygon> _generateLineBorderShape(List<List<double>> points) {
     double widthInMeters = lineWidth.value;
-    
     double widthInDegreesLat = widthInMeters / 111320.0; // Approximate conversion factor for latitude
     double widthInDegreesLon = widthInMeters / (111320.0 * cos(points[0][0] * (pi / 180.0))); // Approximate conversion factor for longitude
     List<Polygon> borderZones = <Polygon>[];
@@ -267,12 +268,13 @@ class ReportLocationSelectionController extends GetxController {
       );
       borderZones.add(reportZonePolygon);
     }
+    print("HELLLLLOOOOOOOOO");
     return borderZones;
   }
 
   void updateBorderZone(double width) {
     lineWidth.value = width;
-    if (geometryType == GeometryType.linestring) {
+    if (geometryType.value == GeometryType.linestring) {
       List<Polygon> borderzones = _generateLineBorderShapeFromLatLngPoint(points, width);
       polygonLayer.value = PolygonLayer(polygons: borderzones);
     }
@@ -281,18 +283,18 @@ class ReportLocationSelectionController extends GetxController {
   void clearReportZonePoints() {
     points.clear();
     _updateMarkerLayer();
-    polylineLayer.value = PolylineLayer(polylines: <Polyline>[]);
-    polygonLayer.value = PolygonLayer(polygons: <Polygon>[]);
+    polylineLayer.value = const PolylineLayer(polylines: <Polyline>[]);
+    polygonLayer.value = const PolygonLayer(polygons: <Polygon>[]);
   }
 
   void saveReportLocationPoint() {
-    if (geometryType == GeometryType.multipoint && points.isEmpty) {
+    if (geometryType.value == GeometryType.multipoint && points.isEmpty) {
       NotificationController().queueNotification('Invalid Location Point', 'Please select a report location point');
       return;
-    } else if (geometryType == GeometryType.linestring && points.length < 2) {
+    } else if (geometryType.value == GeometryType.linestring && points.length < 2) {
       NotificationController().queueNotification('Invalid Location Line', 'Please select at least two points for the report location line');
       return;
-    } else if (geometryType == GeometryType.polygon && points.length < 3) {
+    } else if (geometryType.value == GeometryType.polygon && points.length < 3) {
       NotificationController().queueNotification('Invalid Location Polygon', 'Please select at least three points for the report location polygon');
       return;
     }
@@ -300,7 +302,7 @@ class ReportLocationSelectionController extends GetxController {
     for (LatLng point in points) {
       reportPageController.points.add([point.latitude, point.longitude]);
     }
-    if (geometryType == GeometryType.polygon) {
+    if (geometryType.value == GeometryType.polygon) {
       reportPageController.points.add([points[0].latitude, points[0].longitude]);
     }
     reportPageController.geometryType = geometryType.value;

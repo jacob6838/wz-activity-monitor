@@ -5,34 +5,42 @@ part 'report.g.dart';
 
 @JsonSerializable()
 class Report{
-  final int? projectId;
-  final int? segmentId;
-  final int? areaId;
-  final String reportName;
-  final List<TypeOfWork> typesOfWork;
-  final bool workersPresent;
-  final int? startDate;
-  final int? endDate;
-  final int reportDate;
-  final WorkZoneType areaType;
-  final double? mobilitySpeedMPH;
-  final GeometryType geometryType;
-  final List<double> point;
+  final int? project_id;
+  final int? segment_id;
+  final int? area_id;
+  final String report_name;
+  final List<TypeOfWork> types_of_work;
+  final bool workers_present;
+  final int? start_date;
+  final int? end_date;
+  final int report_date;
+  final WorkZoneType area_type;
+  final double? mobility_speed_mph;
+  final GeometryType geometry_type;
+  final List<List<double>> geometry;
+  final double? geometry_line_width;
+  final String? license_plate;
+  final RoadSegmentSurfaceType? surface_type; 
+  //final List<double> point;
   
   Report(
-      {required this.projectId,
-      required this.segmentId,
-      required this.areaId,
-      required this.reportName,
-      required this.typesOfWork,
-      required this.workersPresent,
-      required this.startDate,
-      required this.endDate,
-      required this.reportDate,
-      required this.areaType,
-      required this.mobilitySpeedMPH,
-      required this.geometryType,
-      required this.point});
+      {this.project_id,
+      this.segment_id,
+      this.area_id,
+      required this.report_name,
+      required this.types_of_work,
+      required this.workers_present,
+      this.start_date,
+      this.end_date,
+      required this.report_date,
+      required this.area_type,
+      this.mobility_speed_mph,
+      required this.geometry_type,
+      required this.geometry,
+      this.geometry_line_width,
+      this.license_plate,
+      this.surface_type,
+      });
 
   factory Report.fromJson(Map<String, dynamic> json) => _$ReportFromJson(json);
 
@@ -45,34 +53,23 @@ class ReportWithId extends Report {
 
   ReportWithId({
     required this.id,
-    required int? projectId,
-    required int? segmentId,
-    required int? areaId,
-    required String reportName,
-    required List<TypeOfWork> typesOfWork,
-    required bool workersPresent,
-    required int? startDate,
-    required int? endDate,
-    required int reportDate,
-    required WorkZoneType areaType,
-    required double? mobilitySpeedMPH,
-    required GeometryType geometryType,
-    required List<double> point,
-  }) : super(
-          projectId: projectId,
-          segmentId: segmentId,
-          areaId: areaId,
-          reportName: reportName,
-          typesOfWork: typesOfWork,
-          workersPresent: workersPresent,
-          startDate: startDate,
-          endDate: endDate,
-          reportDate: reportDate,
-          areaType: areaType,
-          mobilitySpeedMPH: mobilitySpeedMPH,
-          geometryType: geometryType,
-          point: point,
-        );
+    super.project_id,
+    super.segment_id,
+    super.area_id,
+    required super.report_name,
+    required super.types_of_work,
+    required super.workers_present,
+    super.start_date,
+    super.end_date,
+    required super.report_date,
+    required super.area_type,
+    super.mobility_speed_mph,
+    required super.geometry_type,
+    required super.geometry,
+    super.geometry_line_width,
+    super.license_plate,
+    super.surface_type,
+  });
 
   factory ReportWithId.fromJson(Map<String, dynamic> json) => _$ReportWithIdFromJson(json);
 

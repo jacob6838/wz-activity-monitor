@@ -13,7 +13,7 @@ class ViewReports extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ViewReportsController());
+    final controller = Get.find<ViewReportsController>();
     final mapController = MapController();
 
     return FutureBuilder(
@@ -54,6 +54,29 @@ class ViewReports extends StatelessWidget {
           body: Stack(
             children: [
               _map(context, controller, mapController, MediaQuery.of(context).orientation),
+              Positioned(  
+                bottom: 40,
+                left: 20,
+                right: 20,
+                child: Obx(() => Column(
+                  children: [
+                    ElevatedButton(  
+                      onPressed: () async{
+                        await controller.downloadReportsFromServer();
+                      },
+                      child: const Text('Load Reports'),
+                    ),
+                    ElevatedButton(  
+                      onPressed: controller.areThereLocalReports.value ? () async{
+                        await controller.uploadLocalReports();
+                      } : null,
+                      child: const Text('Upload Local Reports'),
+                    ),
+                  ],
+                )),
+              ),
+              Obx(() => controller.tryingToUpload.value ?
+                const Center(child: CircularProgressIndicator()): Container()),
             ],
           ),
         );
@@ -85,6 +108,8 @@ class ViewReports extends StatelessWidget {
                   'id': 'mapbox.satellite',
                 },
               ),
+              controller.polygonLayer.value,
+              controller.polylineLayer.value,
               controller.markerLayer.value,
             ]),
     ));

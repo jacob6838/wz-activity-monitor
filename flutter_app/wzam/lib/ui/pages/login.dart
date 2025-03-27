@@ -62,7 +62,7 @@ class LogIn extends StatelessWidget {
                   ),
                 ),
                 onTap: () async {
-                  Uri url = Uri.parse('https://www.neaeraconsulting.com/');
+                  Uri url = Uri.parse('https://www.neaeraconsulting.com/'); //TODO: Change this to the sign up page
                   if (await canLaunchUrl(url)) {
                     await launchUrl(url);
                   } else {

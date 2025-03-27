@@ -213,6 +213,17 @@ class TypeOfWork {
   Map<String, dynamic> toJson() => _$TypeOfWorkToJson(this);
 }
 
+enum RoadSegmentSurfaceType {
+  @JsonValue('paved')
+  paved,
+  @JsonValue('gravel')
+  gravel,
+  @JsonValue('dirt')
+  dirt,
+  @JsonValue('grooved')
+  grooved,
+}
+
 enum WorkerPresenceDefinition {
   @JsonValue('workers-in-work-zone-working')
   workersInWorkZoneWorking,

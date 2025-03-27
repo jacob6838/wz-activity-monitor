@@ -36,4 +36,11 @@ flutter:
   assets:
     - assets/images/wzam_abr.png
     - assets/images/load_screen.png
+    - assets/images/lane.png
+    - assets/images/closed_lane.png
+    - assets/images/workers_present.png
+    - assets/images/workers_not_present.png
+    - assets/images/speed_limit.png
+    - assets/images/speed_change.png
+    - assets/images/location_with_border.png
     - .env

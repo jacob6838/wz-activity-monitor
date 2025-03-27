@@ -33,7 +33,9 @@ jobs:
 
       - name: Generate Protocol Buffer Java Code
         run: |
-          protoc --proto_path=./schemas --java_out=./schemas/java_output --experimental_allow_proto3_optional ./schemas/*.proto
+          # Find all .proto files recursively and process them
+          find ./schemas -type f -name "*.proto" | xargs protoc --proto_path=./schemas --java_out=./schemas/java_output --experimental_allow_proto3_optional
+
 
       - name: Verify Generation Success
         run: |
@@ -43,4 +45,5 @@ jobs:
           else
             echo "Successfully generated the following Java files:"
             find ./schemas/java_output -type f -name "*.java" | sort
+            echo "Total Java files generated: $(find ./schemas/java_output -type f -name "*.java" | wc -l)"
           fi

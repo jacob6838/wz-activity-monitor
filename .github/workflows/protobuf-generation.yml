@@ -44,9 +44,3 @@ jobs:
             echo "Successfully generated the following Java files:"
             find ./schemas/java_output -type f -name "*.java" | sort
           fi
-
-      - name: Upload Generated Files as Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: proto-java-classes
-          path: ./schemas/java_output

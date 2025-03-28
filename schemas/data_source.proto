@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package datahub.v1;
+
+import "google/protobuf/timestamp.proto";
+
+message DataSource {
+    string organization_name = 1;
+    string contact_name = 2;
+    string contact_email = 3;
+    uint32 update_frequency_ms = 4;
+}
+
+message DataSourceCreated {
+    uint64 id = 1;
+    DataSource data_source = 2;
+    google.protobuf.Timestamp created_time = 3;
+}
+
+message DataSourceUpdated {
+    uint64 id = 1;
+    DataSource data_source = 2;
+    google.protobuf.Timestamp updated_time = 3;
+}

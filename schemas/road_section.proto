@@ -8,24 +8,30 @@ import "google/protobuf/timestamp.proto";
 
 message RoadSection {
     uint64 project_id = 1;
-    RoadwayDirection direction = 2;
-    string name = 3;
-    string description = 4;
-    RoadSectionActiveStatus armed_status = 5;
-    google.protobuf.Timestamp start_date = 6;
-    optional google.protobuf.Timestamp end_date = 7;
-    WorkZoneType area_type = 8;
-    repeated string road_names = 9;
-    optional string beginning_cross_street = 10;
-    optional string ending_cross_street = 11;
-    double beginning_milepost = 12;
-    double ending_milepost = 13;
-    RoadSurfaceType surface_type = 14;
+    uint64 activity_area_id = 2;
+    RoadwayDirection direction = 3;
+    string name = 4;
+    string description = 5;
+    RoadSectionActiveStatus status = 6;
+    google.protobuf.Timestamp start_date = 7;
+    optional google.protobuf.Timestamp end_date = 8;
+    WorkZoneType area_type = 9;
+    repeated string road_names = 10;
+    optional string beginning_cross_street = 11;
+    optional string ending_cross_street = 12;
+    double beginning_milepost = 13;
+    double ending_milepost = 14;
+    WorkerPresence worker_presence = 15;
+    float reduced_speed_limit_kph = 16;
+    repeated Restriction restrictions = 17;
+    repeated Lane lanes = 18;
+    RoadSurfaceType surface_type = 19;
     oneof Geometry {
-        LineStringGeometry line_string = 15;
-        PolygonGeometry polygon = 16;
+        PointGeometry point = 20;
+        LineStringGeometry line_string = 21;
+        PolygonGeometry polygon = 22;
     }
-    repeated BoundingBox bbox = 17;
+    repeated BoundingBox bbox = 23;
 
     enum RoadDirection {
         ROAD_DIRECTION_BOTH = 0;

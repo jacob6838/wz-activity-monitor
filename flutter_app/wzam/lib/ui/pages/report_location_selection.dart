@@ -49,14 +49,14 @@ class ReportLocationSelection extends StatelessWidget {
                       color: Colors.white.withOpacity(0.6),
                     ),
                     width: screenWidth(context) - 40,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text('Tap on the map to select the location of the work zone area', style: style_three, textAlign: TextAlign.center),
                     ),
                   ),
                 ),
               ),
-              Obx(() => controller.geometryType == GeometryType.linestring ? Positioned(  
+              Obx(() => controller.geometryType.value == GeometryType.linestring ? Positioned(  
                 top: 150,
                 left: 20,
                 right: 20,
@@ -69,7 +69,7 @@ class ReportLocationSelection extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 20, top: 8, bottom: 8),
                     child: Row(  
                       children: [  
-                        Text('Line Width (m): ', style: style_four),
+                        const Text('Line Width (m): ', style: style_four),
                         Slider(  
                           value: controller.lineWidth.value,
                           onChanged: (double value) {
@@ -95,7 +95,7 @@ class ReportLocationSelection extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 40),
                   child: Obx(() => Column(
                     children: [
-                      controller.geometryType != GeometryType.multipoint ?ElevatedButton(
+                      controller.geometryType.value != GeometryType.multipoint ?ElevatedButton(
                         onPressed: controller.points.isNotEmpty ? () {
                           controller.clearReportZonePoints();
                         } : null,
@@ -197,7 +197,8 @@ class ReportLocationSelection extends StatelessWidget {
                   'id': 'mapbox.satellite',
                 },
               ),
-              controller.borderPoints.isNotEmpty || controller.geometryType == GeometryType.polygon ? controller.polygonLayer.value : Container(),
+              //controller.borderPoints.isNotEmpty || controller.geometryType.value == GeometryType.polygon ? controller.polygonLayer.value : Container(),
+              controller.polygonLayer.value,
               controller.polylineLayer.value,
               controller.markerLayer.value,
             ]),

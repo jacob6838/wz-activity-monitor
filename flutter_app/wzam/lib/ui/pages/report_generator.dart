@@ -14,6 +14,8 @@ import 'package:wzam/models/wzdx_models.dart';
 import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/ui/pages/report_location_selection.dart';
+import 'package:wzam/ui/pages/select_activity_area.dart';
+import 'package:wzam/ui/pages/select_project.dart';
 import 'package:wzam/ui/pages/select_project_zone.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
@@ -33,7 +35,6 @@ class ReportPageController extends GetxController {
 
 //This is the report page where the user can generate a report
 class ReportPage extends StatelessWidget {
-
   final FileStorageService fileStorageService = Get.find<FileStorageService>();
   final ReportPageController controller = Get.put(ReportPageController());
   final List<Widget> formFields = [];
@@ -42,10 +43,13 @@ class ReportPage extends StatelessWidget {
   final TextEditingController areaIdController = TextEditingController();
   final TextEditingController reportNameController = TextEditingController();
   final RxBool areWorkersPresent = false.obs;
-  final List workTypeNameList = [["",false]];
+  final List workTypeNameList = [
+    ["", false]
+  ];
   final TextEditingController startDateController = TextEditingController();
   final TextEditingController endDateController = TextEditingController();
-  final TextEditingController reportDateController = TextEditingController();
+  final TextEditingController reportDateController = TextEditingController(
+      text: DateFormat.yMd().add_jm().format(DateTime.now()));
   final TextEditingController mobilitySpeedController = TextEditingController();
 
   final TextEditingController startDate = TextEditingController();
@@ -53,7 +57,7 @@ class ReportPage extends StatelessWidget {
   final TextEditingController reportDate = TextEditingController();
 
   final TextEditingController licensePlate = TextEditingController();
-  
+
   ReportPage({super.key});
   @override
   Widget build(BuildContext context) {
@@ -64,236 +68,267 @@ class ReportPage extends StatelessWidget {
       ..._workTypeSegment(context, workTypeNames, 0),
     ].obs;
     List<String> surfaceType = _getSurfaceTypes();
-    if (controller.project != null){
+    if (controller.project != null) {
       projectIdController.text = controller.project!.id.toString();
     }
 
-
     return Scaffold(
-      appBar: WZAMAppBar(
-        title: "Generate a Report",
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(30.0),
-        child: Obx(() => Stack(
-          children: [
-            ListView(children: [
-            verticalSpaceMedium,
-            Row(
-              children: [
-                SizedBox(
-                  width: screenWidthPercentage(context, percentage: 0.7),
-                  child: _inputField("Project ID", projectIdController, isNumeric: true),
-                ),
-                Expanded(child: Container()),
-                IconButton(  
-                  onPressed: () async {
-                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
-                    projectMapController.selectProject.value = true;
-                    ProjectWithId? project = await Get.to(() => const SelectProjects());
-                    if (project != null) {
-                      projectIdController.text = project.id.toString();
-                      segmentIdController.text = "";
-                      areaIdController.text = "";
-                    }
-                  },
-                  icon: const Icon(Icons.map),
-                )
-              ],
-            ), //optional
-            verticalSpaceMedium,
-            Row(
-              children: [
-                SizedBox(
-                  width: screenWidthPercentage(context, percentage: 0.7),
-                  child: _inputField("Segment ID", segmentIdController, isNumeric: true),
-                ),
-                Expanded(child: Container()),
-                IconButton(  
-                  onPressed: () async {
-                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
-                    projectMapController.selectRoadSection.value = true;
-                    RoadSectionWithId? roadSection = await Get.to(() => const SelectProjects());
-                    if (roadSection != null) {
-                      segmentIdController.text = roadSection.id.toString();
-                      projectIdController.text = roadSection.project_id.toString();
-                      areaIdController.text = "";
-                    }
-                  },
-                  icon: const Icon(Icons.map),
-                )
-              ],
-            ),
-            verticalSpaceMedium,
-            Row(
-              children: [
-                SizedBox(
-                  width: screenWidthPercentage(context, percentage: 0.7),
-                  child: _inputField("Area ID", areaIdController, isNumeric: true),
-                ),
-                Expanded(child: Container()),
-                IconButton(  
-                  onPressed: () async {
-                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
-                    projectMapController.selectActivityArea.value = true;
-                    ActivityAreaWithId? areaActivity = await Get.to(() => const SelectProjects());
-                    if (areaActivity != null) {
-                      areaIdController.text = areaActivity.id.toString();
-                      segmentIdController.text = areaActivity.segment_id.toString();
-                      //TODO: Add project ID lookup here
-                    }
-                  },
-                  icon: const Icon(Icons.map),
-                )
-              ],
-            ),
-            verticalSpaceMedium, 
-            _inputField("Report Name", reportNameController, isRequired: true),
-            Obx(() => Row(
-              children: [
-                const Text("Are Workers Present?"),
-                Checkbox(
-                  value: areWorkersPresent.value,
-                  onChanged: (value) {
-                    areWorkersPresent.value = value!;
-                  },
-                ),
-              ],
-            )),
-            verticalSpaceMedium,
-            ...workTypeSegments,
-            ElevatedButton(
-              onPressed: () {
-                workTypeNameList.add(["",false]);
-                workTypeSegments = workTypeSegments + _workTypeSegment(context, workTypeNames, workTypeNameList.length - 1);
-              },
-              child: const Text("Add Another Type of Work"),
-            ),
-            verticalSpaceMedium,
-            _inputField("Start Date", startDateController, isDate: true, dateStorage: startDate, context: context), //optional
-            verticalSpaceMedium,
-            _inputField("End Date", endDateController, isDate: true, dateStorage: endDate, context: context), //optional
-            verticalSpaceMedium,
-            _inputField("Report Date", reportDateController, isDate: true, dateStorage: reportDate, isRequired: true, context: context), 
-            verticalSpaceMedium,
-            _dropdownField("Area Type", areaTypes, context, isAreaWorkType: true),
-            verticalSpaceMedium,
-            _inputField("Mobility Speed (MPH)", mobilitySpeedController, isDouble: true), //optional
-            verticalSpaceMedium,
-            //_dropdownField("Geometry Type", geometryTypes, context, isGeometryType: true), //TODO: Get rid of
-            //verticalSpaceMedium,
-            _dropdownField("Surface Type", surfaceType, context, isSurfaceType: true),
-            verticalSpaceMedium,
-            _inputField("License Plate", licensePlate),
-            verticalSpaceMedium,
-            ElevatedButton(
-              onPressed: () {
-                Get.to(() => const ReportLocationSelection());
-              },
-              child: controller.points.isEmpty ? const Text("Select Activty Location") : Text("Change Activity Location"),
-            ),
-            verticalSpaceSmall,
-            Container(  
-              height: 3,
-              decoration: const BoxDecoration(
-                color: Colors.black,
-            )),
-            verticalSpaceSmall,
-            _submitButton(),
-          ]),
-          if (controller.waitingOnReportPost.value) const Center(child: CircularProgressIndicator()),
-          ],
-        )),
-      ));
+        appBar: WZAMAppBar(
+          title: "Generate a Report",
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Obx(() => Stack(
+                children: [
+                  ListView(children: [
+                    verticalSpaceMedium,
+                    Row(
+                      children: [
+                        SizedBox(
+                          width:
+                              screenWidthPercentage(context, percentage: 0.7),
+                          child: _inputField("Project ID", projectIdController,
+                              isNumeric: true),
+                        ),
+                        Expanded(child: Container()),
+                        IconButton(
+                          onPressed: () async {
+                            ProjectMapController projectMapController =
+                                Get.find<ProjectMapController>();
+                            projectMapController.selectProject.value = true;
+                            ProjectWithId? project =
+                                await Get.to(() => const ProjectList());
+                            if (project != null) {
+                              projectIdController.text = project.id.toString();
+                              segmentIdController.text = "";
+                              areaIdController.text = "";
+                            }
+                          },
+                          icon: const Icon(Icons.list),
+                        )
+                      ],
+                    ),
+                    verticalSpaceMedium,
+                    Row(
+                      children: [
+                        SizedBox(
+                          width:
+                              screenWidthPercentage(context, percentage: 0.7),
+                          child: _inputField("Area ID", areaIdController,
+                              isNumeric: true),
+                        ),
+                        Expanded(child: Container()),
+                        IconButton(
+                          onPressed: () async {
+                            ProjectMapController projectMapController =
+                                Get.find<ProjectMapController>();
+                            projectMapController.selectActivityArea.value =
+                                true;
+                            ActivityAreaWithId? areaActivity =
+                                await Get.to(() => const SelectActivityArea());
+                            if (areaActivity != null) {
+                              areaIdController.text =
+                                  areaActivity.id.toString();
+                              segmentIdController.text =
+                                  areaActivity.segment_id.toString();
+                              //TODO: Add project ID lookup here
+                            }
+                          },
+                          icon: const Icon(Icons.map),
+                        )
+                      ],
+                    ),
+                    verticalSpaceMedium,
+                    _inputField("Report Name", reportNameController,
+                        isRequired: true),
+                    Obx(() => Row(
+                          children: [
+                            const Text("Are Workers Present?"),
+                            Checkbox(
+                              value: areWorkersPresent.value,
+                              onChanged: (value) {
+                                areWorkersPresent.value = value!;
+                              },
+                            ),
+                          ],
+                        )),
+                    verticalSpaceMedium,
+                    ...workTypeSegments,
+                    ElevatedButton(
+                      onPressed: () {
+                        workTypeNameList.add(["", false]);
+                        workTypeSegments = workTypeSegments +
+                            _workTypeSegment(context, workTypeNames,
+                                workTypeNameList.length - 1);
+                      },
+                      child: const Text("Add Another Type of Work"),
+                    ),
+                    verticalSpaceMedium,
+                    _inputField("Start Date", startDateController,
+                        isDate: true,
+                        dateStorage: startDate,
+                        context: context), //optional
+                    verticalSpaceMedium,
+                    _inputField("End Date", endDateController,
+                        isDate: true,
+                        dateStorage: endDate,
+                        context: context), //optional
+                    verticalSpaceMedium,
+                    _inputField("Report Date", reportDateController,
+                        isDate: true,
+                        dateStorage: reportDate,
+                        isRequired: true,
+                        context: context),
+                    verticalSpaceMedium,
+                    _dropdownField("Area Type", areaTypes, context,
+                        isAreaWorkType: true),
+                    verticalSpaceMedium,
+                    _inputField("Mobility Speed (MPH)", mobilitySpeedController,
+                        isDouble: true), //optional
+                    verticalSpaceMedium,
+                    //_dropdownField("Geometry Type", geometryTypes, context, isGeometryType: true), //TODO: Get rid of
+                    //verticalSpaceMedium,
+                    _dropdownField("Surface Type", surfaceType, context,
+                        isSurfaceType: true),
+                    verticalSpaceMedium,
+                    _inputField("License Plate", licensePlate),
+                    verticalSpaceMedium,
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => const ReportLocationSelection());
+                      },
+                      child: controller.points.isEmpty
+                          ? const Text("Select Activty Location")
+                          : Text("Change Activity Location"),
+                    ),
+                    verticalSpaceSmall,
+                    Container(
+                        height: 3,
+                        decoration: const BoxDecoration(
+                          color: Colors.black,
+                        )),
+                    verticalSpaceSmall,
+                    _submitButton(),
+                  ]),
+                  if (controller.waitingOnReportPost.value)
+                    const Center(child: CircularProgressIndicator()),
+                ],
+              )),
+        ));
   }
 
-  Widget _inputField(String labelText, TextEditingController controller, {bool isNumeric = false, bool isDate = false, TextEditingController? dateStorage, bool isRequired = false, bool isDouble = false, BuildContext? context}) {
+  Widget _inputField(String labelText, TextEditingController controller,
+      {bool isNumeric = false,
+      bool isDate = false,
+      TextEditingController? dateStorage,
+      bool isRequired = false,
+      bool isDouble = false,
+      BuildContext? context}) {
     return TextField(
       decoration: InputDecoration(
         labelText: isRequired ? labelText : "$labelText (optional)",
       ),
       controller: controller,
-      keyboardType: isNumeric || isDouble ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-      inputFormatters: isNumeric ? <TextInputFormatter>[
-        FilteringTextInputFormatter.digitsOnly
-      ] : isDouble ? <TextInputFormatter>[
-        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
-      ] : null,
+      keyboardType: isNumeric || isDouble
+          ? const TextInputType.numberWithOptions(decimal: true)
+          : TextInputType.text,
+      inputFormatters: isNumeric
+          ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
+          : isDouble
+              ? <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                ]
+              : null,
       readOnly: isDate,
-      onTap: isDate ? () async {
-        DateTime? pickedDate = await showDatePicker(
-          context: context!,
-          initialDate: DateTime.now(), 
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2101),
-        );
-        if (pickedDate != null) {
-          controller.text = "${pickedDate.toLocal()}".split(' ')[0];
-          TimeOfDay? pickedTime = await showTimePicker(
-            context: context,
-            initialTime: const TimeOfDay(hour: 8, minute: 0),
-          );
-          if (pickedTime != null) {
-            DateTime finalDateTime = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
-            String formattedDate = DateFormat.yMd().add_jm().format(finalDateTime);
-            dateStorage?.text = finalDateTime.toString();
-            controller.text = formattedDate;
-          }
-        }
-      } : null,
+      onTap: isDate
+          ? () async {
+              DateTime? pickedDate = await showDatePicker(
+                context: context!,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2101),
+              );
+              if (pickedDate != null) {
+                controller.text = "${pickedDate.toLocal()}".split(' ')[0];
+                TimeOfDay? pickedTime = await showTimePicker(
+                  context: context,
+                  initialTime: const TimeOfDay(hour: 8, minute: 0),
+                );
+                if (pickedTime != null) {
+                  DateTime finalDateTime = DateTime(
+                      pickedDate.year,
+                      pickedDate.month,
+                      pickedDate.day,
+                      pickedTime.hour,
+                      pickedTime.minute);
+                  String formattedDate =
+                      DateFormat.yMd().add_jm().format(finalDateTime);
+                  dateStorage?.text = finalDateTime.toString();
+                  controller.text = formattedDate;
+                }
+              }
+            }
+          : null,
       onChanged: (value) async {
         // Handle changes if needed
       },
     );
   }
 
-  Widget _dropdownField(String labelText, List<String> optionsList, BuildContext context, {int? index, bool isAreaWorkType = false, bool isGeometryType = false, bool isSurfaceType = false}) {
+  Widget _dropdownField(
+      String labelText, List<String> optionsList, BuildContext context,
+      {int? index,
+      bool isAreaWorkType = false,
+      bool isGeometryType = false,
+      bool isSurfaceType = false}) {
     return DropdownButtonFormField(
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          filled: true,
+          fillColor: Theme.of(context).scaffoldBackgroundColor,
         ),
-        filled: true,
-        fillColor: Theme.of(context).scaffoldBackgroundColor,
-      ),
-      isExpanded: true,
-      menuMaxHeight: screenHeightPercentage(context, percentage: 0.5),
-      dropdownColor: Theme.of(context).dialogBackgroundColor,
-      items: optionsList.map((e) => DropdownMenuItem(
-        value: e,
-        child: Text(e),
-      )).toList(),
-      onChanged: (value) async {
-        if (isAreaWorkType) {
-          controller.areaType = value.toString();
-        } else if (isGeometryType) {
-          //controller.geometryType = value
-        } else if (isSurfaceType) {
-          controller.surfaceType = value.toString();
-        } else {
-          workTypeNameList[index!][0] = value.toString();
-        }
-      }
-    );
+        isExpanded: true,
+        menuMaxHeight: screenHeightPercentage(context, percentage: 0.5),
+        dropdownColor: Theme.of(context).dialogBackgroundColor,
+        items: optionsList
+            .map((e) => DropdownMenuItem(
+                  value: e,
+                  child: Text(e),
+                ))
+            .toList(),
+        onChanged: (value) async {
+          if (isAreaWorkType) {
+            controller.areaType = value.toString();
+          } else if (isGeometryType) {
+            //controller.geometryType = value
+          } else if (isSurfaceType) {
+            controller.surfaceType = value.toString();
+          } else {
+            workTypeNameList[index!][0] = value.toString();
+          }
+        });
   }
 
-  List<Widget> _workTypeSegment(BuildContext context, List<String> workTypeNames, int index) {
+  List<Widget> _workTypeSegment(
+      BuildContext context, List<String> workTypeNames, int index) {
     RxBool isArchitecturalChange = false.obs;
     return [
       _dropdownField("Type of Work", workTypeNames, context, index: index),
       Obx(() => Row(
-        children: [
-          const Text("Is there an Architectural Change?"),
-          Checkbox(
-            value: isArchitecturalChange.value,
-            onChanged: (value) {
-              isArchitecturalChange.value = value!;
-              workTypeNameList[index][1] = value;
-            },
-          ),
-        ],
-      )),
+            children: [
+              const Text("Is there an Architectural Change?"),
+              Checkbox(
+                value: isArchitecturalChange.value,
+                onChanged: (value) {
+                  isArchitecturalChange.value = value!;
+                  workTypeNameList[index][1] = value;
+                },
+              ),
+            ],
+          )),
     ];
   }
 
@@ -311,27 +346,33 @@ class ReportPage extends StatelessWidget {
 
   bool _fieldsValid() {
     if (reportNameController.text == "") {
-      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      NotificationController().queueNotification(
+          'Invalid Report', 'One or more required fields are missing');
       return false;
     }
     if (workTypeNameList[0][0] == "") {
-      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      NotificationController().queueNotification(
+          'Invalid Report', 'One or more required fields are missing');
       return false;
     }
     if (reportDateController.text == "") {
-      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      NotificationController().queueNotification(
+          'Invalid Report', 'One or more required fields are missing');
       return false;
     }
     if (controller.areaType == "") {
-      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      NotificationController().queueNotification(
+          'Invalid Report', 'One or more required fields are missing');
       return false;
     }
     if (controller.geometryType == "") {
-      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      NotificationController().queueNotification(
+          'Invalid Report', 'One or more required fields are missing');
       return false;
     }
     if (controller.points.isEmpty) {
-      NotificationController().queueNotification('Invalid Report', 'One or more required fields are missing');
+      NotificationController().queueNotification(
+          'Invalid Report', 'One or more required fields are missing');
       return false;
     }
     return true;
@@ -356,7 +397,8 @@ class ReportPage extends StatelessWidget {
   }
 
   List<String> _getSurfaceTypes() {
-    List<RoadSegmentSurfaceType> surfaceTypeOptions = RoadSegmentSurfaceType.values;
+    List<RoadSegmentSurfaceType> surfaceTypeOptions =
+        RoadSegmentSurfaceType.values;
     List<String> surfaceTypes = [];
     for (RoadSegmentSurfaceType type in surfaceTypeOptions) {
       switch (type) {
@@ -389,7 +431,8 @@ class ReportPage extends StatelessWidget {
   }
 
   List<String> _getWorkTypeNames() {
-    List<WorkTypeName> workTypeNameOptions = WorkTypeName.values; //TODO get rid of this and use .toString().split('.').last instead
+    List<WorkTypeName> workTypeNameOptions = WorkTypeName
+        .values; //TODO get rid of this and use .toString().split('.').last instead
     List<String> workTypeNamesStr = [];
     for (WorkTypeName type in workTypeNameOptions) {
       switch (type) {
@@ -477,32 +520,44 @@ class ReportPage extends StatelessWidget {
         continue;
       }
       typesOfWork.add(TypeOfWork(
-        typeName: _stringToWorkTypeName(workType[0]),
-        isArchitecturalChange: workType[1]
-      ));
+          typeName: _stringToWorkTypeName(workType[0]),
+          isArchitecturalChange: workType[1]));
     }
     return typesOfWork;
   }
 
-  Future<void> _saveReport() async{
+  Future<void> _saveReport() async {
     List<TypeOfWork> typesOfWork = _getTypesOfWork();
 
     Report report = Report(
-      project_id: projectIdController.value.text != "" ? int.parse(projectIdController.value.text) : null, //optional field
-      segment_id: segmentIdController.text != "" ? int.parse(segmentIdController.text) : null, //optional field
-      area_id: areaIdController.text != "" ? int.parse(areaIdController.text) : null, //optional field
+      project_id: projectIdController.value.text != ""
+          ? int.parse(projectIdController.value.text)
+          : null, //optional field
+      segment_id: segmentIdController.text != ""
+          ? int.parse(segmentIdController.text)
+          : null, //optional field
+      area_id: areaIdController.text != ""
+          ? int.parse(areaIdController.text)
+          : null, //optional field
       report_name: reportNameController.text,
       types_of_work: typesOfWork,
       workers_present: areWorkersPresent.value,
       start_date: _parseDate(startDate.text), //optional field
       end_date: _parseDate(endDate.text), //optional field
-      report_date: _parseDate(reportDate.text) ?? DateTime.now().millisecondsSinceEpoch, //TODO change to launch an error
+      report_date: _parseDate(reportDate.text) ??
+          DateTime.now()
+              .millisecondsSinceEpoch, //TODO change to launch an error
       area_type: _stringToWorkZoneType(controller.areaType),
-      mobility_speed_mph: mobilitySpeedController.text != "" ? double.parse(mobilitySpeedController.text) : null, //optional field
+      mobility_speed_mph: mobilitySpeedController.text != ""
+          ? double.parse(mobilitySpeedController.text)
+          : null, //optional field
       geometry_type: controller.geometryType,
       geometry: controller.points,
-      geometry_line_width: controller.geometryType == GeometryType.linestring ? controller.lineWidth : null,
-      license_plate: licensePlate.text != "" ? licensePlate.text : null, //optional field
+      geometry_line_width: controller.geometryType == GeometryType.linestring
+          ? controller.lineWidth
+          : null,
+      license_plate:
+          licensePlate.text != "" ? licensePlate.text : null, //optional field
       surface_type: _stringToSurfaceType(controller.surfaceType),
     );
     controller.waitingOnReportPost.value = true;
@@ -512,32 +567,36 @@ class ReportPage extends StatelessWidget {
   }
 
   Future<void> postReport(Report report) async {
-    ViewReportsController viewReportsController = Get.find<ViewReportsController>();
+    ViewReportsController viewReportsController =
+        Get.find<ViewReportsController>();
     AuthService authService = Get.find<AuthService>();
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
-    final headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ${await authService.getAccessToken()}'};
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${await authService.getAccessToken()}'
+    };
     try {
-      final response = await http.post(url, 
-        headers: headers, 
+      final response = await http.post(
+        url,
+        headers: headers,
         body: json.encode({
-            "project_id": report.project_id,
-            "segment_id": report.segment_id,
-            "area_id": report.area_id,
-            "report_name": report.report_name,
-            "types_of_work": report.types_of_work.map((e) => e.toJson()).toList(),
-            "workers_present": report.workers_present,
-            "start_date": report.start_date,
-            "end_date": report.end_date,
-            "report_date": report.report_date,
-            "area_type": report.area_type.toString().split('.').last,
-            "mobility_speed_mph": report.mobility_speed_mph,
-            "geometry_type": report.geometry_type.toString().split('.').last,
-            "geometry": report.geometry,
-            "geometry_line_width": report.geometry_line_width,
-            "license_plate": report.license_plate,
-            "surface_type": report.surface_type.toString().split('.').last,
-          }
-        ),
+          "project_id": report.project_id,
+          "segment_id": report.segment_id,
+          "area_id": report.area_id,
+          "report_name": report.report_name,
+          "types_of_work": report.types_of_work.map((e) => e.toJson()).toList(),
+          "workers_present": report.workers_present,
+          "start_date": report.start_date,
+          "end_date": report.end_date,
+          "report_date": report.report_date,
+          "area_type": report.area_type.toString().split('.').last,
+          "mobility_speed_mph": report.mobility_speed_mph,
+          "geometry_type": report.geometry_type.toString().split('.').last,
+          "geometry": report.geometry,
+          "geometry_line_width": report.geometry_line_width,
+          "license_plate": report.license_plate,
+          "surface_type": report.surface_type.toString().split('.').last,
+        }),
       );
       if (response.statusCode == 200) {
         print('Report posted successfully');
@@ -566,7 +625,6 @@ class ReportPage extends StatelessWidget {
         print('Failed to post report: ${response.statusCode}');
         fileStorageService.saveReport(report, false);
         viewReportsController.areThereLocalReports.value = true;
-
       }
     } catch (e) {
       print('Error posting report: $e');

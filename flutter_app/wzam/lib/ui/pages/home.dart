@@ -11,6 +11,7 @@ import 'package:wzam/services/speech_service.dart';
 import 'package:wzam/services/wake_word_service.dart';
 import 'package:wzam/ui/pages/recording_configuration.dart';
 import 'package:wzam/ui/pages/report_generator.dart';
+import 'package:wzam/ui/pages/view_projects.dart';
 import 'package:wzam/ui/pages/view_recordings.dart';
 import 'package:wzam/ui/pages/view_reports.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
@@ -114,6 +115,17 @@ class Home extends StatelessWidget {
                 title: 'View Recordings',
                 context: context),
             verticalSpaceMedium,
+            _button(
+                onPressed: () async {
+                  Get.to(() => ViewProjects());
+                },
+                title: 'View Project Zones',
+                context: context),
+            Obx(() =>
+                viewRecordingsController.unUploadedRecordings.isNotEmpty ||
+                        viewReportsController.areThereLocalReports.value
+                    ? unUploadedWarning(context)
+                    : Container()),
             ElevatedButton(
               onPressed: () {
                 if (speechService.isListening.value) {

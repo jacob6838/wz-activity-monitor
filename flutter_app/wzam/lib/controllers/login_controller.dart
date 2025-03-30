@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wzam/controllers/activity_area_map_controller.dart';
 import 'package:wzam/controllers/notification_controller.dart';
 import 'package:wzam/controllers/project_map_controller.dart';
 import 'package:wzam/controllers/view_recordings_controller.dart';
@@ -94,9 +95,12 @@ class LoginController extends GetxController {
     ViewRecordingsController viewRecordingsController =
         Get.put(ViewRecordingsController());
     ProjectMapController projectMapController = Get.put(ProjectMapController());
-    await viewReportsController.initialize();
-    await viewRecordingsController.loadInRecordings();
-    await projectMapController.initialize();
+    ActivityAreaMapController activityAreaMapController =
+        Get.put(ActivityAreaMapController());
+    viewReportsController.initialize();
+    viewRecordingsController.loadInRecordings();
+    projectMapController.initialize();
+    activityAreaMapController.initialize();
   }
 
   Future logout() async {

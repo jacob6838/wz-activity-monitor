@@ -147,7 +147,7 @@ class FileStorageService extends GetxService {
     final String directoryPath = await _getDownloadsDirectory(subdirectory: subdirectory) ?? "";
     final dir = Directory(directoryPath);
     if (!await dir.exists()) {
-      throw Exception("Directory does not exist");
+      await dir.create(recursive: true);
     }
     final List<FileSystemEntity> entities = await dir.list().toList();
     final List<File> files = entities.whereType<File>().toList();
@@ -159,6 +159,7 @@ class FileStorageService extends GetxService {
     final String directoryPath = await _getDownloadsDirectory(subdirectory: subdirectory) ?? "";
     final dir = Directory(directoryPath);
     if (!await dir.exists()) {
+      await dir.create(recursive: true);
       //throw Exception("Directory does not exist");
     } else{
       final List<FileSystemEntity> entities = await dir.list().toList();

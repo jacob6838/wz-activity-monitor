@@ -6,13 +6,13 @@ import "common.proto";
 import "wzdx.proto";
 import "google/protobuf/timestamp.proto";
 
-message RoadSection {
+message RoadSubEvent {
     uint64 project_id = 1;
     uint64 activity_area_id = 2;
     RoadwayDirection direction = 3;
     string name = 4;
     string description = 5;
-    RoadSectionActiveStatus status = 6;
+    RoadSubEventActiveStatus status = 6;
     google.protobuf.Timestamp start_date = 7;
     optional google.protobuf.Timestamp end_date = 8;
     WorkZoneType area_type = 9;
@@ -26,12 +26,14 @@ message RoadSection {
     repeated Restriction restrictions = 17;
     repeated Lane lanes = 18;
     RoadSurfaceType surface_type = 19;
+    optional MarkedLocationType start_location_type = 20;
+    optional MarkedLocationType end_location_type = 21;
     oneof Geometry {
-        PointGeometry point = 20;
-        LineStringGeometry line_string = 21;
-        PolygonGeometry polygon = 22;
+        PointGeometry point = 22;
+        LineStringGeometry line_string = 23;
+        PolygonGeometry polygon = 24;
     }
-    repeated BoundingBox bbox = 23;
+    repeated BoundingBox bbox = 25;
 
     enum RoadDirection {
         ROAD_DIRECTION_BOTH = 0;
@@ -41,7 +43,7 @@ message RoadSection {
         ROAD_DIRECTION_WESTBOUND = 4;
     }
     
-    enum RoadSectionActiveStatus {
+    enum RoadSubEventActiveStatus {
         ROAD_SECTION_ACTIVE_STATUS_ACTIVE = 0;
         ROAD_SECTION_ACTIVE_STATUS_INACTIVE = 1;
     }

@@ -8,12 +8,12 @@ import "google/type/timeofday.proto";
 import "google/type/date.proto";
 import "google/protobuf/timestamp.proto";
 
-message ActivityArea {
+message WorkZone {
     uint64 project_id = 1;
-    repeated RoadSectionLink road_sections = 2;
+    repeated RoadSubEventLink road_sections = 2;
     string name = 3;
     string description = 4;
-    ActivityAreaActiveStatus status = 5;
+    WorkZoneActiveStatus status = 5;
     google.protobuf.Timestamp start_date = 6;
     optional google.protobuf.Timestamp end_date = 7;
     WorkZoneType area_type = 8;
@@ -26,25 +26,25 @@ message ActivityArea {
     }
     BoundingBox bbox = 19;
 
-    message RoadSectionLink {
-        uint64 road_section_id = 1;
-        RoadSectionLinkType road_section_link_type = 2;
+    message RoadSubEventLink {
+        uint64 road_sub_event_id = 1;
+        RoadSubEventLinkType road_sub_event_link_type = 2;
 
-        enum RoadSectionLinkType {
-            ROAD_SECTION_LINK_TYPE_FIRST_IN_SEQUENCE = 0;
-            ROAD_SECTION_LINK_TYPE_NEXT_IN_SEQUENCE = 1;
-            ROAD_SECTION_LINK_TYPE_FIRST_OCCURRENCE = 2;
-            ROAD_SECTION_LINK_TYPE_NEXT_OCCURRENCE = 3;
-            ROAD_SECTION_LINK_TYPE_RELATED_WORK_ZONE = 4;
-            ROAD_SECTION_LINK_TYPE_RELATED_DETOUR = 5;
-            ROAD_SECTION_LINK_TYPE_PLANNED_MOVING_OPERATION = 6;
-            ROAD_SECTION_LINK_TYPE_ACTIVE_MOVING_OPERATION = 7;
+        enum RoadSubEventLinkType {
+            ROAD_SUB_EVENT_LINK_TYPE_FIRST_IN_SEQUENCE = 0;
+            ROAD_SUB_EVENT_LINK_TYPE_NEXT_IN_SEQUENCE = 1;
+            ROAD_SUB_EVENT_LINK_TYPE_FIRST_OCCURRENCE = 2;
+            ROAD_SUB_EVENT_LINK_TYPE_NEXT_OCCURRENCE = 3;
+            ROAD_SUB_EVENT_LINK_TYPE_RELATED_WORK_ZONE = 4;
+            ROAD_SUB_EVENT_LINK_TYPE_RELATED_DETOUR = 5;
+            ROAD_SUB_EVENT_LINK_TYPE_PLANNED_MOVING_OPERATION = 6;
+            ROAD_SUB_EVENT_LINK_TYPE_ACTIVE_MOVING_OPERATION = 7;
         }
     }
     
-    enum ActivityAreaActiveStatus {
-        ACTIVITY_AREA_ACTIVE_STATUS_ACTIVE = 0;
-        ACTIVITY_AREA_ACTIVE_STATUS_INACTIVE = 1;
+    enum WorkZoneActiveStatus {
+        WORK_ZONE_ACTIVE_STATUS_ACTIVE = 0;
+        WORK_ZONE_ACTIVE_STATUS_INACTIVE = 1;
     }
 
     message EventRecurrence {

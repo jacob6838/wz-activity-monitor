@@ -12,32 +12,31 @@ import "google/protobuf/timestamp.proto";
 
 message RoadSubEvent {
     uint64 project_id = 1;
-    uint64 activity_area_id = 2;
+    uint64 work_zone_id = 2;
     RoadwayDirection direction = 3;
     string name = 4;
     string description = 5;
-    RoadSubEventActiveStatus status = 6;
-    google.protobuf.Timestamp start_date = 7;
-    optional google.protobuf.Timestamp end_date = 8;
-    WorkZoneType area_type = 9;
-    repeated string road_names = 10;
-    optional string beginning_cross_street = 11;
-    optional string ending_cross_street = 12;
-    double beginning_milepost = 13;
-    double ending_milepost = 14;
-    WorkerPresence worker_presence = 15;
-    float reduced_speed_limit_kph = 16;
-    repeated Restriction restrictions = 17;
-    repeated Lane lanes = 18;
-    RoadSurfaceType surface_type = 19;
-    optional MarkedLocationType start_location_type = 20;
-    optional MarkedLocationType end_location_type = 21;
+    google.protobuf.Timestamp start_date = 6;
+    optional google.protobuf.Timestamp end_date = 7;
+    WorkZoneType area_type = 8;
+    repeated string road_names = 9;
+    optional string beginning_cross_street = 10;
+    optional string ending_cross_street = 11;
+    double beginning_milepost = 12;
+    double ending_milepost = 13;
+    WorkerPresence worker_presence = 14;
+    float reduced_speed_limit_kph = 15;
+    repeated Restriction restrictions = 16;
+    repeated Lane lanes = 17;
+    RoadSurfaceType surface_type = 18;
+    optional MarkedLocationType start_location_type = 19;
+    optional MarkedLocationType end_location_type = 20;
     oneof Geometry {
-        PointGeometry point = 22;
-        LineStringGeometry line_string = 23;
-        PolygonGeometry polygon = 24;
+        PointGeometry point = 21;
+        LineStringGeometry line_string = 22;
+        PolygonGeometry polygon = 23;
     }
-    repeated BoundingBox bbox = 25;
+    repeated BoundingBox bbox = 24;
 
     enum RoadDirection {
         ROAD_DIRECTION_BOTH = 0;
@@ -45,10 +44,5 @@ message RoadSubEvent {
         ROAD_DIRECTION_SOUTHBOUND = 2;
         ROAD_DIRECTION_EASTBOUND = 3;
         ROAD_DIRECTION_WESTBOUND = 4;
-    }
-    
-    enum RoadSubEventActiveStatus {
-        ROAD_SECTION_ACTIVE_STATUS_ACTIVE = 0;
-        ROAD_SECTION_ACTIVE_STATUS_INACTIVE = 1;
     }
 }

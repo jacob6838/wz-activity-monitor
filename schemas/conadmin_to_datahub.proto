@@ -53,7 +53,7 @@ message WorkZoneCreated {
     uint64 id = 1;
     optional uint64 request_id = 2;
     WorkZone work_zone = 3;
-    repeated RoadSubEvent road_sub_events = 4;
+    repeated RoadSubEventCreated road_sub_events_created = 4;
     google.protobuf.Timestamp created_time = 5;
 }
 
@@ -61,8 +61,10 @@ message WorkZoneUpdated {
     uint64 id = 1;
     optional uint64 request_id = 2;
     WorkZone work_zone = 3;
-    repeated RoadSubEvent road_sub_events = 4;
-    google.protobuf.Timestamp updated_time = 5;
+    repeated RoadSubEventCreated road_sub_events_created = 4;
+    repeated RoadSubEventUpdated road_sub_events_updated = 5;
+    repeated RoadSubEventRemoved road_sub_events_removed = 6;
+    google.protobuf.Timestamp updated_time = 7;
 }
 
 message WorkZoneRemoved {

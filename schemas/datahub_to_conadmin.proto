@@ -7,10 +7,10 @@ option java_outer_classname = "DataHubToConAdminProto";
 option java_multiple_files = true;
 
 import "field_device.proto";
-import "activity_area.proto";
-import "road_section.proto";
-import "vehicle_location.proto";
 import "google/protobuf/timestamp.proto";
+import "road_sub_event.proto";
+import "vehicle_location.proto";
+import "work_zone.proto";
 
 message UpdateVehicleLocation {
     uint64 id = 1;
@@ -31,8 +31,27 @@ message UpdateFieldDevice {
     uint64 request_id = 4;
 }
 
+message CreateWorkZone {
+    WorkZone work_zone = 1;
+    google.protobuf.Timestamp request_time = 2;
+    DataHubUpdateSource source = 3;
+    repeated CreateRoadSection road_sub_events_to_create = 4;
+    uint64 request_id = 7;
+}
+
+message UpdateWorkZone {
+    uint64 id = 1;
+    WorkZone work_zone = 2;
+    google.protobuf.Timestamp request_time = 3;
+    DataHubUpdateSource source = 4;
+    repeated CreateRoadSection create_road_sub_events = 5;
+    repeated UpdateRoadSection update_road_sub_events = 6;
+    repeated RemoveRoadSection remove_road_sub_events = 7;
+    uint64 request_id = 8;
+}
+
 message CreateRoadSection {
-    RoadSection road_section = 1;
+    RoadSubEvent road_sub_event = 1;
     google.protobuf.Timestamp request_time = 2;
     DataHubUpdateSource source = 3;
     uint64 request_id = 4;
@@ -40,22 +59,15 @@ message CreateRoadSection {
 
 message UpdateRoadSection {
     uint64 id = 1;
-    ActivityArea road_section = 2;
+    RoadSubEvent road_sub_event = 2;
     google.protobuf.Timestamp request_time = 3;
     DataHubUpdateSource source = 4;
     uint64 request_id = 5;
 }
 
-message CreateActivityArea {
-    ActivityArea activity_area = 1;
-    google.protobuf.Timestamp request_time = 2;
-    DataHubUpdateSource source = 3;
-    uint64 request_id = 4;
-}
-
-message UpdateActivityArea {
+message RemoveRoadSection {
     uint64 id = 1;
-    ActivityArea activity_area = 2;
+    RoadSubEvent road_sub_event = 2;
     google.protobuf.Timestamp request_time = 3;
     DataHubUpdateSource source = 4;
     uint64 request_id = 5;

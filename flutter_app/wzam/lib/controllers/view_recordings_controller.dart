@@ -9,6 +9,7 @@ import 'package:wzam/controllers/notification_controller.dart';
 import 'package:wzam/models/recording.dart';
 import 'package:wzam/models/report.dart';
 import 'package:wzam/models/wzdx_models.dart';
+import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/location_service.dart';
 import 'package:intl/intl.dart';
@@ -43,8 +44,10 @@ class ViewRecordingsController extends GetxController {
   }
 
   Future<void> postRecording(Recording recording, FileStorageService fileStorageService) async {
+    AuthService authService = Get.find<AuthService>();
     final url = Uri.parse('https://wzamapi.azurewebsites.net/recordings');
-    final headers = {'Content-Type': 'application/json'};
+    final headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ${await authService.getAccessToken()}'};
+    
     try {
       final response = await http.post(url, 
         headers: headers, 
@@ -55,9 +58,9 @@ class ViewRecordingsController extends GetxController {
             "area_id": recording.area_id,
             "recording_name": recording.recording_name,
             "types_of_work": recording.types_of_work.map((e) => e.toJson()).toList(),
-            "start_date": 0,
-            "end_date": 0,
-            "recording_date": 0,
+            "start_date": recording.start_date,
+            "end_date": recording.end_date, //TODO: Could be the cause of errors
+            "recording_date": recording.recording_date,
             "area_type": recording.area_type.toString().split('.').last,
             "mobility_speed_mph": recording.mobility_speed_mph,
             'points': recording.points.map((point) => {

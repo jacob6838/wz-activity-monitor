@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:wzam/controllers/notification_controller.dart';
 import 'package:wzam/models/report.dart';
 import 'package:wzam/models/wzdx_models.dart';
+import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/location_service.dart';
 import 'package:intl/intl.dart';
@@ -201,8 +202,9 @@ class ViewReportsController extends GetxController {
   }
 
   Future<void> postReport(Report report, FileStorageService fileService) async {
+    AuthService authService = Get.find<AuthService>();
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
-    final headers = {'Content-Type': 'application/json'};
+    final headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ${await authService.getAccessToken()}'};
     try {
       final response = await http.post(url, 
         headers: headers, 
@@ -492,8 +494,9 @@ class ViewReportsController extends GetxController {
   }
 
   Future<void> _editReport(Report report, int reportId, FileStorageService fileService) async {
+    AuthService authService = Get.find<AuthService>();
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
-    final headers = {'Content-Type': 'application/json'};
+    final headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ${await authService.getAccessToken()}'};
     try {
       final response = await http.post(url, 
         headers: headers, 
@@ -521,7 +524,8 @@ class ViewReportsController extends GetxController {
         print('Report posted successfully');
         try {
           final deleteUrl = Uri.parse('https://wzamapi.azurewebsites.net/reports/$reportId');
-          final headers = {'Content-Type': 'application/json'};
+          //final headers = {'Content-Type': 'application/json'};
+          final headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
           final deleteResponse = await http.delete(deleteUrl, headers: headers);
           if(deleteResponse.statusCode == 200) {
             print('Report deleted successfully');

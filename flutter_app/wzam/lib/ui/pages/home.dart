@@ -6,6 +6,7 @@ import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/ui/pages/recording_configuration.dart';
 import 'package:wzam/ui/pages/report_generator.dart';
+import 'package:wzam/ui/pages/view_projects.dart';
 import 'package:wzam/ui/pages/view_recordings.dart';
 import 'package:wzam/ui/pages/view_reports.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
@@ -73,6 +74,13 @@ class Home extends StatelessWidget {
               context: context
             ),
             verticalSpaceMedium,
+            _button(  
+              onPressed: () async{
+                Get.to(() => ViewProjects());
+              },
+              title: 'View Project Zones',
+              context: context
+            ),
             Obx(() => viewRecordingsController.unUploadedRecordings.isNotEmpty || viewReportsController.areThereLocalReports.value ? unUploadedWarning(context) : Container()),
           ]
         ),

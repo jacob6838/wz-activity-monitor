@@ -17,7 +17,7 @@ class ViewReports extends StatelessWidget {
     final mapController = MapController();
 
     return FutureBuilder(
-      future: controller.initialize(),
+      future: controller.initialize(),  //TODO: Accidentally calling this twice now?
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(

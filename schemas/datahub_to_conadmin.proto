@@ -2,69 +2,76 @@ syntax = "proto3";
 
 package datahub.v1;
 
-import "common.proto";
+option java_package = "wyo.dot.protobuf";
+option java_outer_classname = "DataHubToConAdminProto";
+option java_multiple_files = true;
+
 import "field_device.proto";
-import "activity_area.proto";
-import "road_section.proto";
-import "recording.proto";
 import "google/protobuf/timestamp.proto";
+import "road_sub_event.proto";
+import "vehicle_location.proto";
+import "work_zone.proto";
 
-message VehicleLocationUpdated {
+message UpdateVehicleLocation {
     uint64 id = 1;
-    string license_plate = 2;
-    VehicleOperationType operation_type = 3;
-    PointGeometry location = 4;
-    double velocity_kph = 5;
-    double heading = 6;
-    google.protobuf.Timestamp timestamp = 7;
-    
-    enum VehicleOperationType {
-        VEHICLE_OPERATION_STRIPING = 0;
-        VEHICLE_OPERATION_PLOWING = 1;
-        VEHICLE_OPERATION_MOWING = 2;
-        VEHICLE_OPERATION_COMMUTING = 3;
-        VEHICLE_OPERATION_OTHER = 4;
-        VEHICLE_OPERATION_UNKNOWN = 5;
-    }
-}
-
-message FieldDeviceCreateRequest {
-    FieldDevice field_device = 1;
-    google.protobuf.Timestamp updated_time = 2;
-}
-
-message FieldDeviceUpdateRequest {
-    uint64 id = 1;
-    FieldDevice field_device = 2;
+    VehicleLocation vehicle_location = 2;
     google.protobuf.Timestamp updated_time = 3;
 }
 
-message RoadSectionCreateRequest {
-    RoadSection proposed_road_section = 1;
+message CreateFieldDevice {
+    FieldDevice field_device = 1;
+    google.protobuf.Timestamp updated_time = 2;
+    uint64 request_id = 3;
+}
+
+message UpdateFieldDevice {
+    uint64 id = 1;
+    FieldDevice field_device = 2;
+    google.protobuf.Timestamp updated_time = 3;
+    uint64 request_id = 4;
+}
+
+message CreateWorkZone {
+    WorkZone work_zone = 1;
     google.protobuf.Timestamp request_time = 2;
     DataHubUpdateSource source = 3;
+    repeated CreateRoadSection road_sub_events_to_create = 4;
+    uint64 request_id = 7;
 }
 
-message RoadSectionUpdateRequest {
+message UpdateWorkZone {
     uint64 id = 1;
-    ActivityArea proposed_road_section = 2;
+    WorkZone work_zone = 2;
     google.protobuf.Timestamp request_time = 3;
     DataHubUpdateSource source = 4;
+    repeated CreateRoadSection create_road_sub_events = 5;
+    repeated UpdateRoadSection update_road_sub_events = 6;
+    repeated RemoveRoadSection remove_road_sub_events = 7;
+    uint64 request_id = 8;
 }
 
-message ActivityAreaCreateRequest {
-    ActivityArea proposed_activity_area = 1;
+message CreateRoadSection {
+    RoadSubEvent road_sub_event = 1;
     google.protobuf.Timestamp request_time = 2;
     DataHubUpdateSource source = 3;
+    uint64 request_id = 4;
 }
 
-message ActivityAreaUpdateRequest {
+message UpdateRoadSection {
     uint64 id = 1;
-    ActivityArea proposed_activity_area = 2;
+    RoadSubEvent road_sub_event = 2;
     google.protobuf.Timestamp request_time = 3;
     DataHubUpdateSource source = 4;
+    uint64 request_id = 5;
 }
 
+message RemoveRoadSection {
+    uint64 id = 1;
+    RoadSubEvent road_sub_event = 2;
+    google.protobuf.Timestamp request_time = 3;
+    DataHubUpdateSource source = 4;
+    uint64 request_id = 5;
+}
 
 // Data Types
 message ReportSummary {
@@ -76,11 +83,6 @@ message ReportSummary {
     string contact_phone = 6;
 }
 
-message RecordingMarkingSummary {
-    uint32 path_index = 1;
-    repeated RecordingMarking markings = 2;
-}
-
 message RecordingSummary {
     uint64 id = 1;
     string name = 2;
@@ -88,7 +90,6 @@ message RecordingSummary {
     google.protobuf.Timestamp report_date = 4;
     double length_meters = 5;
     double position_accuracy_meters = 6;
-    LineStringGeometry path = 7;
 }
 
 message FieldDeviceSummaryArray {

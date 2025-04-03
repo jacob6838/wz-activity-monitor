@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package datahub.v1;
+
+option java_package = "wyo.dot.protobuf";
+option java_outer_classname = "WorkZoneProto";
+option java_multiple_files = true;
+
+import "common.proto";
+import "wzdx.proto";
+import "google/type/timeofday.proto";
+import "google/type/date.proto";
+import "google/protobuf/timestamp.proto";
+
+message WorkZone {
+    uint64 project_id = 1;
+    repeated RoadSubEventLink road_sections = 2;
+    string name = 3;
+    string description = 4;
+    WorkZoneActiveStatus status = 5;
+    google.protobuf.Timestamp start_date = 6;
+    optional google.protobuf.Timestamp end_date = 7;
+    WorkZoneType area_type = 8;
+    repeated TypeOfWork types_of_work = 14;
+    repeated EventRecurrence schedule = 15;
+    oneof Geometry {
+        PointGeometry point = 16;
+        LineStringGeometry line_string = 17;
+        PolygonGeometry polygon = 18;
+    }
+    BoundingBox bbox = 19;
+
+    message RoadSubEventLink {
+        uint64 road_sub_event_id = 1;
+        RoadSubEventLinkType road_sub_event_link_type = 2;
+
+        enum RoadSubEventLinkType {
+            ROAD_SUB_EVENT_LINK_TYPE_FIRST_IN_SEQUENCE = 0;
+            ROAD_SUB_EVENT_LINK_TYPE_NEXT_IN_SEQUENCE = 1;
+            ROAD_SUB_EVENT_LINK_TYPE_FIRST_OCCURRENCE = 2;
+            ROAD_SUB_EVENT_LINK_TYPE_NEXT_OCCURRENCE = 3;
+            ROAD_SUB_EVENT_LINK_TYPE_RELATED_WORK_ZONE = 4;
+            ROAD_SUB_EVENT_LINK_TYPE_RELATED_DETOUR = 5;
+            ROAD_SUB_EVENT_LINK_TYPE_PLANNED_MOVING_OPERATION = 6;
+            ROAD_SUB_EVENT_LINK_TYPE_ACTIVE_MOVING_OPERATION = 7;
+        }
+    }
+    
+    enum WorkZoneActiveStatus {
+        WORK_ZONE_ACTIVE_STATUS_ACTIVE = 0;
+        WORK_ZONE_ACTIVE_STATUS_INACTIVE = 1;
+    }
+
+    message EventRecurrence {
+        google.type.TimeOfDay start_time = 1;
+        google.type.TimeOfDay end_time = 2;
+        google.type.Date start_date = 3;
+        google.type.Date end_date = 4;
+
+        bool monday = 5;
+        bool tuesday = 6;
+        bool wednesday = 7;
+        bool thursday = 8;
+        bool friday = 9;
+        bool saturday = 10;
+        bool sunday = 11;
+
+        optional bool exclusion = 12; // If false, the time span is included
+                             // If true, the time span is excluded from other EventRecurrence entries
+    }
+}

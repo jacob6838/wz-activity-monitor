@@ -3,12 +3,15 @@
 This directory contains Protobuf schema definitions for DataHub messages. The files in this directory are described as follows:
 
 1. [common.proto](common.proto): defines generic, commonly used types, including timestamps and geometry
-2. [wzdx.proto](wzdx.proto): defines WZDx message objects and enums, for use in other messages
-3. [project.proto](project.proto): defines the Project object, representing a construction project/funding source
-4. [road_section.proto](road_section.proto): defines the Road Section object, representing an area of roadway containing traffic impacts (signage, cones, ...)
-5. [activity_area.proto](activity_area.proto): defines the Activity Area object, representing a position within a road section where workers are present
-6. [report.proto](report.proto): defines the Report object, representing a user-provided report of ongoing or upcoming work
-7. [recording.proto](recording.proto): defines the Recording object, representing a user-driven annotated path through a work zone
+2. [conadmin_to_datahub.proto](conadmin_to_datahub.proto): defines the interface messages from the ConAdmin to the DataHub, enabling the DataHub to stay in sync with changes made by the ConAdmin
+3. [data_source.proto](data_source.proto): defines the DataSource object, representing each data provider, to be included in generated messages
+4. [datahub_to_conadmin.proto](datahub_to_conadmin.proto): defines the interface messages from the DataHub to the ConAdmin, including sharing of requested updates and newly registered devices
+5. [field_device.proto](field_device.proto): defines the FieldDevice object, representing a connected work zone device (like an arrow board) sharing location along with other properties
+6. [project.proto](project.proto): defines the Project object, representing a construction project/funding source
+7. [road_sub_event.proto](road_sub_event.proto): defines the RoadSubEvent object, representing a small portion of a work zone with static properties (speed limit, worker presence, lane status)
+8. [vehicle_location.proto](vehicle_location.proto): defines VehicleLocation message, representing each vehicle coming through an AVL data feed
+9. [work_zone.proto](work_zone.proto): defines the WorkZone object, representing the metadata and location of an entire work zone and linking to multiple road sub events
+10. [wzdx.proto](wzdx.proto): defines WZDx message objects and enums, for use in other messages
 
 ## Imports
 
@@ -16,7 +19,9 @@ This project uses downloaded versions of the google/type proto files. These file
 
 This project also uses downloaded versions of the google/protobuf proto files, sourced from the [Protocol Buffers Repository](https://github.com/protocolbuffers/protobuf/tree/main/src/google/protobuf)
 
-## Generating Source Code
+## Code Generation
+
+For the most up-to-date command for generating your models from the protocol buffer definitions, see [protobuf-generation.yaml](../.github/workflows/protobuf-generation.yml)
 
 ### Dart
 

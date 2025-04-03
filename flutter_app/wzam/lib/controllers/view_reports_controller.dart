@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:wzam/controllers/notification_controller.dart';
 import 'package:wzam/models/report.dart';
 import 'package:wzam/models/wzdx_models.dart';
+import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/location_service.dart';
 import 'package:intl/intl.dart';
@@ -34,9 +35,9 @@ class ViewReportsController extends GetxController {
   final recentlyCompletedColor = Color.fromARGB(255, 168, 0, 0).withOpacity(0.6);
   RxBool tryingToUpload = false.obs;
 
-  Future<void> initialize(BuildContext context) async {
+  Future<void> initialize() async {
     currentPosition = locationService.currentPosition;
-    reportMarkers = await _getReportMarkers(context);
+    reportMarkers = await _getReportMarkers();
     while (currentPosition.value == null) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
@@ -104,7 +105,7 @@ class ViewReportsController extends GetxController {
     );
   }
 
-  Future<List<Marker>> _getReportMarkers(BuildContext context) async {
+  Future<List<Marker>> _getReportMarkers() async {
     FileStorageService fileService = Get.find<FileStorageService>();
     List<Report> reports = await fileService.getReportFiles('reports');
     List<Marker> markers = <Marker>[];
@@ -196,13 +197,14 @@ class ViewReportsController extends GetxController {
       await postReport(report, fileService);
       tryingToUpload.value = false;
     }
-    reportMarkers = await _getReportMarkers(Get.context!);
+    reportMarkers = await _getReportMarkers();
     _updateMarkerLayer();
   }
 
   Future<void> postReport(Report report, FileStorageService fileService) async {
+    AuthService authService = Get.find<AuthService>();
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
-    final headers = {'Content-Type': 'application/json'};
+    final headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ${await authService.getAccessToken()}'};
     try {
       final response = await http.post(url, 
         headers: headers, 
@@ -249,7 +251,7 @@ class ViewReportsController extends GetxController {
   Future<void> downloadReportsFromServer() async {
     FileStorageService fileService = Get.find<FileStorageService>();
     await fileService.downloadReportsFromServer();
-    reportMarkers = await _getReportMarkers(Get.context!);
+    reportMarkers = await _getReportMarkers();
     _updateMarkerLayer();
     _updatePolylineLayer();
     _updatePolygonLayer();
@@ -492,8 +494,9 @@ class ViewReportsController extends GetxController {
   }
 
   Future<void> _editReport(Report report, int reportId, FileStorageService fileService) async {
+    AuthService authService = Get.find<AuthService>();
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
-    final headers = {'Content-Type': 'application/json'};
+    final headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ${await authService.getAccessToken()}'};
     try {
       final response = await http.post(url, 
         headers: headers, 
@@ -521,7 +524,8 @@ class ViewReportsController extends GetxController {
         print('Report posted successfully');
         try {
           final deleteUrl = Uri.parse('https://wzamapi.azurewebsites.net/reports/$reportId');
-          final headers = {'Content-Type': 'application/json'};
+          //final headers = {'Content-Type': 'application/json'};
+          final headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
           final deleteResponse = await http.delete(deleteUrl, headers: headers);
           if(deleteResponse.statusCode == 200) {
             print('Report deleted successfully');

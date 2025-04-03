@@ -2,12 +2,16 @@ syntax = "proto3";
 
 package datahub.v1;
 
+option java_package = "wyo.dot.protobuf";
+option java_outer_classname = "CommonProto";
+option java_multiple_files = true;
+
 import "google/type/latlng.proto";
 
 // ------------ GeoJSON Types ------------
 message Geometry {
     oneof geometry {
-        google.type.LatLng point = 1;
+        PointGeometry point = 1;
         MultiPointGeometry multi_point = 2;
         MultiLineStringGeometry line_strings = 3;
         MultiPolygonGeometry polygons = 4;
@@ -53,4 +57,24 @@ enum RoadSurfaceType {
     ROAD_SURFACE_TYPE_GRAVEL = 1;
     ROAD_SURFACE_TYPE_DIRT = 2;
     ROAD_SURFACE_TYPE_GROOVED = 3;
+}
+
+// https://github.com/usdot-jpo-ode/wzdx/blob/develop/spec-content/enumerated-types/MarkedLocationType.md
+enum MarkedLocationType {
+    MARKED_LOCATION_TYPE_GENERIC = 0;
+    MARKED_LOCATION_TYPE_FLAGGER = 1;
+    MARKED_LOCATION_TYPE_LANE_CLOSURE_START = 2;
+    MARKED_LOCATION_TYPE_LANE_CLOSURE_END = 3;
+    MARKED_LOCATION_TYPE_WORKER_PRESENCE_START = 4;
+    MARKED_LOCATION_TYPE_WORKER_PRESENCE_END = 5;
+    MARKED_LOCATION_TYPE_WORKER_POSITION = 6;
+    MARKED_LOCATION_TYPE_ROAD_CLOSURE_START = 7;
+    MARKED_LOCATION_TYPE_ROAD_CLOSURE_END = 8;
+    MARKED_LOCATION_TYPE_WORK_ZONE_START = 9;
+    MARKED_LOCATION_TYPE_WORK_ZONE_END = 10;
+    MARKED_LOCATION_TYPE_SPEED_REDUCTION_START = 11;
+    MARKED_LOCATION_TYPE_SPEED_REDUCTION_END = 12;
+    MARKED_LOCATION_TYPE_INCIDENT_START = 13;
+    MARKED_LOCATION_TYPE_INCIDENT_END = 14;
+    MARKED_LOCATION_TYPE_APPROACH_REGION = 15;
 }

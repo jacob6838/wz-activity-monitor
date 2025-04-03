@@ -145,7 +145,9 @@ class SettingsPage extends StatelessWidget {
                   : null,
               child: const Text("Save Changes"),
             ),
-            horizontalSpaceMedium,
+            Expanded( //TODO: Test this
+              child: Container(),
+            ),
             ElevatedButton(
               onPressed: controller.settingsChanged.value
                   ? () async {

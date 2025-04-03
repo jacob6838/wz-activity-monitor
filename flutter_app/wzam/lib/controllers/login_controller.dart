@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wzam/controllers/notification_controller.dart';
+import 'package:wzam/controllers/project_map_controller.dart';
+import 'package:wzam/controllers/view_recordings_controller.dart';
+import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/location_service.dart';
 import 'package:wzam/services/secure_storage.dart';
@@ -72,7 +75,12 @@ class LoginController extends GetxController {
     Get.put(LocationService());
     loggedIn.value = true;
     Get.offAll(() => Home());
-
+    ViewReportsController viewReportsController = Get.put(ViewReportsController());
+    ViewRecordingsController viewRecordingsController = Get.put(ViewRecordingsController());
+    ProjectMapController projectMapController = Get.put(ProjectMapController());
+    await viewReportsController.initialize();
+    await viewRecordingsController.loadInRecordings();
+    await projectMapController.initialize();
   }
 
   Future logout() async {

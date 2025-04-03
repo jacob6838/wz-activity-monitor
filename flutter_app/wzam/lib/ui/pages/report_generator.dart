@@ -4,10 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wzam/controllers/notification_controller.dart';
+import 'package:wzam/controllers/project_map_controller.dart';
+import 'package:wzam/controllers/view_reports_controller.dart';
+import 'package:wzam/models/activity_area.dart';
+import 'package:wzam/models/project.dart';
 import 'package:wzam/models/report.dart';
+import 'package:wzam/models/road_section.dart';
 import 'package:wzam/models/wzdx_models.dart';
+import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/ui/pages/report_location_selection.dart';
+import 'package:wzam/ui/pages/select_project_zone.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
 import 'package:wzam/ui/styles/widgets/wzam_app_bar.dart';
@@ -21,6 +28,7 @@ class ReportPageController extends GetxController {
   String surfaceType = "";
   double lineWidth = 30.0;
   RxBool waitingOnReportPost = false.obs;
+  ProjectWithId? project;
 }
 
 //This is the report page where the user can generate a report
@@ -44,7 +52,7 @@ class ReportPage extends StatelessWidget {
   final TextEditingController endDate = TextEditingController();
   final TextEditingController reportDate = TextEditingController();
 
-  final TextEditingController license_plate = TextEditingController();
+  final TextEditingController licensePlate = TextEditingController();
   
   ReportPage({super.key});
   @override
@@ -56,6 +64,9 @@ class ReportPage extends StatelessWidget {
       ..._workTypeSegment(context, workTypeNames, 0),
     ].obs;
     List<String> surfaceType = _getSurfaceTypes();
+    if (controller.project != null){
+      projectIdController.text = controller.project!.id.toString();
+    }
 
 
     return Scaffold(
@@ -68,12 +79,75 @@ class ReportPage extends StatelessWidget {
           children: [
             ListView(children: [
             verticalSpaceMedium,
-            _inputField("Project ID", projectIdController, isNumeric: true), //optional
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidthPercentage(context, percentage: 0.7),
+                  child: _inputField("Project ID", projectIdController, isNumeric: true),
+                ),
+                Expanded(child: Container()),
+                IconButton(  
+                  onPressed: () async {
+                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
+                    projectMapController.selectProject.value = true;
+                    ProjectWithId? project = await Get.to(() => const SelectProjects());
+                    if (project != null) {
+                      projectIdController.text = project.id.toString();
+                      segmentIdController.text = "";
+                      areaIdController.text = "";
+                    }
+                  },
+                  icon: const Icon(Icons.map),
+                )
+              ],
+            ), //optional
             verticalSpaceMedium,
-            _inputField("Segment ID", segmentIdController, isNumeric: true), //optional
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidthPercentage(context, percentage: 0.7),
+                  child: _inputField("Segment ID", segmentIdController, isNumeric: true),
+                ),
+                Expanded(child: Container()),
+                IconButton(  
+                  onPressed: () async {
+                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
+                    projectMapController.selectRoadSection.value = true;
+                    RoadSectionWithId? roadSection = await Get.to(() => const SelectProjects());
+                    if (roadSection != null) {
+                      segmentIdController.text = roadSection.id.toString();
+                      projectIdController.text = roadSection.project_id.toString();
+                      areaIdController.text = "";
+                    }
+                  },
+                  icon: const Icon(Icons.map),
+                )
+              ],
+            ),
             verticalSpaceMedium,
-            _inputField("Area ID", areaIdController, isNumeric: true), //optional
-            verticalSpaceMedium,
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidthPercentage(context, percentage: 0.7),
+                  child: _inputField("Area ID", areaIdController, isNumeric: true),
+                ),
+                Expanded(child: Container()),
+                IconButton(  
+                  onPressed: () async {
+                    ProjectMapController projectMapController = Get.find<ProjectMapController>();
+                    projectMapController.selectActivityArea.value = true;
+                    ActivityAreaWithId? areaActivity = await Get.to(() => const SelectProjects());
+                    if (areaActivity != null) {
+                      areaIdController.text = areaActivity.id.toString();
+                      segmentIdController.text = areaActivity.segment_id.toString();
+                      //TODO: Add project ID lookup here
+                    }
+                  },
+                  icon: const Icon(Icons.map),
+                )
+              ],
+            ),
+            verticalSpaceMedium, 
             _inputField("Report Name", reportNameController, isRequired: true),
             Obx(() => Row(
               children: [
@@ -110,7 +184,8 @@ class ReportPage extends StatelessWidget {
             //verticalSpaceMedium,
             _dropdownField("Surface Type", surfaceType, context, isSurfaceType: true),
             verticalSpaceMedium,
-            _inputField("License Plate", license_plate),
+            _inputField("License Plate", licensePlate),
+            verticalSpaceMedium,
             ElevatedButton(
               onPressed: () {
                 Get.to(() => const ReportLocationSelection());
@@ -120,7 +195,7 @@ class ReportPage extends StatelessWidget {
             verticalSpaceSmall,
             Container(  
               height: 3,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.black,
             )),
             verticalSpaceSmall,
@@ -372,37 +447,6 @@ class ReportPage extends StatelessWidget {
     }
   }
 
-  List<String> _getGeometryTypes() {
-    List<GeometryType> geometryTypes = GeometryType.values;
-    List<String> geometryTypesStr = [];
-    for (GeometryType type in geometryTypes) {
-      switch (type) {
-        case GeometryType.multipoint:
-          geometryTypesStr.add('multipoint');
-        case GeometryType.linestring:
-          geometryTypesStr.add('linestring');
-        case GeometryType.polygon:
-          geometryTypesStr.add('polygon');
-        default:
-          geometryTypesStr.add('unknown');
-      }
-    }
-    return geometryTypesStr;
-  }
-
-  GeometryType _stringToGeometryType(String type) {
-    switch (type) {
-      case 'multipoint':
-        return GeometryType.multipoint;
-      case 'linestring':
-        return GeometryType.linestring;
-      case 'polygon':
-        return GeometryType.polygon;
-      default:
-        throw ArgumentError('Invalid GeometryType: $type');
-    }
-  }
-
   RoadSegmentSurfaceType _stringToSurfaceType(String type) {
     switch (type) {
       case 'paved':
@@ -444,7 +488,7 @@ class ReportPage extends StatelessWidget {
     List<TypeOfWork> typesOfWork = _getTypesOfWork();
 
     Report report = Report(
-      project_id: projectIdController.text != "" ? int.parse(projectIdController.text) : null, //optional field
+      project_id: projectIdController.value.text != "" ? int.parse(projectIdController.value.text) : null, //optional field
       segment_id: segmentIdController.text != "" ? int.parse(segmentIdController.text) : null, //optional field
       area_id: areaIdController.text != "" ? int.parse(areaIdController.text) : null, //optional field
       report_name: reportNameController.text,
@@ -458,7 +502,7 @@ class ReportPage extends StatelessWidget {
       geometry_type: controller.geometryType,
       geometry: controller.points,
       geometry_line_width: controller.geometryType == GeometryType.linestring ? controller.lineWidth : null,
-      license_plate: license_plate.text != "" ? license_plate.text : null, //optional field
+      license_plate: licensePlate.text != "" ? licensePlate.text : null, //optional field
       surface_type: _stringToSurfaceType(controller.surfaceType),
     );
     controller.waitingOnReportPost.value = true;
@@ -468,8 +512,10 @@ class ReportPage extends StatelessWidget {
   }
 
   Future<void> postReport(Report report) async {
+    ViewReportsController viewReportsController = Get.find<ViewReportsController>();
+    AuthService authService = Get.find<AuthService>();
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
-    final headers = {'Content-Type': 'application/json'};
+    final headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ${await authService.getAccessToken()}'};
     try {
       final response = await http.post(url, 
         headers: headers, 
@@ -519,6 +565,8 @@ class ReportPage extends StatelessWidget {
       } else {
         print('Failed to post report: ${response.statusCode}');
         fileStorageService.saveReport(report, false);
+        viewReportsController.areThereLocalReports.value = true;
+
       }
     } catch (e) {
       print('Error posting report: $e');

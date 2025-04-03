@@ -13,11 +13,11 @@ class ViewReports extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ViewReportsController());
+    final controller = Get.find<ViewReportsController>();
     final mapController = MapController();
 
     return FutureBuilder(
-      future: controller.initialize(context),
+      future: controller.initialize(),  //TODO: Accidentally calling this twice now?
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(

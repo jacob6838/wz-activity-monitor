@@ -25,7 +25,7 @@ class SecureStorage {
   static const startClientSecret = 'IjNjQL2Y4aO82kFrOaPX55WmJyHW59e3';*/
 
   static String startKeycloakEndpoint = dotenv.env['START_KEYCLOAK_ENDPOINT']!;
-  static String startCimmsBroker = dotenv.env['START_CIMMS_BROKER']!;
+  //static String startCimmsBroker = dotenv.env['START_CIMMS_BROKER']!;
   static String startRealm = dotenv.env['START_REALM']!;
   static String startClient = dotenv.env['START_CLIENT']!;
   static String startClientSecret = dotenv.env['START_CLIENT_SECRET']!;
@@ -33,7 +33,7 @@ class SecureStorage {
   Future<String> getUsername() async => await _storage.read(key: _keyUsername) ?? '';
   Future<String> getPassword() async => await _storage.read(key: _keyPassword) ?? '';
   Future<String> getKeycloakEndpoint() async => await _storage.read(key: _keyKeycloakEndpoint) ?? startKeycloakEndpoint;
-  Future<String> getCimmsBroker() async => await _storage.read(key: _keyCimmsBroker) ?? startCimmsBroker;
+  //Future<String> getCimmsBroker() async => await _storage.read(key: _keyCimmsBroker) ?? startCimmsBroker;
   Future<String> getRealm() async => await _storage.read(key: _keyRealm) ?? startRealm;
   Future<String> getClient() async => await _storage.read(key: _keyClient) ?? startClient;
   Future<String> getClientSecret() async => await _storage.read(key: _clientSecret) ?? startClientSecret;
@@ -62,9 +62,9 @@ class SecureStorage {
     if (await _storage.read(key: _keyKeycloakEndpoint) == null) {
       await setKeycloakEndpoint(startKeycloakEndpoint);
     }
-    if (await _storage.read(key: _keyCimmsBroker) == null) {
+    /*if (await _storage.read(key: _keyCimmsBroker) == null) {
       await setCimmsBroker(startCimmsBroker);
-    }
+    }*/
     if (await _storage.read(key: _keyRealm) == null) {
       await setRealm(startRealm);
     }

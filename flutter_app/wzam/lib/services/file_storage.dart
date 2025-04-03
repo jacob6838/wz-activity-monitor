@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:wzam/models/activity_area.dart';
 import 'package:wzam/models/archive_directory.dart';
+import 'package:wzam/models/project.dart';
 import 'package:wzam/models/recording.dart';
 import 'package:wzam/models/report.dart';
 import 'package:http/http.dart' as http;
+import 'package:wzam/models/road_section.dart';
+import 'package:wzam/services/auth_service.dart';
 
 class FileStorageService extends GetxService {
 
@@ -115,11 +119,35 @@ class FileStorageService extends GetxService {
     });
   }
 
+  Future<void> saveProject(Project project) async {
+    final String reportJson = jsonEncode(project);
+    final String fileName = 'project_${project.name}_${DateTime.now().toUtc().toIso8601String()}.json';
+    await createFile(fileName: fileName, subdirectory: 'projects').then((fileName) async {
+      await writeToFile(fileName, reportJson, 'projects');
+    });
+  }
+
+  Future<void> saveRoadSection(RoadSection roadsection) async {
+    final String reportJson = jsonEncode(roadsection);
+    final String fileName = 'project_${roadsection.segment_name}_${DateTime.now().toUtc().toIso8601String()}.json';
+    await createFile(fileName: fileName, subdirectory: 'road_sections').then((fileName) async {
+      await writeToFile(fileName, reportJson, 'road_sections');
+    });
+  }
+
+  Future<void> saveActivityArea(ActivityArea activityArea) async {
+    final String reportJson = jsonEncode(activityArea);
+    final String fileName = 'activity_area_${activityArea.area_name}_${DateTime.now().toUtc().toIso8601String()}.json';
+    await createFile(fileName: fileName, subdirectory: 'activity_areas').then((fileName) async {
+      await writeToFile(fileName, reportJson, 'activity_areas');
+    });
+  }
+
   Future<List<Report>> getReportFiles(String subdirectory) async {
     final String directoryPath = await _getDownloadsDirectory(subdirectory: subdirectory) ?? "";
     final dir = Directory(directoryPath);
     if (!await dir.exists()) {
-      throw Exception("Directory does not exist");
+      await dir.create(recursive: true);
     }
     final List<FileSystemEntity> entities = await dir.list().toList();
     final List<File> files = entities.whereType<File>().toList();
@@ -131,6 +159,7 @@ class FileStorageService extends GetxService {
     final String directoryPath = await _getDownloadsDirectory(subdirectory: subdirectory) ?? "";
     final dir = Directory(directoryPath);
     if (!await dir.exists()) {
+      await dir.create(recursive: true);
       //throw Exception("Directory does not exist");
     } else{
       final List<FileSystemEntity> entities = await dir.list().toList();
@@ -141,26 +170,124 @@ class FileStorageService extends GetxService {
     return [];
   }
 
-  List<Report> convertFilesToReports(List<File> files) {
-  List<Report> reports = [];
-  for (File file in files) {
-    String reportJson = file.readAsStringSync();
-    Map<String, dynamic> reportMap = jsonDecode(reportJson);
-
-    if (reportMap.containsKey('id')) {
-      ReportWithId report = ReportWithId.fromJson(reportMap);
-      reports.add(report);
-    } else {
-      Report report = Report.fromJson(reportMap);
-      reports.add(report);
+  Future<List<Project>> getProjectFiles(String subdirectory) async {
+    final String directoryPath = await _getDownloadsDirectory(subdirectory: subdirectory) ?? "";
+    final dir = Directory(directoryPath);
+    if (!await dir.exists()) {
+      //throw Exception("Directory does not exist");
+      await dir.create(recursive: true);
     }
+    final List<FileSystemEntity> entities = await dir.list().toList();
+    final List<File> files = entities.whereType<File>().toList();
+    List<Project> projects = convertFilesToProjects(files);
+    print(projects.length);
+    return projects;
   }
-  return reports;
-}
+
+  Future<List<RoadSection>> getRoadSectionFiles(String subdirectory) async {
+    final String directoryPath = await _getDownloadsDirectory(subdirectory: subdirectory) ?? "";
+    final dir = Directory(directoryPath);
+    if (!await dir.exists()) {
+      //throw Exception("Directory does not exist");
+      await dir.create(recursive: true);
+    }
+    final List<FileSystemEntity> entities = await dir.list().toList();
+    final List<File> files = entities.whereType<File>().toList();
+    List<RoadSection> roadsections = convertFilesToRoadSections(files);
+    return roadsections;
+  }
+
+  Future<List<ActivityArea>> getActivityAreaFiles(String subdirectory) async {
+    final String directoryPath = await _getDownloadsDirectory(subdirectory: subdirectory) ?? "";
+    final dir = Directory(directoryPath);
+    if (!await dir.exists()) {
+      //throw Exception("Directory does not exist");
+      await dir.create(recursive: true);
+    }
+    final List<FileSystemEntity> entities = await dir.list().toList();
+    final List<File> files = entities.whereType<File>().toList();
+    List<ActivityArea> activityAreas = convertFilesToActivityAreas(files);
+    return activityAreas;
+  }
+
+  List<Report> convertFilesToReports(List<File> files) {
+    List<Report> reports = [];
+    for (File file in files) {
+      String reportJson = file.readAsStringSync();
+      Map<String, dynamic> reportMap = jsonDecode(reportJson);
+
+      if (reportMap.containsKey('id')) {
+        ReportWithId report = ReportWithId.fromJson(reportMap);
+        reports.add(report);
+      } else {
+        Report report = Report.fromJson(reportMap);
+        reports.add(report);
+      }
+    }
+    return reports;
+  }
+
+  List<Project> convertFilesToProjects(List<File> files) {
+    List<Project> projects = [];
+    print(files.length);
+    for (File file in files) {
+      String projectJson = file.readAsStringSync();
+      Map<String, dynamic> projectMap = jsonDecode(projectJson);
+
+      if (projectMap.containsKey('id')) {
+        ProjectWithId project = ProjectWithId.fromJson(projectMap);
+        projects.add(project);
+      } else {
+        Project project = Project.fromJson(projectMap);
+        projects.add(project);
+      }
+    }
+    print(projects.length);
+    return projects;
+  }
+
+  List<RoadSection> convertFilesToRoadSections(List<File> files) {
+    List<RoadSection> roadsections = [];
+    print(files.length);
+    for (File file in files) {
+      String roadSectionJson = file.readAsStringSync();
+      Map<String, dynamic> roadSectionMap = jsonDecode(roadSectionJson);
+
+      if (roadSectionMap.containsKey('id')) {
+        RoadSectionWithId roadSectionWithId = RoadSectionWithId.fromJson(roadSectionMap);
+        roadsections.add(roadSectionWithId);
+      } else {
+        RoadSection roadsection = RoadSection.fromJson(roadSectionMap);
+        roadsections.add(roadsection);
+      }
+    }
+    return roadsections;
+  }
+
+  List<ActivityArea> convertFilesToActivityAreas(List<File> files) {
+    List<ActivityArea> activityAreas = [];
+    print(files.length);
+    for (File file in files) {
+      String activityAreasJson = file.readAsStringSync();
+      Map<String, dynamic> activityAreaMap = jsonDecode(activityAreasJson);
+
+      if (activityAreaMap.containsKey('id')) {
+        ActivityAreaWithId roadSectionWithId = ActivityAreaWithId.fromJson(activityAreaMap);
+        activityAreas.add(roadSectionWithId);
+      } else {
+        ActivityArea activityArea = ActivityArea.fromJson(activityAreaMap);
+        activityAreas.add(activityArea);
+      }
+    }
+    return activityAreas;
+  }
 
   Future<void> downloadReportsFromServer() async {
+    //Map<String, String> headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
+    AuthService authService = Get.find<AuthService>();
     final url = Uri.parse('https://wzamapi.azurewebsites.net/reports'); //<-- TODO: change so url is not hardcoded like this?
-    final headers = {'Content-Type': 'application/json'};
+    //final headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ${await authService.getAccessToken()}'};
+    final headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
     try {
       final response = await http.get(url, headers: headers);
       if (response.statusCode == 200) {
@@ -174,9 +301,63 @@ class FileStorageService extends GetxService {
     }
   }
 
+  Future<void> downloadProjectsFromServer() async {
+    //Map<String, String> headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
+    AuthService authService = Get.find<AuthService>();
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/projects'); //<-- TODO: change so url is not hardcoded like this?
+    final headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
+    try {
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        print('Project gathered successfully');
+        await saveProjects(response.body);
+      } else {
+        print('Failed to get projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error getting projects: $e');
+    }
+  }
+
+  Future<void> downloadRoadSectionsFromServer() async {
+    //Map<String, String> headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
+    AuthService authService = Get.find<AuthService>();
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/road_sections'); //<-- TODO: change so url is not hardcoded like this?
+    final headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
+    try {
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        print('Road Section gathered successfully');
+        await saveRoadSections(response.body);
+      } else {
+        print('Failed to get road sections: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error getting road sections: $e');
+    }
+  }
+
+  Future<void> downloadActivityAreasFromServer() async {
+    AuthService authService = Get.find<AuthService>();
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/activity_areas'); //<-- TODO: change so url is not hardcoded like this?
+    final headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
+    try {
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        print('Activity Area gathered successfully');
+        await saveActivityAreas(response.body);
+      } else {
+        print('Failed to get activity areas: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error getting activity areas: $e');
+    }
+  }
+
   Future<void> downloadRecordingsFromServer() async {
+    AuthService authService = Get.find<AuthService>();
     final url = Uri.parse('https://wzamapi.azurewebsites.net/recordings'); //<-- TODO: change so url is not hardcoded like this?
-    final headers = {'Content-Type': 'application/json'};
+    final headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
     try {
       final response = await http.get(url, headers: headers);
       if (response.statusCode == 200) {
@@ -251,6 +432,39 @@ class FileStorageService extends GetxService {
     }
   }
 
+  Future saveProjects(String responseBody) async{
+    await deleteAllProjects();
+    List<dynamic> projectJson = jsonDecode(responseBody);
+    List<ProjectWithId> projects = projectJson.map((project) => ProjectWithId.fromJson(project)).toList();
+    List<Project> projectsTwo = projects;
+    print(projectsTwo.length);
+    for (Project project in projectsTwo){
+      await saveProject(project);
+      print(project.geometry[0][1]);
+      print(project.geometry[0][0]);
+    }
+  }
+
+  Future saveRoadSections(String responseBody) async{
+    await deleteAllRoadSections();
+    List<dynamic> roadSectionsJson = jsonDecode(responseBody);
+    List<RoadSectionWithId> roadSections = roadSectionsJson.map((roadsection) => RoadSectionWithId.fromJson(roadsection)).toList();
+    List<RoadSection> roadSectionsTwo = roadSections;
+    for (RoadSection roadsection in roadSectionsTwo){
+      await saveRoadSection(roadsection);
+    }
+  }
+
+  Future saveActivityAreas(String responseBody) async {
+    await deleteAllRoadSections();
+    List<dynamic> activityAreasJson = jsonDecode(responseBody);
+    List<ActivityAreaWithId> activityAreas = activityAreasJson.map((activityArea) => ActivityAreaWithId.fromJson(activityArea)).toList();
+    List<ActivityArea> activityAreasTwo = activityAreas;
+    for (ActivityArea activityArea in activityAreasTwo){
+      await saveActivityArea(activityArea);
+    }
+  }
+
 
   Future deleteAllReports() async {
     String directoryPath = 'reports'; //TODO: combine with deleteAllRecordings
@@ -270,6 +484,38 @@ class FileStorageService extends GetxService {
 
   Future deleteAllRecordings() async {
     String directoryPath = 'recordings';
+    String path = await _getDownloadsDirectory(subdirectory: directoryPath) ?? "";
+    final dir = Directory(path);
+    if (!dir.existsSync()) {
+      return;
+    }
+    dir.listSync().forEach((file) {
+      if (file is File) {
+        file.deleteSync();
+      } else if (file is Directory) {
+        file.deleteSync(recursive: true);
+      }
+    });
+  }
+
+  Future deleteAllProjects() async { //TODO: combine with deleteAllReports
+    String directoryPath = 'projects';
+    String path = await _getDownloadsDirectory(subdirectory: directoryPath) ?? "";
+    final dir = Directory(path);
+    if (!dir.existsSync()) {
+      return;
+    }
+    dir.listSync().forEach((file) {
+      if (file is File) {
+        file.deleteSync();
+      } else if (file is Directory) {
+        file.deleteSync(recursive: true);
+      }
+    });
+  }
+
+  Future deleteAllRoadSections() async { //TODO: combine with deleteAllReports
+    String directoryPath = 'road_sections';
     String path = await _getDownloadsDirectory(subdirectory: directoryPath) ?? "";
     final dir = Directory(path);
     if (!dir.existsSync()) {

@@ -2,31 +2,22 @@ syntax = "proto3";
 
 package datahub.v1;
 
-import "common.proto";
-import "wzdx.proto";
+option java_package = "wyo.dot.protobuf";
+option java_outer_classname = "ProjectProto";
+option java_multiple_files = true;
+
 import "google/protobuf/timestamp.proto";
 
 message Project {
     string name = 1;
     string description = 2;
-    ProjectStatus active_status = 3;
+    ProjectActiveStatus active_status = 3;
     google.protobuf.Timestamp creation_date = 4;
     google.protobuf.Timestamp start_date = 5;
     google.protobuf.Timestamp end_date = 6;
-    WorkZoneType area_type = 7;
-    oneof Geometry {
-        MultiLineStringGeometry line_strings = 8;
-        MultiPolygonGeometry polygons = 9;
-    }
-    BoundingBox bbox = 10;
-    
+
     enum ProjectActiveStatus {
         PROJECT_ACTIVE_STATUS_ACTIVE = 0;
-        PROJECT_ACTIVE_STATUS_INACTIVE = 1;
-    }
-
-    enum ProjectStatus {
-        PROJECT_STATUS_ACTIVE = 0;
-        PROJECT_STATUS_SUSPENDED = 1;
+        PROJECT_ACTIVE_STATUS_SUSPENDED = 1;
     }
 }

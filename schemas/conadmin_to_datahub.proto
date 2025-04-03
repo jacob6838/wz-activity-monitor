@@ -2,25 +2,30 @@ syntax = "proto3";
 
 package datahub.v1;
 
-import "activity_area.proto";
-import "project.proto";
-import "road_section.proto";
-import "field_device.proto";
-import "google/protobuf/timestamp.proto";
+option java_package = "wyo.dot.protobuf";
+option java_outer_classname = "ConAdminToDataHubProto";
+option java_multiple_files = true;
 
-message FieldDeviceAssociationChanged {
+import "common.proto";
+import "project.proto";
+import "google/protobuf/timestamp.proto";
+import "road_sub_event.proto";
+import "work_zone.proto";
+
+message FieldDeviceUpdated {
     uint64 id = 1;
     optional uint64 project_id = 2;
-    optional uint64 road_section_id = 3;
-    optional uint64 area_id = 4;
-    FieldDevice field_device = 5;
-    google.protobuf.Timestamp updated_time = 6;
+    optional uint64 work_zone_event_id = 3;
+    optional MarkedLocationType location_type = 4; 
+    google.protobuf.Timestamp updated_time = 5;
 }
 
-message RequestRejected {
+message VehicleLocationUpdated {
     uint64 id = 1;
-    string reason = 2;
-    google.protobuf.Timestamp rejected_time = 3;
+    optional uint64 project_id = 2;
+    optional uint64 work_zone_event_id = 3;
+    optional MarkedLocationType location_type = 4; 
+    google.protobuf.Timestamp updated_time = 5;
 }
 
 message ProjectCreated {
@@ -37,30 +42,56 @@ message ProjectUpdated {
     google.protobuf.Timestamp updated_time = 4;
 }
 
-message RoadSectionCreated {
+message ProjectRemoved {
     uint64 id = 1;
     optional uint64 request_id = 2;
-    RoadSection road_section = 3;
-    google.protobuf.Timestamp created_time = 4;
-}
-
-message RoadSectionUpdated {
-    uint64 id = 1;
-    optional uint64 request_id = 2;
-    RoadSection road_section = 3;
+    Project project = 3;
     google.protobuf.Timestamp updated_time = 4;
 }
 
-message ActivityAreaCreated {
+message WorkZoneCreated {
     uint64 id = 1;
     optional uint64 request_id = 2;
-    ActivityArea activity_area = 3;
+    WorkZone work_zone = 3;
+    repeated RoadSubEventCreated road_sub_events_created = 4;
+    google.protobuf.Timestamp created_time = 5;
+}
+
+message WorkZoneUpdated {
+    uint64 id = 1;
+    optional uint64 request_id = 2;
+    WorkZone work_zone = 3;
+    repeated RoadSubEventCreated road_sub_events_created = 4;
+    repeated RoadSubEventUpdated road_sub_events_updated = 5;
+    repeated RoadSubEventRemoved road_sub_events_removed = 6;
+    google.protobuf.Timestamp updated_time = 7;
+}
+
+message WorkZoneRemoved {
+    uint64 id = 1;
+    optional uint64 request_id = 2;
+    WorkZone work_zone = 3;
+    repeated RoadSubEvent road_sub_events = 4;
+    google.protobuf.Timestamp updated_time = 5;
+}
+
+message RoadSubEventCreated {
+    uint64 id = 1;
+    optional uint64 request_id = 2;
+    RoadSubEvent road_sub_event = 3;
     google.protobuf.Timestamp created_time = 4;
 }
 
-message ActivityAreaUpdated {
+message RoadSubEventUpdated {
     uint64 id = 1;
     optional uint64 request_id = 2;
-    ActivityArea activity_area = 3;
+    RoadSubEvent road_sub_event = 3;
+    google.protobuf.Timestamp updated_time = 4;
+}
+
+message RoadSubEventRemoved {
+    uint64 id = 1;
+    optional uint64 request_id = 2;
+    RoadSubEvent road_sub_event = 3;
     google.protobuf.Timestamp updated_time = 4;
 }

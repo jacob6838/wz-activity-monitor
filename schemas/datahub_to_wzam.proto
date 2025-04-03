@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package datahub.v1;
+
+import "google/protobuf/timestamp.proto";
+import "project.proto";
+import "recording.proto";
+import "report.proto";
+import "road_sub_event.proto";
+import "work_zone.proto";
+
+// This is a pull interface
+
+message ReportState {
+    uint64 id = 1;
+    Report report = 2;
+    google.protobuf.Timestamp created_time = 3;
+    google.protobuf.Timestamp updated_time = 4;
+}
+
+message RecordingState {
+    uint64 id = 1;
+    Recording recording = 2;
+    google.protobuf.Timestamp created_time = 3;
+    google.protobuf.Timestamp updated_time = 4;
+}
+
+message ProjectState {
+    uint64 id = 1;
+    Project project = 2;
+    google.protobuf.Timestamp created_time = 3;
+    google.protobuf.Timestamp updated_time = 4;
+}
+
+message WorkZoneState {
+    uint64 id = 1;
+    WorkZone work_zone = 2;
+    repeated RoadSubEvent road_sub_events = 3;
+    google.protobuf.Timestamp created_time = 4;
+    google.protobuf.Timestamp updated_time = 5;
+}

@@ -2,9 +2,13 @@ syntax = "proto3";
 
 package datahub.v1;
 
+option java_package = "wyo.dot.protobuf";
+option java_outer_classname = "ConAdminToDataHubProto";
+option java_multiple_files = true;
+
 import "common.proto";
-import "google/protobuf/timestamp.proto";
 import "project.proto";
+import "google/protobuf/timestamp.proto";
 import "road_sub_event.proto";
 import "work_zone.proto";
 

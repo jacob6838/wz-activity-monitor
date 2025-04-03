@@ -7,74 +7,83 @@ option java_outer_classname = "DataHubToConAdminProto";
 option java_multiple_files = true;
 
 import "field_device.proto";
-import "activity_area.proto";
-import "delay.proto";
-import "road_section.proto";
-import "vehicle_location.proto";
 import "google/protobuf/timestamp.proto";
+import "road_sub_event.proto";
+import "vehicle_location.proto";
+import "work_zone.proto";
 
+
+// Interface Messages
+message VehicleLocationUpdateRequestMessage {
+    uint64 request_id = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    oneof field_device_update_request_message {
+        UpdateVehicleLocation field_device_updated = 3;
+    }
+}
+
+message FieldDeviceUpdateRequestMessage {
+    uint64 request_id = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    oneof field_device_request_message {
+        CreateFieldDevice field_device_created = 3;
+        UpdateFieldDevice field_device_updated = 4;
+    }
+}
+
+message WorkZoneUpdateRequestMessage {
+    uint64 request_id = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    oneof field_device_update_request_message {
+        CreateWorkZone work_zone_created = 3;
+        UpdateWorkZone work_zone_updated = 4;
+    }
+}
+
+
+// Individual Messages
 message UpdateVehicleLocation {
     uint64 id = 1;
     VehicleLocation vehicle_location = 2;
-    google.protobuf.Timestamp updated_time = 3;
 }
 
 message CreateFieldDevice {
     FieldDevice field_device = 1;
-    google.protobuf.Timestamp updated_time = 2;
-    uint64 request_id = 3;
 }
 
 message UpdateFieldDevice {
     uint64 id = 1;
     FieldDevice field_device = 2;
-    google.protobuf.Timestamp updated_time = 3;
-    uint64 request_id = 4;
 }
 
-message CreateRoadSection {
-    RoadSection road_section = 1;
-    google.protobuf.Timestamp request_time = 2;
+message CreateWorkZone {
+    WorkZone work_zone = 1;
+    DataHubUpdateSource source = 2;
+    repeated CreateRoadSubEvent road_sub_events_to_create = 3;
+}
+
+message UpdateWorkZone {
+    uint64 id = 1;
+    WorkZone work_zone = 2;
     DataHubUpdateSource source = 3;
-    uint64 request_id = 4;
+    repeated CreateRoadSubEvent create_road_sub_events = 4;
+    repeated UpdateRoadSubEvent update_road_sub_events = 5;
+    repeated RemoveRoadSubEvent remove_road_sub_events = 6;
 }
 
-message UpdateRoadSection {
+message CreateRoadSubEvent {
+    RoadSubEvent road_sub_event = 1;
+}
+
+message UpdateRoadSubEvent {
     uint64 id = 1;
-    ActivityArea road_section = 2;
-    google.protobuf.Timestamp request_time = 3;
-    DataHubUpdateSource source = 4;
-    uint64 request_id = 5;
+    RoadSubEvent road_sub_event = 2;
 }
 
-message CreateDelay {
-    Delay delay = 1;
-    google.protobuf.Timestamp created_time = 2;
-    uint64 request_id = 3;
-}
-
-message UpdateDelay {
+message RemoveRoadSubEvent {
     uint64 id = 1;
-    Delay delay = 2;
-    google.protobuf.Timestamp updated_time = 3;
-    uint64 request_id = 4;
+    RoadSubEvent road_sub_event = 2;
 }
-
-message CreateActivityArea {
-    ActivityArea activity_area = 1;
-    google.protobuf.Timestamp request_time = 2;
-    DataHubUpdateSource source = 3;
-    uint64 request_id = 4;
-}
-
-message UpdateActivityArea {
-    uint64 id = 1;
-    ActivityArea activity_area = 2;
-    google.protobuf.Timestamp request_time = 3;
-    DataHubUpdateSource source = 4;
-    uint64 request_id = 5;
-}
-
 
 // Data Types
 message ReportSummary {

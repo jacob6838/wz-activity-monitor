@@ -1,0 +1,23 @@
+# Kafka Topic Configuration
+
+- vehicle_location_updates
+  - schema: datahub.v1.conadmin_to_datahub.VehicleLocationUpdateMessage
+  - description: vehicle location changes coming from ConAdmin
+- field_device_updates
+  - schema: datahub.v1.conadmin_to_datahub.FieldDeviceUpdateMessage
+  - description: field device changes coming from ConAdmin
+- project_updates
+  - schema: datahub.v1.conadmin_to_datahub.ProjectUpdateMessage
+  - description: project changes coming from ConAdmin
+- work_zone_updates
+  - schema: datahub.v1.conadmin_to_datahub.WorkZoneUpdateMessage
+  - description: work zone changes coming from ConAdmin
+- datahub_vehicle_location_updates
+  - schema: datahub.v1.datahub_to_conadmin.VehicleLocationUpdateRequestMessage
+  - description: Requested vehicle location changes coming from DataHub
+- datahub_field_device_updates
+  - schema: datahub.v1.datahub_to_conadmin.FieldDeviceUpdateRequestMessage
+  - description: Requested field device changes coming from DataHub
+- datahub_work_zone_updates
+  - schema: datahub.v1.datahub_to_conadmin.WorkZoneUpdateRequestMessage
+  - description: Requested work zone changes coming from DataHub

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package datahub.v1;
+
+option java_package = "wyo.dot.protobuf";
+option java_outer_classname = "VehicleLocationProto";
+option java_multiple_files = true;
+
+import "common.proto";
+
+message VehicleLocation {
+    string license_plate = 1;
+    VehicleOperationType operation_type = 2;
+    PointGeometry location = 3;
+    double velocity_kph = 4;
+    double heading = 5;
+    uint64 request_id = 6;
+    
+    enum VehicleOperationType {
+        VEHICLE_OPERATION_STRIPING = 0;
+        VEHICLE_OPERATION_PLOWING = 1;
+        VEHICLE_OPERATION_MOWING = 2;
+        VEHICLE_OPERATION_GENERAL_ACTIVE = 3;
+        VEHICLE_OPERATION_GENERAL_INACTIVE = 4;
+        VEHICLE_OPERATION_UNKNOWN = 5;
+    }
+}

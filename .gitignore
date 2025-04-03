@@ -1,2 +1,8 @@
 .env
 .mypy_cache
+
+schemas/java_output/
+
+## Intellij
+
+.idea/

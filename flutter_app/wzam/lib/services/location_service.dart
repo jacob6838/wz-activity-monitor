@@ -8,7 +8,8 @@ import 'package:logger/logger.dart';
 class LocationService extends GetxService {
   // Static variables
   final Logger _logger = Logger();
-  final LocationSettings _locationSettings = const LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 0);
+  final LocationSettings _locationSettings = const LocationSettings(
+      accuracy: LocationAccuracy.high, distanceFilter: 0);
 
   // Variables
   bool _serviceEnabled = false;
@@ -18,14 +19,20 @@ class LocationService extends GetxService {
   Rx<Position?> currentPosition = Rx<Position?>(null);
 
   // Location Stream
-  final StreamController<Position> _locationController = StreamController<Position>.broadcast();
+  final StreamController<Position> _locationController =
+      StreamController<Position>.broadcast();
   Stream<Position> get locationStream => _locationController.stream;
-  
-  LocationService({bool mocked = false, double latitude = 0, double longitude = 0, Position? mockedLocation}) {
+
+  LocationService(
+      {bool mocked = false,
+      double latitude = 0,
+      double longitude = 0,
+      Position? mockedLocation}) {
     _start(mocked, latitude, longitude, mockedLocation);
   }
 
-  void _start(bool mocked, double latitude, double longitude, Position? mockedLocation) async {
+  void _start(bool mocked, double latitude, double longitude,
+      Position? mockedLocation) async {
     _serviceMocked = mocked;
     // This method starts the location stream. This can be called multiple times, but only one stream will be active at a time.
     try {
@@ -37,12 +44,12 @@ class LocationService extends GetxService {
       _stopLocationUpdates();
       Get.dialog(
         AlertDialog(
-          title: const Text('Location Permissions Required'),
+          title: const Text('Location Permissions Not Allowed'),
           content: Text(
-              'Location permissions are required to use this application. Without them, timing and other components will not work correctly. Please restart this application and grant location permissions. Error: $e'),
+              'Location permissions are required to map work zones - without them, only report generation is supported. Error: $e'),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
+              child: const Text('Continue'),
               onPressed: () {
                 Get.back();
               },
@@ -82,10 +89,10 @@ class LocationService extends GetxService {
         AlertDialog(
           title: const Text('Location Permissions'),
           content: const Text(
-              'This application requires location permissions for accurate timing and data collection. Without it, the application\'s accuracy will be reduced.'),
+              'This application requires location permissions for mapping of work zones and designating locations of reports. Please grant location permissions to continue.'),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
+              child: const Text('Continue'),
               onPressed: () {
                 Get.back();
               },
@@ -106,15 +113,19 @@ class LocationService extends GetxService {
     }
     if (_permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      _logger.w("Location permissions are permanently denied, we cannot request permissions.");
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+      _logger.w(
+          "Location permissions are permanently denied, we cannot request permissions.");
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
     return true;
   }
 
   void _startLocationUpdates() {
     _positionStream?.cancel();
-    _positionStream = Geolocator.getPositionStream(locationSettings: _locationSettings).listen(_onPositionUpdate);
+    _positionStream =
+        Geolocator.getPositionStream(locationSettings: _locationSettings)
+            .listen(_onPositionUpdate);
   }
 
   void _onPositionUpdate(Position position) {
@@ -132,7 +143,8 @@ class LocationService extends GetxService {
 
   Future<Position?> getCurrentLocation() async {
     if (!await _isPermissionGranted()) {
-      _logger.w("Location permissions not granted, cannot get current location");
+      _logger
+          .w("Location permissions not granted, cannot get current location");
       return null;
     }
     return await Geolocator.getCurrentPosition();

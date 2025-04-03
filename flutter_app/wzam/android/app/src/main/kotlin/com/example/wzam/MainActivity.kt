@@ -1,4 +1,4 @@
-package com.example.wzam
+package com.neaera.wzam
 
 import io.flutter.embedding.android.FlutterActivity
 

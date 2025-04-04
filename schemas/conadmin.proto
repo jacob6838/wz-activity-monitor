@@ -54,7 +54,7 @@ message WorkZoneUpdate {
 }
 
 
-// Individual Messages
+// Action Types - not to be used outside of the Interface Types defined above.
 message FieldDeviceUpdated {
     optional uint64 project_id = 1;
     optional uint64 work_zone_event_id = 2;

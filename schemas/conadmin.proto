@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package datahub.v1;
 
-option java_package = "wyo.dot.protobuf";
-option java_outer_classname = "ConAdminToDataHubProto";
+option java_package = "wyo.dot.protobuf.conadmin";
+option java_outer_classname = "ConAdminProto";
 option java_multiple_files = true;
 
 import "common.proto";
@@ -14,39 +14,42 @@ import "work_zone.proto";
 
 
 // Interface Messages
-message FieldDeviceUpdateMessage {
+message FieldDeviceUpdate {
     optional uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
-    oneof field_device_update_message {
-        FieldDeviceUpdated field_device_updated = 3;
+    // We use oneof here to support easy addition of new message types as the system evolves
+    oneof type {
+        FieldDeviceUpdate updated = 3;
     }
 }
 
-message VehicleLocationUpdateMessage {
+message VehicleLocationUpdate {
     optional uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
-    oneof vehicle_location_update_message {
-        VehicleLocationUpdated vehicle_location_updated = 3;
+    // We use oneof here to support easy addition of new message types as the system evolves
+    oneof type {
+        VehicleLocationUpdated updated = 3;
     }
 }
 
-message ProjectUpdateMessage {
+message ProjectUpdate {
     optional uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
-    oneof project_update_message {
-        ProjectCreated project_created = 3;
-        ProjectUpdated project_updated = 4;
-        ProjectRemoved project_removed = 5;
+    // We use oneof here to support easy addition of new message types as the system evolves
+    oneof type {
+        ProjectCreated created = 3;
+        ProjectUpdated updated = 4;
+        ProjectRemoved removed = 5;
     }
 }
 
-message WorkZoneUpdateMessage {
+message WorkZoneUpdate {
     optional uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
-    oneof work_zone_update_message {
-        WorkZoneCreated work_zone_created = 3;
-        WorkZoneUpdated work_zone_updated = 4;
-        WorkZoneRemoved work_zone_removed = 5;
+    oneof type {
+        WorkZoneCreated created = 3;
+        WorkZoneUpdated updated = 4;
+        WorkZoneRemoved removed = 5;
     }
 }
 

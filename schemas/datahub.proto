@@ -14,37 +14,42 @@ import "work_zone.proto";
 
 
 // Interface Messages
-message VehicleLocationUpdateRequestMessage {
+message VehicleLocationUpdate {
     uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
-    oneof field_device_update_request_message {
+
+    // We use oneof here to support easy addition of new message types as the system evolves
+    oneof type {
         UpdateVehicleLocation field_device_updated = 3;
     }
 }
 
-message FieldDeviceUpdateRequestMessage {
+message FieldDeviceUpdate {
     uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
-    oneof field_device_request_message {
+
+    // We use oneof here to support easy addition of new message types as the system evolves
+    oneof type {
         CreateFieldDevice field_device_created = 3;
         UpdateFieldDevice field_device_updated = 4;
     }
 }
 
-message WorkZoneUpdateRequestMessage {
+message WorkZoneUpdate {
     uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
-    oneof field_device_update_request_message {
+
+    // We use oneof here to support easy addition of new message types as the system evolves
+    oneof type {
         CreateWorkZone work_zone_created = 3;
         UpdateWorkZone work_zone_updated = 4;
     }
 }
 
 
-// Individual Messages
+// Action Types - not to be used outside of the Interface Types defined above.
 message UpdateVehicleLocation {
-    uint64 id = 1;
-    VehicleLocation vehicle_location = 2;
+    VehicleLocation vehicle_location = 1;
 }
 
 message CreateFieldDevice {
@@ -52,8 +57,7 @@ message CreateFieldDevice {
 }
 
 message UpdateFieldDevice {
-    uint64 id = 1;
-    FieldDevice field_device = 2;
+    FieldDevice field_device = 1;
 }
 
 message CreateWorkZone {
@@ -63,12 +67,11 @@ message CreateWorkZone {
 }
 
 message UpdateWorkZone {
-    uint64 id = 1;
-    WorkZone work_zone = 2;
-    DataHubUpdateSource source = 3;
-    repeated CreateRoadSubEvent create_road_sub_events = 4;
-    repeated UpdateRoadSubEvent update_road_sub_events = 5;
-    repeated RemoveRoadSubEvent remove_road_sub_events = 6;
+    WorkZone work_zone = 1;
+    DataHubUpdateSource source = 2;
+    repeated CreateRoadSubEvent create_road_sub_events = 3;
+    repeated UpdateRoadSubEvent update_road_sub_events = 4;
+    repeated RemoveRoadSubEvent remove_road_sub_events = 5;
 }
 
 message CreateRoadSubEvent {
@@ -76,13 +79,11 @@ message CreateRoadSubEvent {
 }
 
 message UpdateRoadSubEvent {
-    uint64 id = 1;
-    RoadSubEvent road_sub_event = 2;
+    RoadSubEvent road_sub_event = 1;
 }
 
 message RemoveRoadSubEvent {
-    uint64 id = 1;
-    RoadSubEvent road_sub_event = 2;
+    RoadSubEvent road_sub_event = 1;
 }
 
 // Data Types
@@ -90,7 +91,7 @@ message ReportSummary {
     uint64 id = 1;
     string name = 2;
     string description = 3;
-    google.protobuf.Timestamp report_date = 4;
+    google.protobuf.Timestamp timestamp = 4;
     string contact_name = 5;
     string contact_phone = 6;
 }
@@ -99,7 +100,7 @@ message RecordingSummary {
     uint64 id = 1;
     string name = 2;
     string description = 3;
-    google.protobuf.Timestamp report_date = 4;
+    google.protobuf.Timestamp timestamp = 4;
     double length_meters = 5;
     double position_accuracy_meters = 6;
 }

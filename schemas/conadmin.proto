@@ -6,7 +6,6 @@ option java_package = "wyo.dot.protobuf.conadmin";
 option java_outer_classname = "ConAdminProto";
 option java_multiple_files = true;
 
-import "common.proto";
 import "project.proto";
 import "google/protobuf/timestamp.proto";
 import "road_sub_event.proto";
@@ -14,24 +13,6 @@ import "work_zone.proto";
 
 
 // Interface Messages
-message FieldDeviceUpdate {
-    optional uint64 request_id = 1;
-    google.protobuf.Timestamp timestamp = 2;
-    // We use oneof here to support easy addition of new message types as the system evolves
-    oneof type {
-        FieldDeviceUpdate updated = 3;
-    }
-}
-
-message VehicleLocationUpdate {
-    optional uint64 request_id = 1;
-    google.protobuf.Timestamp timestamp = 2;
-    // We use oneof here to support easy addition of new message types as the system evolves
-    oneof type {
-        VehicleLocationUpdated updated = 3;
-    }
-}
-
 message ProjectUpdate {
     optional uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
@@ -43,7 +24,7 @@ message ProjectUpdate {
     }
 }
 
-message WorkZoneUpdate {
+message ConAdminWorkZoneUpdate {
     optional uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
     oneof type {
@@ -55,18 +36,6 @@ message WorkZoneUpdate {
 
 
 // Action Types - not to be used outside of the Interface Types defined above.
-message FieldDeviceUpdated {
-    optional uint64 project_id = 1;
-    optional uint64 work_zone_event_id = 2;
-    optional MarkedLocationType location_type = 3;
-}
-
-message VehicleLocationUpdated {
-    optional uint64 project_id = 1;
-    optional uint64 work_zone_event_id = 2;
-    optional MarkedLocationType location_type = 3;
-}
-
 message ProjectCreated {
     Project project = 2;
 }

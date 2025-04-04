@@ -35,7 +35,7 @@ message FieldDeviceUpdate {
     }
 }
 
-message WorkZoneUpdate {
+message DataHubWorkZoneUpdate {
     uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
 

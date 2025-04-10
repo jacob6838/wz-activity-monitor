@@ -13,6 +13,7 @@ import 'package:wzam/models/wzdx_models.dart';
 import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/location_service.dart';
+import 'package:wzam/services/push_notification_service.dart';
 import 'package:wzam/ui/pages/home.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:http/http.dart' as http;
@@ -330,6 +331,11 @@ class RecordingController extends GetxController {
         fileStorageService.saveRecording(recording, false);
         ViewRecordingsController viewRecordingsController = Get.find<ViewRecordingsController>();
         viewRecordingsController.areThereLocalRecordings.value = true;
+        PushNotificationService.showSimpleNotification(
+          title: 'Recording Failed',
+          body: 'The recording was not posted to the server. It has been saved locally.',
+          payload: 'Recording Failed',
+        );
       }
     } catch (e) {
       print('Error posting recording: $e');

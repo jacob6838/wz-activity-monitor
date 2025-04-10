@@ -465,6 +465,70 @@ class FileStorageService extends GetxService {
     }
   }
 
+  Future<bool> uploadLocalRecordings() async {
+    List<Recording> recordings = await getRecordingFiles('recordings_local');
+    bool success = true;
+    for (Recording recording in recordings) {
+      bool individualSuccess = await uploadRecording(recording);
+      if (!individualSuccess) {
+        success = false;
+      }
+    }
+    return success;
+  }
+
+  Future<bool> uploadLocalReports() async {
+    List<Report> reports = await getReportFiles('reports_local');
+    bool success = true;
+    for (Report report in reports) {
+      bool individualSuccess = await uploadReport(report);
+      if (!individualSuccess) {
+        success = false;
+      }
+    }
+    return success;
+  }
+
+  Future<bool> uploadRecording(Recording recording) async {
+    AuthService authService = Get.find<AuthService>();
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/recordings');
+    final headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
+    try {
+      final response = await http.post(url, headers: headers, body: jsonEncode(recording));
+      if (response.statusCode == 200) {
+        print('Recording uploaded successfully');
+        await deleteRecording(recording, 'recordings_local');
+        return true;
+      } else {
+        print('Failed to upload recording: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Error uploading recording: $e');
+      return false;
+    }
+  }
+
+  Future<bool> uploadReport(Report report) async {
+    AuthService authService = Get.find<AuthService>();
+    final url = Uri.parse('https://wzamapi.azurewebsites.net/reports');
+    final headers = {'Authorization': 'Bearer ${await authService.getAccessToken()}'};
+    try {
+      final response = await http.post(url, headers: headers, body: jsonEncode(report));
+      if (response.statusCode == 200) {
+        print('Report uploaded successfully');
+        await deleteReport(report, 'reports_local');
+        return true;
+      } else {
+        print('Failed to upload report: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Error uploading report: $e');
+      return false;
+    }
+  }
+
 
   Future deleteAllReports() async {
     String directoryPath = 'reports'; //TODO: combine with deleteAllRecordings

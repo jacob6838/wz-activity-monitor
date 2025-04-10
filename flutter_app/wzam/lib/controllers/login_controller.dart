@@ -6,6 +6,7 @@ import 'package:wzam/controllers/view_recordings_controller.dart';
 import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/location_service.dart';
+import 'package:wzam/services/push_notification_service.dart';
 import 'package:wzam/services/secure_storage.dart';
 import 'package:wzam/ui/pages/home.dart';
 import 'package:wzam/ui/pages/login.dart';

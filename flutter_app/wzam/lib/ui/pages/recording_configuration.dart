@@ -121,14 +121,14 @@ class RecordingConfiguration extends StatelessWidget {
               ],
             ),
           verticalSpaceMedium,
-          /*_inputField("Project ID", projectIdController, isNumeric: true),
-          verticalSpaceMedium,
-          _inputField("Segment ID", segmentIdController, isNumeric: true),
-          verticalSpaceMedium,
-          _inputField("Area ID", areaIdController, isNumeric: true),
-          verticalSpaceMedium,
+          // _inputField("Project ID", projectIdController, isNumeric: true),
+          // verticalSpaceMedium,
+          // _inputField("Segment ID", segmentIdController, isNumeric: true),
+          // verticalSpaceMedium,
+          // _inputField("Area ID", areaIdController, isNumeric: true),
+          // verticalSpaceMedium,
           _inputField("Recording Name", recordingNameController, isRequired: true),
-          verticalSpaceMedium,*/
+          verticalSpaceMedium,
           ...workTypeSegments,
           ElevatedButton(
             onPressed: () {

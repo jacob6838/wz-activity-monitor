@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wzam/controllers/activity_area_map_controller.dart';
 import 'package:wzam/controllers/notification_controller.dart';
 import 'package:wzam/controllers/project_map_controller.dart';
 import 'package:wzam/controllers/view_recordings_controller.dart';
@@ -31,10 +32,15 @@ class LoginController extends GetxController {
     Get.offAll(() => LogIn());
   }
 
-
-
-  Future<int> attemptLogIn(String username, String password, String keycloakEndpoint, String realm, String client, String clientSecret) async {
-    return await authService.authenticateUser(username, password, keycloakEndpoint, realm, client, clientSecret);
+  Future<int> attemptLogIn(
+      String username,
+      String password,
+      String keycloakEndpoint,
+      String realm,
+      String client,
+      String clientSecret) async {
+    return await authService.authenticateUser(
+        username, password, keycloakEndpoint, realm, client, clientSecret);
   }
 
   Future login() async {
@@ -45,21 +51,26 @@ class LoginController extends GetxController {
     String client = await secureStorage.getClient();
     String clientSecret = await secureStorage.getClientSecret();
 
-    await attemptLogIn(usernameController.text, passwordController.text, keycloakEndpoint, realm, client, clientSecret).then((code) {
+    await attemptLogIn(usernameController.text, passwordController.text,
+            keycloakEndpoint, realm, client, clientSecret)
+        .then((code) {
       switch (code) {
         case 200:
           success = true;
           break;
         case 401:
-          NotificationController().queueNotification('Login', 'Invalid username or password');
+          NotificationController()
+              .queueNotification('Login', 'Invalid username or password');
         case 403:
           NotificationController().queueNotification('Login', 'Login Failed');
           break;
         case 408:
-          NotificationController().queueNotification('Login', 'Request Timed Out');
+          NotificationController()
+              .queueNotification('Login', 'Request Timed Out');
           break;
         default:
-          NotificationController().queueNotification('Login', 'Unknown error: $code');
+          NotificationController()
+              .queueNotification('Login', 'Unknown error: $code');
           break;
       }
     });
@@ -75,12 +86,17 @@ class LoginController extends GetxController {
     Get.put(LocationService());
     loggedIn.value = true;
     Get.offAll(() => Home());
-    ViewReportsController viewReportsController = Get.put(ViewReportsController());
-    ViewRecordingsController viewRecordingsController = Get.put(ViewRecordingsController());
+    ViewReportsController viewReportsController =
+        Get.put(ViewReportsController());
+    ViewRecordingsController viewRecordingsController =
+        Get.put(ViewRecordingsController());
     ProjectMapController projectMapController = Get.put(ProjectMapController());
-    await viewReportsController.initialize();
-    await viewRecordingsController.loadInRecordings();
-    await projectMapController.initialize();
+    ActivityAreaMapController activityAreaMapController =
+        Get.put(ActivityAreaMapController());
+    viewReportsController.initialize();
+    viewRecordingsController.loadInRecordings();
+    projectMapController.initialize();
+    activityAreaMapController.initialize();
   }
 
   Future logout() async {
@@ -90,5 +106,4 @@ class LoginController extends GetxController {
     passwordController.clear();
     loggedIn.value = false;
   }
-
 }

@@ -1,0 +1,49 @@
+name: Protocol Buffer Generation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'schemas/**/*.proto'
+  pull_request:
+    paths:
+      - 'schemas/**/*.proto'
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  generate-protos:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Protocol Buffers Compiler
+        run: |
+          PROTOC_VERSION="3.20.3"  # You can adjust this version as needed
+          PROTOC_ZIP="protoc-${PROTOC_VERSION}-linux-x86_64.zip"
+          curl -OL "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${PROTOC_ZIP}"
+          sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
+          sudo unzip -o $PROTOC_ZIP -d /usr/local include/*
+          rm -f $PROTOC_ZIP
+          protoc --version
+
+      - name: Create output directory
+        run: mkdir -p ./schemas/java_output
+
+      - name: Generate Protocol Buffer Java Code
+        run: |
+          # Find all .proto files recursively and process them
+          find ./schemas -type f -name "*.proto" | xargs protoc --proto_path=./schemas --java_out=./schemas/java_output --experimental_allow_proto3_optional
+
+
+      - name: Verify Generation Success
+        run: |
+          if [ -z "$(ls -A ./schemas/java_output)" ]; then
+            echo "Error: No Java files were generated!"
+            exit 1
+          else
+            echo "Successfully generated the following Java files:"
+            find ./schemas/java_output -type f -name "*.java" | sort
+            echo "Total Java files generated: $(find ./schemas/java_output -type f -name "*.java" | wc -l)"
+          fi

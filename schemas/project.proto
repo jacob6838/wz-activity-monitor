@@ -9,12 +9,13 @@ option java_multiple_files = true;
 import "google/protobuf/timestamp.proto";
 
 message Project {
-    string name = 1;
-    string description = 2;
-    ProjectActiveStatus active_status = 3;
-    google.protobuf.Timestamp creation_date = 4;
-    google.protobuf.Timestamp start_date = 5;
-    google.protobuf.Timestamp end_date = 6;
+    uint64 id = 1;
+    string name = 2;
+    string description = 3;
+    ProjectActiveStatus active_status = 4;
+    google.protobuf.Timestamp creation_date = 5;
+    google.protobuf.Timestamp start_date = 6;
+    google.protobuf.Timestamp end_date = 7;
 
     enum ProjectActiveStatus {
         PROJECT_ACTIVE_STATUS_ACTIVE = 0;

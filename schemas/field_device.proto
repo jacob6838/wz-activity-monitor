@@ -22,11 +22,12 @@ message FieldDevice {
         TrafficSignal traffic_signal = 8;
     }
     
-    uint64 project_id = 9;
-    uint64 work_zone_id = 10;
-    MarkedLocationType location_type = 11;
-    repeated PointGeometry geometry = 12;
-    repeated BoundingBox bbox = 13;
+    uint64 id = 9;
+    uint64 project_id = 10;
+    uint64 road_event_id = 11;
+    MarkedLocationType location_type = 12;
+    PointGeometry geometry = 13;
+    optional BoundingBox bbox = 14;
 
     enum FieldDeviceStatus {
         FIELD_DEVICE_STATUS_OK = 0;
@@ -137,7 +138,7 @@ message FieldDevice {
 
         message TrafficSensorLaneData {
             uint32 lane_order = 1;
-            uint64 work_zone_id = 2;
+            uint64 road_event_id = 2;
             double average_speed_kph = 3;
             double volume_kph = 4;
             double occupancy_percent = 5;

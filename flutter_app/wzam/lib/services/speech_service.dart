@@ -16,8 +16,9 @@ class SpeechService extends GetxService {
 
   Rx<bool> hasSpeech = Rx<bool>(false);
   Rx<bool> isListening = Rx<bool>(false);
+  Rx<String?> errorMessage = Rx<String?>(null);
 
-  // Location Stream
+  // Command Stream
   final StreamController<SttCommand> _commandController =
       StreamController<SttCommand>.broadcast();
   Stream<SttCommand> get commandStream => _commandController.stream;
@@ -33,12 +34,18 @@ class SpeechService extends GetxService {
           _logger.d("Speech status: $status");
           if (status == "listening") {
             isListening.value = true;
+            errorMessage.value = null;
           } else if (status == "notListening") {
-            isListening.value = true;
+            isListening.value = false;
+            errorMessage.value = null;
+          } else if (status == "done") {
+            isListening.value = false;
+            errorMessage.value = null;
           }
         },
         onError: (error) {
           _logger.e("Speech error: $error");
+          errorMessage.value = error.errorMsg;
         },
       );
 
@@ -52,6 +59,7 @@ class SpeechService extends GetxService {
     } catch (e) {
       _logger.e("Error initializing speech: $e");
       hasSpeech.value = false;
+      errorMessage.value = "Error initializing speech: $e";
     }
   }
 
@@ -73,9 +81,9 @@ class SpeechService extends GetxService {
           SttCommand? command = await parseCommandText(result.recognizedWords);
           if (command != null) {
             if (announceCommands) {
-              speak("Confirmed ${command.text}");
+              speak("Confirmed ${command.confirmationString}");
             }
-            if (command == SttCommand.stopListening) {
+            if (command == SttCommand.stop) {
               stopListening();
             }
             _commandController.add(command);
@@ -87,11 +95,15 @@ class SpeechService extends GetxService {
   }
 
   Future<SttCommand?> parseCommandText(String text) async {
-    return SttCommand.values.map((command) {
-      if (text.toLowerCase() == command.text) {
-        return command;
+    text = text
+        .toLowerCase(); // Normalize the input text for case-insensitive matching
+    for (final command in SttCommand.values) {
+      if (command.comparisonStrings.any((comparisonString) =>
+          text.contains(comparisonString.toLowerCase()))) {
+        return command; // Return the first matching command
       }
-    }).firstOrNull;
+    }
+    return null; // Return null if no command matches
   }
 
   Future<void> startListening() async {

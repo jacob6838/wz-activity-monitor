@@ -31,8 +31,15 @@ class WakeWordService extends GetxService {
 
   final List<InstanceConfig> instanceConfigs = [
     InstanceConfig(
-      id: WakeWordCommand.heyWorkZone.text,
-      modelName: 'need_help_now.onnx',
+      id: WakeWordCommand.heyWorkZone.id,
+      modelName: WakeWordCommand.heyWorkZone.modelName,
+      threshold: 0.9999,
+      bufferCnt: 3,
+      sticky: false,
+    ),
+    InstanceConfig(
+      id: WakeWordCommand.needHelpNow.id,
+      modelName: WakeWordCommand.needHelpNow.modelName,
       threshold: 0.9999,
       bufferCnt: 3,
       sticky: false,

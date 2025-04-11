@@ -10,7 +10,7 @@ import "field_device.proto";
 import "google/protobuf/timestamp.proto";
 import "road_sub_event.proto";
 import "vehicle_location.proto";
-import "work_zone.proto";
+import "road_event.proto";
 
 
 // Interface Messages
@@ -35,14 +35,14 @@ message FieldDeviceUpdate {
     }
 }
 
-message DataHubWorkZoneUpdate {
+message DataHubRoadEventUpdate {
     uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
 
     // We use oneof here to support easy addition of new message types as the system evolves
     oneof type {
-        CreateWorkZone work_zone_created = 3;
-        UpdateWorkZone work_zone_updated = 4;
+        CreateRoadEvent road_event_created = 3;
+        UpdateRoadEvent road_event_updated = 4;
     }
 }
 
@@ -60,14 +60,14 @@ message UpdateFieldDevice {
     FieldDevice field_device = 1;
 }
 
-message CreateWorkZone {
-    WorkZone work_zone = 1;
+message CreateRoadEvent {
+    RoadEvent road_event = 1;
     DataHubUpdateSource source = 2;
     repeated CreateRoadSubEvent road_sub_events_to_create = 3;
 }
 
-message UpdateWorkZone {
-    WorkZone work_zone = 1;
+message UpdateRoadEvent {
+    RoadEvent road_event = 1;
     DataHubUpdateSource source = 2;
     repeated CreateRoadSubEvent create_road_sub_events = 3;
     repeated UpdateRoadSubEvent update_road_sub_events = 4;

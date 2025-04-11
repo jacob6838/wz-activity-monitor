@@ -8,8 +8,8 @@ option java_multiple_files = true;
 
 import "project.proto";
 import "google/protobuf/timestamp.proto";
+import "road_event.proto";
 import "road_sub_event.proto";
-import "work_zone.proto";
 
 
 // Interface Messages
@@ -24,44 +24,44 @@ message ProjectUpdate {
     }
 }
 
-message ConAdminWorkZoneUpdate {
+message ConAdminRoadEventUpdate {
     optional uint64 request_id = 1;
     google.protobuf.Timestamp timestamp = 2;
     oneof type {
-        WorkZoneCreated created = 3;
-        WorkZoneUpdated updated = 4;
-        WorkZoneRemoved removed = 5;
+        RoadEventCreated created = 3;
+        RoadEventUpdated updated = 4;
+        RoadEventRemoved removed = 5;
     }
 }
 
 
 // Action Types - not to be used outside of the Interface Types defined above.
 message ProjectCreated {
-    Project project = 2;
+    Project project = 1;
 }
 
 message ProjectUpdated {
-    Project project = 2;
+    Project project = 1;
 }
 
 message ProjectRemoved {
-    Project project = 2;
+    Project project = 1;
 }
 
-message WorkZoneCreated {
-    WorkZone work_zone = 1;
+message RoadEventCreated {
+    RoadEvent road_event = 1;
     repeated RoadSubEventCreated road_sub_events_created = 2;
 }
 
-message WorkZoneUpdated {
-    WorkZone work_zone = 1;
+message RoadEventUpdated {
+    RoadEvent road_event = 1;
     repeated RoadSubEventCreated road_sub_events_created = 2;
     repeated RoadSubEventUpdated road_sub_events_updated = 3;
     repeated RoadSubEventRemoved road_sub_events_removed = 4;
 }
 
-message WorkZoneRemoved {
-    WorkZone work_zone = 1;
+message RoadEventRemoved {
+    RoadEvent road_event = 1;
     repeated RoadSubEvent road_sub_events = 2;
 }
 

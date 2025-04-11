@@ -29,7 +29,7 @@ message RoadEvent {
         LineStringGeometry line_string = 13;
         PolygonGeometry polygon = 14;
     }
-    BoundingBox bbox = 15;
+    optional BoundingBox bbox = 15;
     repeated string linked_vehicle_lps = 16;
     repeated uint64 linked_field_device_ids = 17;
 

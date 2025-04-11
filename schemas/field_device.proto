@@ -26,8 +26,8 @@ message FieldDevice {
     uint64 project_id = 10;
     uint64 road_event_id = 11;
     MarkedLocationType location_type = 12;
-    repeated PointGeometry geometry = 13;
-    repeated BoundingBox bbox = 14;
+    PointGeometry geometry = 13;
+    optional BoundingBox bbox = 14;
 
     enum FieldDeviceStatus {
         FIELD_DEVICE_STATUS_OK = 0;

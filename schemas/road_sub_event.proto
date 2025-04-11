@@ -15,29 +15,26 @@ message RoadSubEvent {
     uint64 project_id = 2;
     uint64 work_zone_id = 3;
     RoadwayDirection direction = 4;
-    string name = 5;
-    string description = 6;
-    google.protobuf.Timestamp start_date = 7;
-    optional google.protobuf.Timestamp end_date = 8;
-    WorkZoneType area_type = 9;
-    repeated string road_names = 10;
-    optional string beginning_cross_street = 11;
-    optional string ending_cross_street = 12;
-    double beginning_milepost = 13;
-    double ending_milepost = 14;
-    WorkerPresence worker_presence = 15;
-    float reduced_speed_limit_kph = 16;
-    repeated Restriction restrictions = 17;
-    repeated Lane lanes = 18;
-    RoadSurfaceType surface_type = 19;
-    optional MarkedLocationType start_location_type = 20;
-    optional MarkedLocationType end_location_type = 21;
+    google.protobuf.Timestamp start_date = 5;
+    optional google.protobuf.Timestamp end_date = 6;
+    repeated string road_names = 7;
+    optional string beginning_cross_street = 8;
+    optional string ending_cross_street = 9;
+    double beginning_milepost = 10;
+    double ending_milepost = 11;
+    WorkerPresence worker_presence = 12;
+    float reduced_speed_limit_kph = 13;
+    repeated Restriction restrictions = 14;
+    repeated Lane lanes = 15;
+    RoadSurfaceType surface_type = 16;
+    optional MarkedLocationType start_location_type = 17;
+    optional MarkedLocationType end_location_type = 18;
     oneof Geometry {
-        PointGeometry point = 22;
-        LineStringGeometry line_string = 23;
-        PolygonGeometry polygon = 24;
+        PointGeometry point = 19;
+        LineStringGeometry line_string = 20;
+        PolygonGeometry polygon = 21;
     }
-    repeated BoundingBox bbox = 25;
+    optional BoundingBox bbox = 22;
 
     enum RoadDirection {
         ROAD_DIRECTION_BOTH = 0;

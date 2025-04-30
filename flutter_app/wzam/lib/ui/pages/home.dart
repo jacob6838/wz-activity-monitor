@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import 'package:wzam/controllers/view_recordings_controller.dart';
 import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/services/file_storage.dart';
+import 'package:wzam/services/location_service.dart';
 import 'package:wzam/services/push_notification_service.dart';
+import 'package:wzam/ui/pages/live_report_page.dart';
 import 'package:wzam/ui/pages/recording_configuration.dart';
 import 'package:wzam/ui/pages/report_generator.dart';
 import 'package:wzam/ui/pages/view_projects.dart';
@@ -80,6 +82,14 @@ class Home extends StatelessWidget {
                 Get.to(() => ViewProjects());
               },
               title: 'View Project Zones',
+              context: context
+            ),
+            verticalSpaceMedium,
+            _button(  
+              onPressed: () async {
+                Get.to(() => LiveReportPage());
+              },
+              title: 'Start a Live Report',
               context: context
             ),
             verticalSpaceLarge,

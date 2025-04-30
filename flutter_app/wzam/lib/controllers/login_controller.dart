@@ -74,6 +74,8 @@ class LoginController extends GetxController {
     await authService.setPassword(passwordController.text);
     await authService.setUsername(usernameController.text);
     Get.put(LocationService());
+    PushNotificationService pushNotificationService = Get.put(PushNotificationService());
+    pushNotificationService.init();
     loggedIn.value = true;
     Get.offAll(() => Home());
     ViewReportsController viewReportsController = Get.put(ViewReportsController());

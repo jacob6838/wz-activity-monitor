@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:wzam/controllers/app_state_controller.dart';
 import 'package:wzam/services/push_notification_service.dart';
 import 'package:wzam/ui/pages/load_screen.dart';
 import 'package:wzam/ui/styles/theme_setting.dart';
@@ -9,8 +10,9 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await PushNotificationService.init();
+  //await PushNotificationService.init();
   runApp(const MainApp());
+  Get.put(AppStateController());
 }
 
 class MainApp extends StatelessWidget {

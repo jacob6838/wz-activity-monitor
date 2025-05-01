@@ -1,27 +1,18 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:wzam/controllers/notification_controller.dart';
 import 'package:wzam/controllers/view_recordings_controller.dart';
-import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/models/recording.dart';
-import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/ui/pages/settings.dart';
-import 'package:wzam/ui/styles/app_colors.dart';
-import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:wzam/ui/styles/spacing.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
 import 'package:wzam/ui/styles/text_styles.dart';
 
 
 class ViewRecordings extends StatelessWidget {
 
   final ViewRecordingsController controller = Get.find<ViewRecordingsController>();
+
+  ViewRecordings({super.key});
 
   @override
   Widget build(BuildContext context) {

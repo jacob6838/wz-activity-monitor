@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -15,7 +13,6 @@ import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/location_service.dart';
 import 'package:wzam/services/push_notification_service.dart';
 import 'package:wzam/ui/pages/home.dart';
-import 'package:wzam/ui/styles/screen_size.dart';
 import 'package:http/http.dart' as http;
 
 import '../ui/styles/app_colors.dart';

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wzam/services/location_service.dart';
 import 'package:wzam/services/push_notification_service.dart';
 
 class AppStateController extends GetxController with WidgetsBindingObserver {

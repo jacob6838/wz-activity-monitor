@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:wzam/controllers/view_recordings_controller.dart';
 import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/services/file_storage.dart';
-import 'package:wzam/services/location_service.dart';
 import 'package:wzam/services/push_notification_service.dart';
 import 'package:wzam/ui/pages/live_report_page.dart';
 import 'package:wzam/ui/pages/recording_configuration.dart';
@@ -35,7 +34,7 @@ class Home extends StatelessWidget {
     ]);
     return Scaffold(
       appBar: WZAMAppBar(
-        title: 'Work Zone Activity Mapper',
+        title: 'Work Zone Activity Manager',
       ),
       body: Center(
         child: Column(
@@ -79,7 +78,7 @@ class Home extends StatelessWidget {
             verticalSpaceMedium,
             _button(  
               onPressed: () async{
-                Get.to(() => ViewProjects());
+                Get.to(() => const ViewProjects());
               },
               title: 'View Project Zones',
               context: context
@@ -87,7 +86,7 @@ class Home extends StatelessWidget {
             verticalSpaceMedium,
             _button(  
               onPressed: () async {
-                Get.to(() => LiveReportPage());
+                Get.to(() => const LiveReportPage());
               },
               title: 'Start a Live Report',
               context: context
@@ -118,7 +117,7 @@ class Home extends StatelessWidget {
         border: Border.all(color: Colors.red, width: 3.0, style: BorderStyle.values[1]),
       ),
       child: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column( 
           children: [
             Text("You have un-uploaded recordings or reports. Please upload them.", style: style_four.copyWith(color: Colors.red)),
@@ -137,11 +136,8 @@ class Home extends StatelessWidget {
                     payload: 'Upload Failed',
                   );
                 }
-                //PushNotificationService.cancelAll();
-                //viewRecordingsController.getUnUploadedRecordings();
-                //viewReportsController.getLocalReports();
               },
-              child: WZAMText.styleFour('Upload Now'),
+              child: const WZAMText.styleFour('Upload Now'),
             ),
           ],
         ),

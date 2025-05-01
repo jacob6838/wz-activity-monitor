@@ -28,7 +28,7 @@ class LiveReportPage extends StatelessWidget {
             Obx(() => ElevatedButton(
               child: appStateController.liveReporting.value ? const Text("Stop the Live Reporting Session") : const Text("Start a Live Reporting Session"),
               onPressed: () async {
-                appStateController.liveReporting.value = !appStateController.liveReporting.value;
+                appStateController.liveReporting.value = !(appStateController.liveReporting.value);
               }
             )),
           ]

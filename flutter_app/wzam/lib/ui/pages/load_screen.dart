@@ -3,14 +3,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:wzam/controllers/login_controller.dart';
 import 'package:wzam/controllers/settings_controller.dart';
-import 'package:wzam/controllers/view_recordings_controller.dart';
-import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/file_storage.dart';
 import 'package:wzam/services/secure_storage.dart';
 import 'package:wzam/services/shared_prefs.dart';
 
 class Load extends StatelessWidget {
+  const Load({super.key});
 
   Future _init() async {
     LoginController controller = Get.find<LoginController>();

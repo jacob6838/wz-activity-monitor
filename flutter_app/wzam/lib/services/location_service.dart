@@ -18,8 +18,6 @@ class LocationService extends GetxService {
   bool _serviceEnabled = false;
   bool _serviceMocked = false;
   late LocationPermission _permission;
-  late bool _backgroundPermission;
-  //final service = FlutterBackgroundService();
   StreamSubscription<Position>? _positionStream;
   Rx<Position?> currentPosition = Rx<Position?>(null);
 
@@ -126,13 +124,6 @@ class LocationService extends GetxService {
     }
     return true;
   }
-
-  /*void _startLocationUpdates() async {
-    _positionStream?.cancel();
-    _positionStream =
-        Geolocator.getPositionStream(locationSettings: _locationSettings)
-            .listen(_onPositionUpdate);
-  }*/
 
   void enableForegroundService() {
     if (defaultTargetPlatform == TargetPlatform.android) {

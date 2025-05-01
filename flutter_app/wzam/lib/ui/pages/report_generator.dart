@@ -191,7 +191,7 @@ class ReportPage extends StatelessWidget {
               onPressed: () {
                 Get.to(() => const ReportLocationSelection());
               },
-              child: controller.points.isEmpty ? const Text("Select Activty Location") : Text("Change Activity Location"),
+              child: controller.points.isEmpty ? const Text("Select Activity Location") : const Text("Change Activity Location"),
             ),
             verticalSpaceSmall,
             Container(  

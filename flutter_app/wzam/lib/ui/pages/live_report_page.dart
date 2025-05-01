@@ -1,21 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:wzam/controllers/view_recordings_controller.dart';
-import 'package:wzam/controllers/view_reports_controller.dart';
-import 'package:wzam/services/file_storage.dart';
-import 'package:wzam/services/location_service.dart';
+import 'package:wzam/controllers/app_state_controller.dart';
 import 'package:wzam/services/push_notification_service.dart';
-import 'package:wzam/ui/pages/recording_configuration.dart';
-import 'package:wzam/ui/pages/report_generator.dart';
-import 'package:wzam/ui/pages/view_projects.dart';
-import 'package:wzam/ui/pages/view_recordings.dart';
-import 'package:wzam/ui/pages/view_reports.dart';
-import 'package:wzam/ui/styles/screen_size.dart';
-import 'package:wzam/ui/styles/spacing.dart';
-import 'package:wzam/ui/styles/text_styles.dart';
 import 'package:wzam/ui/styles/widgets/wzam_app_bar.dart';
-import 'package:wzam/ui/styles/widgets/wzam_text.dart';
 
 
 class LiveReportPage extends StatelessWidget {
@@ -29,6 +17,7 @@ class LiveReportPage extends StatelessWidget {
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
     ]);
+    AppStateController  appStateController = Get.find<AppStateController>();
     return Scaffold(
       appBar: WZAMAppBar(
         title: 'Live Report',
@@ -37,17 +26,12 @@ class LiveReportPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [ 
-            const Text("hi", style: style_three),
-            verticalSpaceMedium,
-            ElevatedButton(
-              child: const Text("Start Live Location"),
+            Obx(() => ElevatedButton(
+              child: appStateController.liveReporting.value ? const Text("Stop the Live Reporting Session") : const Text("Start Live Reporting"),
               onPressed: () async {
-                //LocationService locationService = Get.find<LocationService>();
-                //await locationService.startLocationUpdates();
-                PushNotificationService pushNotificationService = Get.find<PushNotificationService>();
-                pushNotificationService.showLocationNotification(title: "Live Report", payload: "Live Recording", delaySeconds: 5);
+                appStateController.liveReporting.value = !appStateController.liveReporting.value;
               }
-            ),
+            )),
           ]
         ),
       ),

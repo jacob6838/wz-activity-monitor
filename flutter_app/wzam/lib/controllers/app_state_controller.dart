@@ -4,6 +4,8 @@ import 'package:wzam/services/location_service.dart';
 import 'package:wzam/services/push_notification_service.dart';
 
 class AppStateController extends GetxController with WidgetsBindingObserver {
+  RxBool liveReporting = false.obs; // Track if live reporting is active
+
   @override
   void onInit() {
     super.onInit();
@@ -42,10 +44,9 @@ class AppStateController extends GetxController with WidgetsBindingObserver {
     print("App is in the background");
     //LocationService locationService = Get.find<LocationService>();
     //locationService.enableForegroundService();
-    PushNotificationService pushNotificationService = Get.find<PushNotificationService>();
-    pushNotificationService.showLocationNotification(title: "Device Location is being used in a Live Report", payload: "Live Report", delaySeconds: 5);
-    print("went here");
-    
-    // Add your logic here (e.g., stop location updates)
+    if (liveReporting.value) {
+      PushNotificationService pushNotificationService = Get.find<PushNotificationService>();
+      pushNotificationService.showLocationNotification(title: "Device Location is being used in a Live Report", payload: "Live Report", delaySeconds: 5);
+    }
   }
 }

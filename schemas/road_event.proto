@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package datahub.v1;
+
+option java_package = "wyo.dot.protobuf";
+option java_outer_classname = "RoadEventProto";
+option java_multiple_files = true;
+
+import "common.proto";
+import "wzdx.proto";
+import "google/type/timeofday.proto";
+import "google/type/date.proto";
+import "google/protobuf/timestamp.proto";
+
+message RoadEvent {
+    uint64 id = 1;
+    uint64 project_id = 2;
+    repeated RoadSubEventLink road_sections = 3;
+    string name = 4;
+    string description = 5;
+    RoadEventActiveStatus status = 6;
+    google.protobuf.Timestamp start_date = 7;
+    optional google.protobuf.Timestamp end_date = 8;
+    WorkZoneType area_type = 9;
+    repeated TypeOfWork types_of_work = 10;
+    repeated EventRecurrence schedule = 11;
+    oneof Geometry {
+        PointGeometry point = 12;
+        LineStringGeometry line_string = 13;
+        PolygonGeometry polygon = 14;
+    }
+    optional BoundingBox bbox = 15;
+    repeated string linked_vehicle_lps = 16;
+    repeated uint64 linked_field_device_ids = 17;
+
+    message RoadSubEventLink {
+        uint64 road_sub_event_id = 1;
+        RoadSubEventLinkType road_sub_event_link_type = 2;
+
+        enum RoadSubEventLinkType {
+            ROAD_SUB_EVENT_LINK_TYPE_FIRST_IN_SEQUENCE = 0;
+            ROAD_SUB_EVENT_LINK_TYPE_NEXT_IN_SEQUENCE = 1;
+            ROAD_SUB_EVENT_LINK_TYPE_FIRST_OCCURRENCE = 2;
+            ROAD_SUB_EVENT_LINK_TYPE_NEXT_OCCURRENCE = 3;
+            ROAD_SUB_EVENT_LINK_TYPE_RELATED_ROAD_EVENT = 4;
+            ROAD_SUB_EVENT_LINK_TYPE_RELATED_DETOUR = 5;
+            ROAD_SUB_EVENT_LINK_TYPE_PLANNED_MOVING_OPERATION = 6;
+            ROAD_SUB_EVENT_LINK_TYPE_ACTIVE_MOVING_OPERATION = 7;
+        }
+    }
+    
+    enum RoadEventActiveStatus {
+        ROAD_EVENT_ACTIVE_STATUS_ACTIVE = 0;
+        ROAD_EVENT_ACTIVE_STATUS_INACTIVE = 1;
+    }
+
+    message EventRecurrence {
+        google.type.TimeOfDay start_time = 1;
+        google.type.TimeOfDay end_time = 2;
+        google.type.Date start_date = 3;
+        google.type.Date end_date = 4;
+
+        bool monday = 5;
+        bool tuesday = 6;
+        bool wednesday = 7;
+        bool thursday = 8;
+        bool friday = 9;
+        bool saturday = 10;
+        bool sunday = 11;
+
+        optional bool exclusion = 12; // If false, the time span is included
+                             // If true, the time span is excluded from other EventRecurrence entries
+    }
+}

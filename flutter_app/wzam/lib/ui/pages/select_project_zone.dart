@@ -1,12 +1,9 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:wzam/controllers/project_map_controller.dart';
-import 'package:wzam/models/project.dart';
 import 'package:wzam/ui/pages/settings.dart';
 import 'package:wzam/ui/styles/app_colors.dart';
 import 'package:wzam/ui/styles/screen_size.dart';
@@ -153,7 +150,7 @@ class SelectProjects extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text('Show Road Sections', style: style_body),
+              const Text('Show Road Sections', style: style_body),
               horizontalSpaceSmall,
               Transform.scale(
                 scale: 0.75,
@@ -172,7 +169,7 @@ class SelectProjects extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text('Show Activity Areas', style: style_body),
+              const Text('Show Activity Areas', style: style_body),
               horizontalSpaceSmall,
               Transform.scale(
                 scale: 0.75,

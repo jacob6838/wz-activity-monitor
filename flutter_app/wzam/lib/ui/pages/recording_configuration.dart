@@ -121,12 +121,6 @@ class RecordingConfiguration extends StatelessWidget {
               ],
             ),
           verticalSpaceMedium,
-          // _inputField("Project ID", projectIdController, isNumeric: true),
-          // verticalSpaceMedium,
-          // _inputField("Segment ID", segmentIdController, isNumeric: true),
-          // verticalSpaceMedium,
-          // _inputField("Area ID", areaIdController, isNumeric: true),
-          // verticalSpaceMedium,
           _inputField("Recording Name", recordingNameController, isRequired: true),
           verticalSpaceMedium,
           ...workTypeSegments,
@@ -154,7 +148,7 @@ class RecordingConfiguration extends StatelessWidget {
           verticalSpaceMedium,
           Container(  
             height: 3,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.black,
           )),
           verticalSpaceMedium,

@@ -7,6 +7,7 @@ import 'package:wzam/controllers/view_recordings_controller.dart';
 import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/location_service.dart';
+import 'package:wzam/services/push_notification_service.dart';
 import 'package:wzam/services/secure_storage.dart';
 import 'package:wzam/ui/pages/home.dart';
 import 'package:wzam/ui/pages/login.dart';
@@ -84,6 +85,8 @@ class LoginController extends GetxController {
     await authService.setPassword(passwordController.text);
     await authService.setUsername(usernameController.text);
     Get.put(LocationService());
+    PushNotificationService pushNotificationService = Get.put(PushNotificationService());
+    pushNotificationService.init();
     loggedIn.value = true;
     Get.offAll(() => Home());
     ViewReportsController viewReportsController =

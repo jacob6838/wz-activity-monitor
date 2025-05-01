@@ -13,6 +13,7 @@ import 'package:wzam/models/road_section.dart';
 import 'package:wzam/models/wzdx_models.dart';
 import 'package:wzam/services/auth_service.dart';
 import 'package:wzam/services/file_storage.dart';
+import 'package:wzam/services/push_notification_service.dart';
 import 'package:wzam/ui/pages/report_location_selection.dart';
 import 'package:wzam/ui/pages/select_activity_area.dart';
 import 'package:wzam/ui/pages/select_project.dart';
@@ -625,6 +626,11 @@ class ReportPage extends StatelessWidget {
         print('Failed to post report: ${response.statusCode}');
         fileStorageService.saveReport(report, false);
         viewReportsController.areThereLocalReports.value = true;
+        PushNotificationService.showSimpleNotification(
+          title: "Report Failed",
+          body: "There was an error posting the report. It has been saved locally.",
+          payload: "Report Failed"
+        );
       }
     } catch (e) {
       print('Error posting report: $e');

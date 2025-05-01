@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:wzam/controllers/view_recordings_controller.dart';
 import 'package:wzam/controllers/view_reports_controller.dart';
 import 'package:wzam/services/file_storage.dart';
+import 'package:wzam/services/push_notification_service.dart';
+import 'package:wzam/ui/pages/live_report_page.dart';
 import 'package:wzam/ui/pages/recording_configuration.dart';
 import 'package:wzam/ui/pages/report_generator.dart';
 import 'package:wzam/ui/pages/view_projects.dart';
@@ -32,7 +34,7 @@ class Home extends StatelessWidget {
     ]);
     return Scaffold(
       appBar: WZAMAppBar(
-        title: 'Work Zone Activity Mapper',
+        title: 'Work Zone Activity Manager',
       ),
       body: Center(
         child: Column(
@@ -76,11 +78,20 @@ class Home extends StatelessWidget {
             verticalSpaceMedium,
             _button(  
               onPressed: () async{
-                Get.to(() => ViewProjects());
+                Get.to(() => const ViewProjects());
               },
               title: 'View Project Zones',
               context: context
             ),
+            verticalSpaceMedium,
+            _button(  
+              onPressed: () async {
+                Get.to(() => const LiveReportPage());
+              },
+              title: 'Start a Live Report',
+              context: context
+            ),
+            verticalSpaceLarge,
             Obx(() => viewRecordingsController.unUploadedRecordings.isNotEmpty || viewReportsController.areThereLocalReports.value ? unUploadedWarning(context) : Container()),
           ]
         ),
@@ -106,10 +117,28 @@ class Home extends StatelessWidget {
         border: Border.all(color: Colors.red, width: 3.0, style: BorderStyle.values[1]),
       ),
       child: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column( 
           children: [
             Text("You have un-uploaded recordings or reports. Please upload them.", style: style_four.copyWith(color: Colors.red)),
+            ElevatedButton(  
+              onPressed: () async {
+                bool recordingLoadSuccessful = await fileStorageService.uploadLocalRecordings();
+                bool reportLoadSuccessful = await fileStorageService.uploadLocalReports();
+                if (recordingLoadSuccessful && reportLoadSuccessful) {
+                  Get.snackbar('Upload Successful', 'All recordings and reports have been uploaded successfully.', backgroundColor: Colors.green, colorText: Colors.white);
+                  PushNotificationService.cancelAll();
+                } else {
+                  //Get.snackbar('Upload Failed', 'Some recordings or reports failed to upload.', backgroundColor: Colors.red, colorText: Colors.white);
+                  PushNotificationService.showSimpleNotification(
+                    title: 'Upload Failed',
+                    body: 'Some recordings or reports failed to upload.',
+                    payload: 'Upload Failed',
+                  );
+                }
+              },
+              child: const WZAMText.styleFour('Upload Now'),
+            ),
           ],
         ),
       ),

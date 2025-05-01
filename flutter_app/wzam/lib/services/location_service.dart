@@ -1,14 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
+//import 'package:flutter_background/flutter_background.dart';
+//import 'package:flutter_background_service/flutter_background_service.dart';
 
 class LocationService extends GetxService {
   // Static variables
   final Logger _logger = Logger();
-  final LocationSettings _locationSettings = const LocationSettings(
+  LocationSettings _locationSettings = const LocationSettings(
       accuracy: LocationAccuracy.high, distanceFilter: 0);
 
   // Variables
@@ -38,6 +41,7 @@ class LocationService extends GetxService {
     try {
       await requestPermission();
       if (await _isPermissionGranted() && _serviceEnabled) {
+        enableForegroundService();  //TODO: COME BACK TO THIS
         _startLocationUpdates();
       }
     } catch (e) {
@@ -121,7 +125,50 @@ class LocationService extends GetxService {
     return true;
   }
 
-  void _startLocationUpdates() {
+  void enableForegroundService() {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      _locationSettings = AndroidSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 0,
+          forceLocationManager: true,
+          intervalDuration: const Duration(seconds: 3),
+          foregroundNotificationConfig: const ForegroundNotificationConfig(
+            notificationText:
+            "Location Services are running",
+            notificationTitle: "Location Services are running in the background",
+            enableWakeLock: true,
+            setOngoing: true,
+            notificationIcon: const AndroidResource(
+              name: 'ic_notification',
+              defType: 'drawable',
+            ),
+          )
+      );
+    } else if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS) {
+      _locationSettings = AppleSettings(
+        accuracy: LocationAccuracy.high,
+        activityType: ActivityType.fitness,
+        distanceFilter: 0,
+        pauseLocationUpdatesAutomatically: true,
+        // Only set to true if our app will be started up in the background.
+        showBackgroundLocationIndicator: false,
+      );
+    } else if (kIsWeb) {
+      _locationSettings = WebSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 100,
+        maximumAge: Duration(minutes: 5),
+      );
+    } else {
+      _locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 100,
+      );
+    }
+  }
+
+  void _startLocationUpdates() async {
+    // Start the location stream
     _positionStream?.cancel();
     _positionStream =
         Geolocator.getPositionStream(locationSettings: _locationSettings)
@@ -154,3 +201,62 @@ class LocationService extends GetxService {
     return _serviceEnabled && !(_positionStream?.isPaused ?? true);
   }
 }
+
+/*class LocationService extends GetxService {
+  // Static variables
+  final Logger _logger = Logger();
+  final LocationSettings _locationSettings = const LocationSettings(
+      accuracy: LocationAccuracy.high, distanceFilter: 0);
+
+  // Variables
+  bool _serviceEnabled = false;
+  bool _serviceMocked = false;
+  late LocationPermission _permission;
+  late bool _backgroundPermission;
+  StreamSubscription<Position>? _positionStream;
+  Rx<Position?> currentPosition = Rx<Position?>(null);
+
+  // Location Stream
+  final StreamController<Position> _locationController =
+      StreamController<Position>.broadcast();
+  Stream<Position> get locationStream => _locationController.stream;
+
+  // Start Location Updates with Background Execution
+  Future<void> startLocationUpdates() async {
+  // Check location permissions
+  _permission = await Geolocator.checkPermission();
+  if (_permission == LocationPermission.denied ||
+      _permission == LocationPermission.deniedForever) {
+    _logger.w("Location permissions are denied. Requesting permissions...");
+    _permission = await Geolocator.requestPermission();
+
+    // If permissions are still denied, log and return
+    if (_permission == LocationPermission.denied ||
+        _permission == LocationPermission.deniedForever) {
+      _logger.e("Location permissions are still denied after requesting.");
+      return;
+    }
+  }
+
+  // Start the Geolocator position stream
+  _positionStream?.cancel();
+  _positionStream =
+      Geolocator.getPositionStream(locationSettings: _locationSettings)
+          .listen((Position position) {
+    currentPosition.value = position;
+    _locationController.add(position); // Add position to the stream
+    _logger.i("New position: ${position.latitude}, ${position.longitude}");
+  });
+}
+
+  // Stop Location Updates
+  Future<void> stopLocationUpdates() async {
+    await _positionStream?.cancel();
+    _positionStream = null;
+
+    // Disable background execution
+    if (await FlutterBackground.isBackgroundExecutionEnabled) {
+      await FlutterBackground.disableBackgroundExecution();
+    }
+  }
+}*/

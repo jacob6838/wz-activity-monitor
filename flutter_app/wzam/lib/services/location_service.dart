@@ -178,7 +178,6 @@ class LocationService extends GetxService {
   void _onPositionUpdate(Position position) {
     _locationController.add(position);
     currentPosition.value = position;
-    print("New position: ${position.latitude}, ${position.longitude}");
   }
 
   void _stopLocationUpdates() {
